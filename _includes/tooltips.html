@@ -1,0 +1,104 @@
+<script>
+/*
+ * Progressive enhancement for `.info-tip` spans declared in the qmd notes.
+ *
+ * Each tip is authored as:
+ *   <span class="info-tip" tabindex="0" data-tip="...">ⓘ</span>
+ *
+ * The CSS-only tooltip (via `::after { content: attr(data-tip) }`) is
+ * decorative — its text is not reliably exposed to screen readers, and the
+ * visible `ⓘ` glyph is announced inconsistently. This script:
+ *
+ *   1. Mirrors `data-tip` into `aria-label` so the tip text becomes the
+ *      element's accessible name.
+ *   2. Marks the role as `button` and hides the decorative glyph from AT.
+ *   3. Adds tap-to-toggle on touch / hover-less devices.
+ *   4. Allows Escape to close any open tip; Enter / Space to toggle the
+ *      currently focused tip.
+ *
+ * Inlined via `_quarto.yml -> format.html.include-after-body` so the path
+ * resolves correctly under GitHub Pages' project subpath.
+ */
+(function () {
+  "use strict";
+
+  var OPEN_CLASS = "is-open";
+
+  function enhance(tip) {
+    var text = tip.getAttribute("data-tip");
+    if (text && !tip.hasAttribute("aria-label")) {
+      tip.setAttribute("aria-label", text);
+    }
+    if (!tip.hasAttribute("role")) {
+      tip.setAttribute("role", "button");
+    }
+    if (!tip.hasAttribute("tabindex")) {
+      tip.setAttribute("tabindex", "0");
+    }
+
+    if (!tip.querySelector(".info-tip-glyph")) {
+      var glyph = document.createElement("span");
+      glyph.className = "info-tip-glyph";
+      glyph.setAttribute("aria-hidden", "true");
+      while (tip.firstChild) {
+        glyph.appendChild(tip.firstChild);
+      }
+      tip.appendChild(glyph);
+    }
+  }
+
+  function closeAll(except) {
+    var open = document.querySelectorAll(".info-tip." + OPEN_CLASS);
+    for (var i = 0; i < open.length; i++) {
+      if (open[i] !== except) open[i].classList.remove(OPEN_CLASS);
+    }
+  }
+
+  function init() {
+    var tips = document.querySelectorAll(".info-tip");
+    if (!tips.length) return;
+    for (var i = 0; i < tips.length; i++) enhance(tips[i]);
+
+    var isTouch =
+      window.matchMedia && window.matchMedia("(hover: none)").matches;
+
+    document.addEventListener("click", function (e) {
+      var target = e.target.closest ? e.target.closest(".info-tip") : null;
+      if (target) {
+        if (isTouch) {
+          closeAll(target);
+          target.classList.toggle(OPEN_CLASS);
+          e.preventDefault();
+        }
+      } else {
+        closeAll(null);
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      var active = document.activeElement;
+      var focusedTip =
+        active && active.classList && active.classList.contains("info-tip")
+          ? active
+          : null;
+
+      if (e.key === "Escape") {
+        closeAll(null);
+        if (focusedTip) focusedTip.blur();
+        return;
+      }
+
+      if (focusedTip && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        focusedTip.classList.toggle(OPEN_CLASS);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>

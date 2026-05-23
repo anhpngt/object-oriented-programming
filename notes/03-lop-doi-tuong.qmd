@@ -2,7 +2,7 @@
 title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
 ---
 
-## Cram sheet
+## Cram sheet {.unnumbered .unlisted .cram-heading}
 
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/03.qmd >}}
@@ -144,7 +144,7 @@ void main() {
 }
 ```
 
-Mỗi `new` phải có đúng một `delete`. Sau `delete`, gán con trỏ về `NULL` để tránh dangling pointer.
+Mỗi `new` phải có đúng một `delete`. Sau `delete`, gán con trỏ về `NULL` để tránh dangling pointer <span class="info-tip" tabindex="0" data-tip="Dangling pointer: con trỏ vẫn giữ địa chỉ cũ sau khi vùng nhớ đó đã được delete. Truy cập qua con trỏ này (đọc / ghi / gọi phương thức) gây hành vi không xác định — có thể crash, có thể đọc dữ liệu rác, có thể ghi đè dữ liệu khác. Gán NULL ngay sau delete để mọi truy cập sau đó báo lỗi rõ ràng (null pointer dereference).">ⓘ</span>.
 
 ## Phạm vi truy xuất (Access Specifiers)
 
@@ -218,7 +218,7 @@ a.init(5, 2);
 b = a;   // b.x = a.x; b.y = a.y;
 ```
 
-Khi lớp chứa con trỏ sở hữu vùng nhớ động → cơ chế sao chép mặc định không phù hợp (sao chép nông).
+Khi lớp chứa con trỏ sở hữu vùng nhớ động → cơ chế sao chép mặc định không phù hợp (sao chép nông <span class="info-tip" tabindex="0" data-tip="Sao chép nông (shallow copy): chỉ chép từng bit, kể cả giá trị con trỏ. Hai đối tượng cùng trỏ vào MỘT vùng nhớ động → sửa qua đối tượng này, đối tượng kia cũng đổi; khi cả hai bị hủy, vùng nhớ chung bị delete 2 lần → lỗi runtime. Sao chép sâu (deep copy): cấp phát vùng nhớ riêng cho bản sao rồi chép nội dung sang.">ⓘ</span>).
 
 ## Constructor
 

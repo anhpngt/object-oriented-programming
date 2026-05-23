@@ -16,7 +16,7 @@
   - simple → integral (`char`, `short`, `int`, `long`, `bool`, `enum`), floating (`float`, `double`, `long double`).
   - structured → `array`, `struct`, `union`, `class`.
   - address → `pointer`, `reference`.
-- `sizeof(int) = 2`; `sizeof('A') = 1`.
+- `sizeof(int) = 2`; `sizeof('A') = 1`. <span class="info-tip" tabindex="0" data-tip="Theo slide DOS/Borland 16-bit. Trình biên dịch hiện đại 32/64-bit có sizeof(int) = 4. Bài thi trả lời theo slide.">ⓘ</span>
 - `struct TS { char ht[25]; long sbd; };` → `TS a;`, `TS ts[1000];`.
 - `enum MAU{xanh, do, tim, vang};`
 - `union Có_tên/Không_tên {...};`

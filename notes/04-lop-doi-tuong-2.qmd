@@ -2,7 +2,7 @@
 title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
 ---
 
-## Cram sheet
+## Cram sheet {.unnumbered .unlisted .cram-heading}
 
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/04.qmd >}}
@@ -21,7 +21,7 @@ title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
 - Constructor: **trong → ngoài** — constructor thành phần chạy trước, sau đó thân constructor lớp kết hợp.
 - Destructor: **ngoài → trong** — thân destructor lớp kết hợp chạy trước, sau đó destructor thành phần.
 
-→ Thành phần luôn được khởi tạo trước khi lớp chứa "thấy" nó, và bị hủy sau khi lớp chứa "xong việc" với nó.
+→ Thành phần luôn được khởi tạo trước khi lớp chứa "thấy" nó, và bị hủy sau khi lớp chứa "xong việc" với nó. <span class="info-tip" tabindex="0" data-tip="Lý do trật tự này: thân constructor lớp chứa thường truy cập các thành phần (VD A, B, C của TamGiac) → chúng phải sẵn sàng trước khi thân chạy. Tương tự, thân destructor lớp chứa có thể vẫn cần dùng các thành phần để dọn dẹp → các thành phần phải còn sống khi thân destructor chạy, mới hủy sau.">ⓘ</span>
 
 ### Danh sách khởi tạo thành phần (member-init list)
 

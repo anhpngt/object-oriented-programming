@@ -2,7 +2,7 @@
 title: "Chương 06 - Tính kế thừa (Inheritance)"
 ---
 
-## Cram sheet
+## Cram sheet {.unnumbered .unlisted .cram-heading}
 
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/06.qmd >}}
@@ -30,7 +30,7 @@ Cả 2 phía đều có thể gắn với nhiều đối tượng phía bên kia
 
 Lớp này là trường hợp đặc biệt của lớp kia. VD: `TAMGIACCAN` của `TAMGIAC`, `SINHVIEN` của `NGUOI`, `Cat`/`Horse` của `TerrestrialAnimal`.
 
-→ Quan hệ này là cơ sở để dùng **kế thừa**. 3 quan hệ đầu (1-1, 1-n, n-n) thường cài bằng thành phần (composition) hoặc tham chiếu giữa các đối tượng — KHÔNG bằng kế thừa.
+→ Quan hệ này là cơ sở để dùng **kế thừa**. 3 quan hệ đầu (1-1, 1-n, n-n) thường cài bằng thành phần (composition) <span class="info-tip" tabindex="0" data-tip="Composition (thành phần / hợp thành): đối tượng lớp này CHỨA đối tượng lớp khác làm thành viên. VD class LopHoc { GiaoVien chuNhiem; vector&lt;HocSinh&gt; ds; }; — LopHoc 'có một' chủ nhiệm và 'có nhiều' học sinh. Khác với kế thừa biểu diễn 'là một' (is-a), composition biểu diễn 'có một' (has-a). Khi nghi ngờ giữa kế thừa và composition → ưu tiên composition.">ⓘ</span> hoặc tham chiếu giữa các đối tượng — KHÔNG bằng kế thừa.
 
 ## Khái niệm kế thừa (Inheritance Concept)
 
@@ -294,7 +294,7 @@ void main() {
 }
 ```
 
-`Imag` kế thừa hầu hết phép toán từ `Complex`, nhưng `operator=` PHẢI định nghĩa lại để ép `re = 0`. Nếu không, `i = Complex(5, 2)` phá ràng buộc "phần thực = 0".
+`Imag` kế thừa hầu hết phép toán từ `Complex`, nhưng `operator=` PHẢI định nghĩa lại để ép `re = 0`. <span class="info-tip" tabindex="0" data-tip="operator= và copy constructor không thực sự được kế thừa — trình biên dịch tự sinh phiên bản mặc định cho lớp con (gọi operator= của cha rồi chép các thành phần thêm). Phiên bản mặc định cho Imag sẽ chỉ chép re, im từ Complex, không ép re=0 → i = Complex(5,2) sẽ làm i.re = 5, vi phạm bất biến 'phần thực luôn = 0' của Imag.">ⓘ</span> Nếu không, `i = Complex(5, 2)` phá ràng buộc "phần thực = 0".
 
 → Pattern tổng quát: phép toán có thể đặt giá trị vi phạm bất biến (gán, các phép thay đổi trạng thái) → đều phải định nghĩa lại ở lớp con.
 
@@ -412,7 +412,7 @@ public:
 };
 ```
 
-Quy ước thường dùng: **`protected` cho dữ liệu, `public` cho phương thức**. KHÔNG đẩy mọi thứ lên `protected` chỉ vì tiện — lớp cha nên cung cấp hàm `public`/`protected` có kiểm soát để bảo vệ bất biến dữ liệu.
+Quy ước thường dùng: **`protected` cho dữ liệu, `public` cho phương thức**. KHÔNG đẩy mọi thứ lên `protected` chỉ vì tiện — lớp cha nên cung cấp hàm `public`/`protected` có kiểm soát để bảo vệ bất biến dữ liệu <span class="info-tip" tabindex="0" data-tip="Bất biến (invariant) của lớp: điều kiện luôn đúng cho mọi đối tượng hợp lệ. VD: PhanSo luôn có mau != 0; HinhTron luôn có bk &gt; 0; ThoiDiem luôn có 0 ≤ giay &lt; 60. Mọi phương thức phải bảo toàn bất biến — vào hợp lệ thì ra cũng hợp lệ. Nếu để protected/public dữ liệu thô, lớp con/người dùng có thể gán giá trị xấu (mau = 0) phá bất biến → bug khó truy.">ⓘ</span>.
 
 ### Chiều ngang — do lớp CON quyết định
 
@@ -540,7 +540,7 @@ void main() {
 
 ### Vấn đề 2: thứ tự constructor/destructor
 
-Constructor các lớp cơ sở chạy theo **thứ tự xuất hiện trong khai báo** `class A : public B, private C` (B trước, rồi C) — KHÔNG theo thứ tự liệt kê trong member-init list. Destructor chạy ngược lại.
+Constructor các lớp cơ sở chạy theo **thứ tự xuất hiện trong khai báo** `class A : public B, private C` (B trước, rồi C) — KHÔNG theo thứ tự liệt kê trong member-init list. Destructor chạy ngược lại. <span class="info-tip" tabindex="0" data-tip="VD: class A : public B, private C { A(...) : C(...), B(...) {} }; → constructor B chạy TRƯỚC C dù trong member-init list C đứng đầu. Lý do: thứ tự khai báo lớp cha trong dòng class A : ... cố định cấu trúc bộ nhớ và phải nhất quán giữa mọi constructor; member-init list chỉ truyền tham số.">ⓘ</span>
 
 ### Vấn đề 3: bài toán kim cương (Diamond Problem)
 

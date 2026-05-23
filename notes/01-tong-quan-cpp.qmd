@@ -2,7 +2,7 @@
 title: "Chương 01 - Tổng quan về C++ (C++ Overview)"
 ---
 
-## Cram sheet
+## Cram sheet {.unnumbered .unlisted .cram-heading}
 
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/01.qmd >}}
@@ -164,7 +164,7 @@ Phân loại:
 - **structured**: `array`, `struct`, `union`, `class`.
 - **address**: `pointer`, `reference`.
 
-`sizeof(int) = 2`; `sizeof('A') = 1` (hằng ký tự).
+`sizeof(int) = 2`; `sizeof('A') = 1` (hằng ký tự). <span class="info-tip" tabindex="0" data-tip="Slide ghi theo môi trường DOS / Borland C 16-bit (int = 2 byte). Trên các trình biên dịch hiện đại (GCC, Clang, MSVC) chạy hệ 32/64-bit, sizeof(int) thường = 4. Trong bài thi vẫn trả lời theo slide.">ⓘ</span>
 
 ```cpp
 struct TS {

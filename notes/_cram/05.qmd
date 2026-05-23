@@ -1,5 +1,5 @@
 ::: {.callout-note title="Đa năng hóa toán tử (Operator Overloading)"}
-Các toán tử cho phép ta sử dụng cú pháp toán học đối với các kiểu dữ liệu của C++ thay vì gọi hàm (bản chất vẫn là gọi hàm). Ví dụ: thay `a.set(b.cong(c));` bằng `a = b + c;`.
+Các toán tử cho phép ta sử dụng cú pháp toán học đối với các kiểu dữ liệu của C++ thay vì gọi hàm (bản chất vẫn là gọi hàm). Ví dụ: thay `a.Set(b.Cong(c));` bằng `a = b + c;`.
 :::
 
 - Mục đích: gần với kiểu trình bày con người quen dùng (tự nhiên), đơn giản hóa mã.

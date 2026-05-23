@@ -2,7 +2,7 @@
 title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
 ---
 
-## Cram sheet
+## Cram sheet {.unnumbered .unlisted .cram-heading}
 
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/05.qmd >}}
@@ -15,7 +15,7 @@ title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
 ## Khái niệm (Concept)
 
 ::: {.callout-note title="Đa năng hóa toán tử (Operator Overloading)"}
-Các toán tử cho phép ta sử dụng cú pháp toán học đối với các kiểu dữ liệu của C++ thay vì gọi hàm (bản chất vẫn là gọi hàm). Ví dụ: thay `a.set(b.cong(c));` bằng `a = b + c;`.
+Các toán tử cho phép ta sử dụng cú pháp toán học đối với các kiểu dữ liệu của C++ thay vì gọi hàm (bản chất vẫn là gọi hàm). Ví dụ: thay `a.Set(b.Cong(c));` bằng `a = b + c;`.
 :::
 
 VD lớp `PhanSo` chỉ có `Set`, `Cong`, `Tru`, `Nhan`, `Chia`:
@@ -237,7 +237,7 @@ c = a + 2.5;   // NHẬP NHẰNG
 Khắc phục:
 
 - **Ép kiểu tường minh**: `c = a + PhanSo(2);`, `cout << double(a) + 2.5 << "\n";` — mất tiện lợi của chuyển kiểu ngầm định.
-- **Bỏ bớt 1 cơ chế chuyển kiểu**, hoặc đánh dấu constructor `explicit` để chặn chuyển kiểu ngầm.
+- **Bỏ bớt 1 cơ chế chuyển kiểu**, hoặc đánh dấu constructor `explicit` <span class="info-tip" tabindex="0" data-tip="Từ khóa explicit đặt trước constructor 1 tham số sẽ chặn chuyển kiểu ngầm. VD explicit PhanSo(long t) khiến PhanSo d = 5; lỗi biên dịch — bắt buộc viết PhanSo d(5); hoặc PhanSo(5). Hữu ích khi muốn tránh chuyển kiểu tự động ngoài ý muốn — và là cách giải nhập nhằng mà không phải bỏ constructor.">ⓘ</span> để chặn chuyển kiểu ngầm.
 
 ## Gán và khởi động (Assignment vs Copy-Initialization)
 

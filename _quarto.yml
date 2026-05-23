@@ -29,11 +29,16 @@ format:
       light: cosmo
       dark: darkly
     css: styles.css
+    include-after-body:
+      - _includes/tooltips.html
     toc: true
     number-sections: true
     code-copy: true
     code-link: true
     code-overflow: wrap
+    highlight-style:
+      light: arrow
+      dark: arrow-dark
     html-math-method: katex
   pdf:
     pdf-engine: xelatex

@@ -2,7 +2,7 @@
 title: "Chương 07 - Tính đa hình (Polymorphism)"
 ---
 
-## Cram sheet
+## Cram sheet {.unnumbered .unlisted .cram-heading}
 
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/07.qmd >}}
@@ -105,7 +105,7 @@ Nguoi, ho ten: Tran Nhan Cong sinh 1984
 Nguoi, ho ten: Nguyen Thanh Nhan sinh 1960
 ```
 
-→ Trình biên dịch dựa vào kiểu khai báo của con trỏ (`Nguoi*`) để chọn hàm — luôn gọi `Nguoi::Xuat`, KHÔNG phải phiên bản định nghĩa lại ở lớp con.
+→ Trình biên dịch dựa vào kiểu khai báo của con trỏ (`Nguoi*`) để chọn hàm — luôn gọi `Nguoi::Xuat`, KHÔNG phải phiên bản định nghĩa lại ở lớp con. <span class="info-tip" tabindex="0" data-tip="Đây gọi là 'kết nối tĩnh' (static binding / early binding): trình biên dịch quyết định gọi hàm cụ thể nào ngay tại lúc biên dịch, dựa trên kiểu KHAI BÁO của biến/con trỏ. Để thay bằng 'kết nối động' (dynamic binding / late binding) — quyết định lúc CHẠY dựa trên kiểu THỰC SỰ của đối tượng — phải dùng virtual + truy cập qua con trỏ hoặc tham chiếu lớp cơ sở.">ⓘ</span>
 
 **Vấn đề**: làm sao qua con trỏ lớp cơ sở vẫn gọi đúng phiên bản tương ứng với loại đối tượng thực tế?
 
