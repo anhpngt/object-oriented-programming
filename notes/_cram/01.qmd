@@ -56,9 +56,9 @@ Biến tham chiếu dùng làm bí danh (alias) cho một biến giá trị.
   - **Tham chiếu**: thao tác trực tiếp trên vùng nhớ tham số → ĐỔI tham số gốc. Tham số phải là biến/phần tử mảng cùng kiểu.
   - VD `swap`:
     ```cpp
-    void swap1(int x, int y)   { int t=x; x=y; y=t; }    // tham tri  - khong doi
-    void swap2(int *x, int *y) { int *t=x; x=y; y=t; }   // con tro    - khong doi (sai)
-    void swap3(int &x, int &y) { int t=x; x=y; y=t; }    // tham chieu - doi
+    void swap1(int x, int y)   { int t=x; x=y; y=t; }    // tham trị   - không đổi
+    void swap2(int *x, int *y) { int *t=x; x=y; y=t; }   // con trỏ    - không đổi (sai)
+    void swap3(int &x, int &y) { int t=x; x=y; y=t; }    // tham chiếu - đổi
     ```
 - Con trỏ hàm: khai báo cùng Kiểu trả về + Bộ đối với hàm cần trỏ tới; gán Tên hàm cho con trỏ.
   - `double tinh_max(double *a, int n){...}; double (*f)(double *, int); f = tinh_max;`.

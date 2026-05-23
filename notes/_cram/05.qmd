@@ -63,11 +63,11 @@ Khi lớp đối tượng có nhu cầu cấp phát tài nguyên: việc khởi 
 - `operator=` chuẩn:
   ```cpp
   String& String::operator=(const String& s) {
-      if (this != &s) {       // chong tu gan
-          delete[] p;          // doc don tai nguyen cu
-          p = strdup(s.p);     // sao chep moi
+      if (this != &s) {       // chống tự gán
+          delete[] p;          // dọn dẹp tài nguyên cũ
+          p = strdup(s.p);     // sao chép mới
       }
-      return *this;            // gan day chuyen
+      return *this;            // gán dây chuyền
   }
   ```
 - Phép toán `<<` / `>>`:
@@ -98,15 +98,15 @@ Khi lớp đối tượng có nhu cầu cấp phát tài nguyên: việc khởi 
 
 - Phân biệt 2 phiên bản bằng tham số `int` giả:
   ```cpp
-  Lop& operator++();        // prefix: tra tham chieu
-  Lop  operator++(int);     // postfix: tra ban sao gia tri cu
+  Lop& operator++();        // prefix: trả tham chiếu
+  Lop  operator++(int);     // postfix: trả bản sao giá trị cũ
   ```
 - Cài postfix:
   ```cpp
   Lop Lop::operator++(int) {
-      Lop t = *this;        // luu gia tri cu
-      ++(*this);            // tang
-      return t;             // tra gia tri cu
+      Lop t = *this;        // lưu giá trị cũ
+      ++(*this);            // tăng
+      return t;             // trả giá trị cũ
   }
   ```
 - `++`/`--` chỉ áp dụng cho kiểu **đếm được** (mỗi giá trị có giá trị kế tiếp / trước đó).

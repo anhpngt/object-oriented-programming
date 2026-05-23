@@ -2,7 +2,9 @@
 title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
 ---
 
-:::: {.callout-important title="Cram sheet"}
+## Cram sheet
+
+:::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/03.qmd >}}
 ::::
 
@@ -10,7 +12,7 @@ title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
 [Tải bản PDF in](03-lop-doi-tuong.pdf)
 :::
 
-## Cú pháp khai báo lớp
+## Cú pháp khai báo lớp (Class Declaration Syntax)
 
 ::: {.callout-note title="Lớp (class)"}
 Lớp là một mô tả trừu tượng của nhóm các đối tượng cùng bản chất, ngược lại mỗi một đối tượng là một thể hiện cụ thể cho những mô tả trừu tượng đó. Lớp trong C++ thực chất là một kiểu dữ liệu do người sử dụng định nghĩa.
@@ -46,7 +48,7 @@ Cơ chế tạo lập lớp 3 bước:
 2. Xác định **phương thức** (đối tượng làm được gì).
 3. Xác định **quyền truy xuất**.
 
-## Định nghĩa hàm thành phần
+## Định nghĩa hàm thành phần (Member Function Definition)
 
 Hai cách định nghĩa thi hành của một phương thức.
 
@@ -94,7 +96,7 @@ void point::move(int dx, int dy) { x += dx; y += dy; }
 void point::display() { cout << "Toa do: " << x << " " << y << "\n"; }
 ```
 
-## Khai báo và tạo lập đối tượng
+## Khai báo và tạo lập đối tượng (Object Declaration and Creation)
 
 ```cpp
 <tên lớp> <tên đối tượng>;
@@ -144,7 +146,7 @@ void main() {
 
 Mỗi `new` phải có đúng một `delete`. Sau `delete`, gán con trỏ về `NULL` để tránh dangling pointer.
 
-## Phạm vi truy xuất
+## Phạm vi truy xuất (Access Specifiers)
 
 3 mức:
 
@@ -162,12 +164,12 @@ public:
     void Nhap();
     void In();
 private:
-    int Loaitg();                    // 1-d, 2-vc, 3-c, 4-v, 5-t
+    int Loaitg();                    // 1-đều, 2-vuông cân, 3-cân, 4-vuông, 5-thường
     float DienTich();
 };
 ```
 
-## Tham số là đối tượng cùng lớp
+## Tham số là đối tượng cùng lớp (Same-Class Object Parameters)
 
 Hàm thành phần truy cập được mọi thành phần `private` của:
 
@@ -190,7 +192,7 @@ int point::Trung(point &pt) {
 
 Cả 3 phiên bản đều truy cập trực tiếp `pt.x`, `pt.y` (`private`) vì `Trung` là thành viên của `point`.
 
-## Con trỏ `this`
+## Con trỏ `this` (The `this` Pointer)
 
 ::: {.callout-note title="Con trỏ this"}
 Từ khóa `this` trong định nghĩa của các hàm thành phần lớp dùng để xác định địa chỉ của đối tượng dùng làm tham số ngầm định cho hàm thành phần. Con trỏ `this` tham chiếu đến đối tượng đang gọi hàm thành phần.
@@ -204,7 +206,7 @@ int point::Trung(point pt) {
 
 Hữu ích khi tên tham số trùng tên thuộc tính, hoặc cần phân biệt rõ thuộc tính của đối tượng hiện tại với đối tượng khác.
 
-## Phép gán đối tượng
+## Phép gán đối tượng (Object Assignment)
 
 ::: {.callout-note title="Phép gán đối tượng"}
 Là việc sao chép giá trị các thành phần dữ liệu từ đối tượng `a` sang đối tượng `b` tương ứng từng đôi một (member-wise copy).
@@ -325,7 +327,7 @@ public:
 
 Lớp không quản lý tài nguyên động → destructor mặc định đủ. Lớp có con trỏ sở hữu vùng nhớ cấp phát động → BẮT BUỘC viết destructor để tránh rò rỉ bộ nhớ.
 
-## Phương thức Truy vấn / Cập nhật
+## Phương thức Truy vấn / Cập nhật (Getter / Setter Methods)
 
 ### Phương thức truy vấn (getter)
 
@@ -368,7 +370,7 @@ int Student::setGPA(double newGPA) {
 }
 ```
 
-## Thành viên `static`
+## Thành viên `static` (Static Members)
 
 ::: {.callout-note title="Thành viên `static`"}
 Trong C++, nếu `static` xuất hiện trước một dữ liệu hoặc một phương thức của lớp thì giá trị của nó vẫn được lưu lại và có ý nghĩa cho đối tượng khác của cùng lớp này. Thành viên thuộc về **lớp**, không thuộc về **đối tượng**.
@@ -437,7 +439,7 @@ Có thể gọi phương thức `static` ngay cả khi **chưa có đối tượ
 MyClass::someStaticFunction();
 ```
 
-## Đối tượng toàn cục
+## Đối tượng toàn cục (Global Objects)
 
 Đối tượng toàn cục có vòng đời bằng cả chương trình:
 

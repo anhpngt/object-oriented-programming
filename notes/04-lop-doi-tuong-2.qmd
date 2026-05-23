@@ -2,7 +2,9 @@
 title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
 ---
 
-:::: {.callout-important title="Cram sheet"}
+## Cram sheet
+
+:::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/04.qmd >}}
 ::::
 
@@ -10,7 +12,7 @@ title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
 [Tải bản PDF in](04-lop-doi-tuong-2.pdf)
 :::
 
-## Đối tượng là thành phần của lớp
+## Đối tượng là thành phần của lớp (Objects as Class Members)
 
 Đối tượng có thể là thành phần của đối tượng khác. Khi đối tượng "lớn" (lớp kết hợp) được tạo, các thành phần của nó cũng được tạo theo.
 
@@ -57,7 +59,7 @@ TamGiac t(100, 100, 200, 400, 300, 300, 1);
 
 Nếu thành phần thuộc lớp cần tham số → lớp chứa BẮT BUỘC viết constructor để truyền tham số xuống.
 
-## Đối tượng là thành phần của mảng
+## Đối tượng là thành phần của mảng (Objects as Array Elements)
 
 ::: {.callout-note title="Tự khởi động — yêu cầu của mảng đối tượng"}
 Khi mảng được tạo, các phần tử được tạo theo, phương thức thiết lập sẽ được gọi cho từng phần tử. Vì không thể cung cấp tham số khởi động cho tất cả các phần tử khi khai báo mảng, mỗi đối tượng phải có **khả năng tự khởi động**.
@@ -159,7 +161,7 @@ public:
 };
 ```
 
-## Đối tượng được cấp phát động
+## Đối tượng được cấp phát động (Dynamically Allocated Objects)
 
 ::: {.callout-note title="Đối tượng được cấp phát động"}
 Đối tượng được cấp phát động là các đối tượng được tạo ra bằng phép toán `new` và bị hủy đi bằng phép toán `delete`. Phép toán `new` cấp đối tượng trong vùng heap và gọi phương thức thiết lập cho đối tượng được cấp.
@@ -298,7 +300,7 @@ public:
 
 → Mọi phương thức của `JERRY` (không chỉ `Change`) truy cập được `private` của `TOM`.
 
-## Ba tính chất của quan hệ friend
+## Ba tính chất của quan hệ friend (Three Properties of Friendship)
 
 ::: {.callout-note title="3 tính chất quan hệ friend"}
 - **Phải được cho, không được nhận**: lớp `B` là bạn của lớp `A`, lớp `A` phải khai báo rõ ràng `B` là bạn của nó.
@@ -308,7 +310,7 @@ public:
 
 → `friend` an toàn hơn nhiều so với đặt dữ liệu là `public`: lớp chủ vẫn giữ toàn quyền quyết định ai được truy cập.
 
-## Giao diện và chi tiết cài đặt
+## Giao diện và chi tiết cài đặt (Interface vs Implementation)
 
 ::: {.callout-note title="Giao diện và chi tiết cài đặt"}
 Lớp có hai phần tách rời. Phần giao diện khai báo trong phần `public` để người sử dụng "thấy" và sử dụng. Chi tiết cài đặt bao gồm dữ liệu khai báo trong phần `private` của lớp và chi tiết mã hóa các hàm thành phần, vô hình đối với người dùng.
@@ -358,7 +360,7 @@ public:
 
 → Cùng giao diện `Set`/`LayGio`/`LayPhut`/`LayGiay`/`Nhap`/`Xuat`/`Tang`/`Giam`. Người dùng viết mã giống hệt nhau trong cả 2 trường hợp.
 
-## Nguyên tắc xây dựng lớp
+## Nguyên tắc xây dựng lớp (Class Design Principles)
 
 ### Khái niệm trong đề thành lớp
 

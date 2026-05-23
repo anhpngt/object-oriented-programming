@@ -17,7 +17,7 @@ Kế thừa là một đặc điểm của ngôn ngữ dùng để biểu diễn
 - Cú pháp:
   ```cpp
   class Derived : public/protected/private Base {
-      // thanh phan bo sung cua lop dan xuat
+      // thành phần bổ sung của lớp dẫn xuất
   };
   ```
 - Lớp cha = superclass / lớp cơ sở / base class. Lớp con = subclass / lớp dẫn xuất / derived class.

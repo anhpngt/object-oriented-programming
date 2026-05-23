@@ -2,7 +2,9 @@
 title: "Chương 06 - Tính kế thừa (Inheritance)"
 ---
 
-:::: {.callout-important title="Cram sheet"}
+## Cram sheet
+
+:::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/06.qmd >}}
 ::::
 
@@ -10,7 +12,7 @@ title: "Chương 06 - Tính kế thừa (Inheritance)"
 [Tải bản PDF in](06-ke-thua.pdf)
 :::
 
-## 4 quan hệ giữa các lớp đối tượng
+## 4 quan hệ giữa các lớp đối tượng (Relationships Between Classes)
 
 ### 1-1
 
@@ -30,7 +32,7 @@ Lớp này là trường hợp đặc biệt của lớp kia. VD: `TAMGIACCAN` c
 
 → Quan hệ này là cơ sở để dùng **kế thừa**. 3 quan hệ đầu (1-1, 1-n, n-n) thường cài bằng thành phần (composition) hoặc tham chiếu giữa các đối tượng — KHÔNG bằng kế thừa.
 
-## Khái niệm kế thừa
+## Khái niệm kế thừa (Inheritance Concept)
 
 ::: {.callout-note title="Kế thừa (Inheritance)"}
 Kế thừa là một đặc điểm của ngôn ngữ dùng để biểu diễn mối quan hệ đặc biệt hóa – tổng quát hóa giữa các lớp. Các lớp được trừu tượng hóa và được tổ chức thành một sơ đồ phân cấp lớp. Sự kế thừa là một mức cao hơn của trừu tượng hóa, cung cấp một cơ chế gom chung các lớp có liên quan với nhau thành một mức khái quát hóa đặc trưng cho toàn bộ các lớp nói trên.
@@ -59,7 +61,7 @@ Lợi ích:
 - Tổ chức lớp chia sẻ mã chung — dễ sửa, dễ nâng cấp.
 - Định nghĩa sự tương thích kiểu → mở đường cho chuyển kiểu tự động giữa lớp cơ sở và lớp dẫn xuất.
 
-## Cú pháp khai báo
+## Cú pháp khai báo (Declaration Syntax)
 
 ```cpp
 class SuperClass {
@@ -67,7 +69,7 @@ class SuperClass {
 };
 
 class DerivedClass : public/protected/private SuperClass {
-    // bo sung
+    // bổ sung
 };
 ```
 
@@ -81,7 +83,7 @@ class TamGiacCan : public TamGiac {
 };
 ```
 
-## Kế thừa đơn — VD `Nguoi` / `SinhVien`
+## Kế thừa đơn — VD `Nguoi` / `SinhVien` (Single Inheritance Example)
 
 ```cpp
 class Nguoi {
@@ -129,16 +131,16 @@ void main() {
     Nguoi    p1("Le Van Nhan", 1980);
     SinhVien s1("Vo Vien Sinh", "200002541", 1984);
 
-    p1.An();   s1.An();          // s1 ke thua An() tu Nguoi
-    p1.Xuat(); s1.Xuat();        // s1 dung ban Xuat() cua SinhVien
-    s1.Nguoi::Xuat();            // goi tuong minh ban Xuat() cua Nguoi
+    p1.An();   s1.An();          // s1 kế thừa An() từ Nguoi
+    p1.Xuat(); s1.Xuat();        // s1 dùng bản Xuat() của SinhVien
+    s1.Nguoi::Xuat();            // gọi tường minh bản Xuat() của Nguoi
 }
 ```
 
 - `s1.An()` chạy được vì `SinhVien` kế thừa `An()` — KHÔNG cần khai báo lại.
 - `s1.Nguoi::Xuat()` gọi tường minh phiên bản lớp cha trên đối tượng lớp con.
 
-## Lớp con kế thừa gì từ lớp cha
+## Lớp con kế thừa gì từ lớp cha (What is Inherited)
 
 `class SinhVien : public Nguoi` → `SinhVien` tự động có:
 
@@ -199,7 +201,7 @@ Quan hệ bạn bè KHÔNG truyền theo dòng kế thừa. Lớp con cần frie
 
 → `~SinhVien()` chỉ giải phóng `MaSo`; `HoTen` do `~Nguoi()` xử lý.
 
-## Định nghĩa lại phương thức
+## Định nghĩa lại phương thức (Method Redefinition)
 
 Lớp con khai báo phương thức cùng tên + cùng chữ ký để định nghĩa lại.
 
@@ -237,14 +239,14 @@ class Circle : public Point {
     double r;
 public:
     void set(int a, int b, double c) {
-        Point::set(a, b);    // tai su dung phan khoi tao cua cha
+        Point::set(a, b);    // tái sử dụng phần khởi tạo của cha
         r = c;
     }
     void print() { /* ... */ }
 };
 ```
 
-## Ràng buộc ngữ nghĩa ở lớp con
+## Ràng buộc ngữ nghĩa ở lớp con (Semantic Constraints in Subclasses)
 
 Đôi khi quan hệ kế thừa mang ý nghĩa **ràng buộc**: dữ liệu bị thu hẹp theo điều kiện.
 
@@ -273,7 +275,7 @@ public:
     Imag(const Complex &c)     : Complex(0, c.im) {}
 
     Imag& operator=(const Complex &c) {
-        re = 0;       // ep phan thuc ve 0 de giu rang buoc
+        re = 0;       // ép phần thực về 0 để giữ ràng buộc
         im = c.im;
         return *this;
     }
@@ -287,7 +289,7 @@ void main() {
     Imag i = 1;
     Complex z1(1, 1);
     Complex z3 = z1 - i;      // z3 = (1, 0)
-    i = Complex(5, 2);        // i = (0, 2) vi operator= ep re = 0
+    i = Complex(5, 2);        // i = (0, 2) vì operator= ép re = 0
     Imag j = z1;              // j = (0, 1)
 }
 ```
@@ -296,7 +298,7 @@ void main() {
 
 → Pattern tổng quát: phép toán có thể đặt giá trị vi phạm bất biến (gán, các phép thay đổi trạng thái) → đều phải định nghĩa lại ở lớp con.
 
-## Phạm vi truy xuất trong kế thừa
+## Phạm vi truy xuất trong kế thừa (Access Control in Inheritance)
 
 2 câu hỏi:
 
@@ -330,10 +332,10 @@ void A::h() { a = 7; b = 8; c = 9; }   // OK
 
 void main() {
     A x;
-    x.a = 10;   // LOI: a private
-    x.f();      // LOI: f() private
-    x.b = 20;   // LOI: b protected
-    x.g();      // LOI: g() protected
+    x.a = 10;   // LỖI: a private
+    x.f();      // LỖI: f() private
+    x.b = 20;   // LỖI: b protected
+    x.g();      // LỖI: g() protected
     x.c = 30;   // OK: c public
     x.h();      // OK: h() public
 }
@@ -344,7 +346,7 @@ void main() {
 ```cpp
 void SinhVien::Xuat() const {
     cout << "Sinh vien, ma so: " << MaSo
-         << ", ho ten: " << HoTen;  // LOI: HoTen private cua Nguoi
+         << ", ho ten: " << HoTen;  // LỖI: HoTen private của Nguoi
 }
 ```
 
@@ -365,13 +367,13 @@ public:
 ```cpp
 class Nguoi {
     friend class SinhVien;
-    friend class NuSinh;    // them lop con => phai sua lop cha
+    friend class NuSinh;    // thêm lớp con => phải sửa lớp cha
     char *HoTen;
     int  NamSinh;
 };
 
 class SinhVien : public Nguoi {
-    friend class NuSinh;    // them lan nua o lop trung gian
+    friend class NuSinh;    // thêm lần nữa ở lớp trung gian
     char *MaSo;
 };
 ```
@@ -451,7 +453,7 @@ void daughter::foo() {
     x = y = 20;                  // OK: protected -> protected
     set(5, 10);                  // OK: public -> public
     cout << "value of a " << a;  // OK
-    z = 100;                     // LOI: z private cua mother
+    z = 100;                     // LỖI: z private của mother
 }
 ```
 
@@ -466,10 +468,10 @@ public:
 };
 
 void son::foo() {
-    x = y = 20;                  // OK: protected -> private o son, trong than ham van OK
+    x = y = 20;                  // OK: protected -> private ở son, trong thân hàm vẫn OK
     set(5, 10);                  // OK
     cout << "value of b " << b;  // OK
-    z = 100;                     // LOI: z luon an
+    z = 100;                     // LỖI: z luôn ẩn
 }
 ```
 
@@ -477,7 +479,7 @@ Khác `daughter`: bên ngoài lớp `son`, không gọi được `son_obj.set()`
 
 → Trong OOP cơ bản, gần như luôn dùng **`public` inheritance** vì tương ứng quan hệ "là một".
 
-## Con trỏ và kế thừa
+## Con trỏ và kế thừa (Pointers in Inheritance)
 
 - Con trỏ lớp cơ sở **CÓ THỂ** trỏ đến đối tượng lớp dẫn xuất (vì lớp dẫn xuất "là một" lớp cơ sở).
 - Con trỏ lớp dẫn xuất **KHÔNG THỂ** trỏ đến đối tượng lớp cơ sở mà không ép kiểu tường minh.
@@ -485,13 +487,13 @@ Khác `daughter`: bên ngoài lớp `son`, không gọi được `son_obj.set()`
 
 ```cpp
 Nguoi*    p = new SinhVien;   // OK
-SinhVien* q = new Nguoi;      // LOI bien dich
+SinhVien* q = new Nguoi;      // LỖI biên dịch
 
 Nguoi*    r = new Nguoi;
-SinhVien* s = (SinhVien*) r;  // Ep duoc, nhung NGUY HIEM
+SinhVien* s = (SinhVien*) r;  // Ép được, nhưng NGUY HIỂM
 ```
 
-## Đa kế thừa
+## Đa kế thừa (Multiple Inheritance)
 
 ```cpp
 class A : public B, private C {
@@ -525,9 +527,9 @@ class ClassC : public BASE_A, public BASE_B {
 
 void main() {
     ClassC c;
-    c.a = 1;            // LOI mo ho: BASE_A::a hay BASE_B::a?
-    c.g();              // LOI mo ho
-    c.h();              // OK: chi BASE_A co h()
+    c.a = 1;            // LỖI mơ hồ: BASE_A::a hay BASE_B::a?
+    c.g();              // LỖI mơ hồ
+    c.h();              // OK: chỉ BASE_A có h()
 
     c.BASE_A::a = 1;    // OK
     c.BASE_B::g();      // OK
@@ -556,7 +558,7 @@ Giải: **kế thừa ảo** — `class B : virtual public A`, `class C : virtua
 
 → Đa kế thừa rất mạnh nhưng dễ phức tạp. Java/C# chỉ cho kế thừa đơn lớp + bù bằng interface.
 
-## Khi nào nên dùng kế thừa
+## Khi nào nên dùng kế thừa (When to Use Inheritance)
 
 - Quan hệ thực sự là "là một" (is-a), KHÔNG phải "có một" (has-a). `SinhVien` *là một* `Nguoi`: hợp lý. `Xe` *có một* `DongCo`: dùng thành phần.
 - Có dữ liệu / thao tác chung rõ ràng mà nhiều lớp con đều cần.

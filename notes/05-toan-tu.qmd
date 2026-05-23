@@ -2,7 +2,9 @@
 title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
 ---
 
-:::: {.callout-important title="Cram sheet"}
+## Cram sheet
+
+:::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/05.qmd >}}
 ::::
 
@@ -10,7 +12,7 @@ title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
 [Tải bản PDF in](05-toan-tu.pdf)
 :::
 
-## Khái niệm
+## Khái niệm (Concept)
 
 ::: {.callout-note title="Đa năng hóa toán tử (Operator Overloading)"}
 Các toán tử cho phép ta sử dụng cú pháp toán học đối với các kiểu dữ liệu của C++ thay vì gọi hàm (bản chất vẫn là gọi hàm). Ví dụ: thay `a.set(b.cong(c));` bằng `a = b + c;`.
@@ -34,7 +36,7 @@ Tương tự, đa năng hóa `>>` cho `PhanSo` → `cin >> A;` thay cho `A.Nhap(
 
 C++ chỉ cho phép overload trên ký hiệu đã có; KHÔNG tạo ký hiệu toán tử mới.
 
-## Cú pháp tổng quát
+## Cú pháp tổng quát (General Syntax)
 
 ```cpp
 KieuTraVe operator@(DanhSachThamSo);
@@ -65,7 +67,7 @@ public:
 
 → Toán hạng trái = `*this`; toán hạng còn lại truyền qua tham số.
 
-## Hàm thành phần vs hàm toàn cục
+## Hàm thành phần vs hàm toàn cục (Member vs Global Functions)
 
 **Hàm thành phần**: số tham số = số ngôi − 1. Toán hạng trái ngầm định là `*this`.
 
@@ -111,7 +113,7 @@ PhanSo operator+(int a, PhanSo b) {
 
 **BẮT BUỘC hàm toàn cục/`friend`**: `<<`, `>>` (toán hạng trái là `ostream&`/`istream&`, không thuộc lớp ta viết).
 
-## Toán tử nhập xuất `<<` và `>>`
+## Toán tử nhập xuất `<<` và `>>` (I/O Operators)
 
 `<<`, `>>` vốn là dịch bit. Thư viện chuẩn nạp chồng cho `ostream`/`istream`. `cout`/`cerr` ∈ `ostream`, `cin` ∈ `istream`.
 
@@ -288,7 +290,7 @@ Sau `aa = a;`:
 
 → Destructor chạy: cùng vùng nhớ bị `delete[]` 2 lần → hành vi không xác định (`Null pointer assignment`).
 
-## `operator=` đầy đủ
+## `operator=` đầy đủ (Full Assignment Operator)
 
 ```cpp
 String& String::operator=(const String& s) {
@@ -402,7 +404,7 @@ for (int i = 0; i < 2; i++)
 
 Trả về tham chiếu → `a(i, j)` dùng được cả 2 vế.
 
-## `++` / `--`: prefix vs postfix
+## `++` / `--`: prefix vs postfix (Increment and Decrement)
 
 Toán tử 1 ngôi cho kiểu đếm được. 2 cách dùng khác nhau về ngữ nghĩa trả về:
 
@@ -451,7 +453,7 @@ t1 = t++;       // t.operator++(int);   → t = 0:00:01, t1 = 0:00:00
 
 Postfix trả về **theo giá trị** (không tham chiếu) vì cần giữ lại bản sao trạng thái cũ → tốn hơn prefix một chút. Trong vòng lặp không cần giá trị cũ → ưu tiên `++i`.
 
-## Hạn chế của nạp chồng toán tử
+## Hạn chế của nạp chồng toán tử (Limitations)
 
 ::: {.callout-note title="Hạn chế"}
 - Không tạo toán tử **mới** (ký hiệu chưa có trong C++).
