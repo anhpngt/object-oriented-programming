@@ -49,6 +49,10 @@ format:
     monofont: "Noto Sans Mono"
     colorlinks: true
     listings: true
+    include-in-header:
+      text: |
+        \providecommand{\lstlistingname}{Mã nguồn}
+        \providecommand{\lstlistlistingname}{Danh sách mã nguồn}
 
 execute:
   freeze: auto
