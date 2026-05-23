@@ -1,10 +1,16 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- Đa hình (Polymorphism) là khả năng một lời gọi có nhiều cách thực thi khác nhau.
-- Đa hình tĩnh: quyết định lúc biên dịch, ví dụ nạp chồng hàm/toán tử.
-- Đa hình động: quyết định lúc chạy, dùng con trỏ/tham chiếu lớp cơ sở và hàm `virtual`.
-- Hàm thuần ảo (Pure virtual function): `virtual void f() = 0;`; lớp có hàm thuần ảo là lớp trừu tượng (Abstract class).
-- Khi xóa đối tượng dẫn xuất qua con trỏ lớp cơ sở, destructor lớp cơ sở nên là `virtual`.
-- Tránh object slicing: gán đối tượng dẫn xuất vào biến lớp cơ sở làm mất phần riêng của lớp dẫn xuất.
-- Cơ chế đa hình động: mỗi đối tượng có bảng phương thức ảo (vtable) chứa địa chỉ các hàm `virtual`. Lời gọi qua con trỏ lớp cơ sở sẽ tra bảng để chọn đúng phiên bản.
-- Từ khóa kích hoạt trong đề: "`virtual`", "bảng phương thức ảo", "pure virtual", "abstract class", "virtual destructor", "object slicing".
+- Đa hình (polymorphism): các đối tượng thuộc lớp khác nhau hiểu cùng một thông điệp theo cách khác nhau; xuất hiện khi có kế thừa, phương thức tổng quát ở lớp cơ sở nhưng nội dung cụ thể ở lớp dẫn xuất (ví dụ `Xuat()`, `draw()`, `tinhLuong()`).
+- Bài toán điển hình: quản lý mảng `Nguoi *a[N]` chứa cả `SinhVien`, `CongNhan`, `NuSinh`; gọi `a[i]->Xuat()` qua con trỏ lớp cơ sở thì mặc định gọi `Nguoi::Xuat`, không phải phiên bản lớp con.
+- Hai cách giải quyết trong chương: (1) vùng chọn kiểu (type-selector) dùng `enum` + `switch-case`; (2) phương thức ảo (`virtual`) - hướng đối tượng.
+- Vùng chọn kiểu: thêm trường `enum LOAI {NGUOI, SV, CN}` và biến `pl` vào lớp cơ sở, mỗi constructor lớp con gán giá trị riêng (`pl = SV`); hàm xử lý dùng `switch(an[i]->pl)` rồi ép kiểu `((SinhVien*)an[i])->Xuat()`.
+- Nhược điểm vùng chọn kiểu: mã dài dòng nhiều `switch`, dễ sai sót, khó nâng cấp/bảo trì - mỗi khi thêm kiểu mới phải sửa `switch` ở mọi nơi (vi phạm nguyên tắc mở-đóng).
+- Phương thức ảo: thêm từ khóa `virtual` trước khai báo hàm ở lớp cơ sở; con trỏ lớp cơ sở trỏ đến đối tượng lớp con sẽ gọi đúng phiên bản lớp con. Thêm lớp con mới không cần sửa hàm xử lý (`XuatDs` giữ nguyên).
+- Phương thức ảo CHỈ hoạt động qua con trỏ lớp cơ sở (theo slide; thực tế C++ chuẩn còn cho tham chiếu lớp cơ sở); gọi trên đối tượng giá trị vẫn dùng cài đặt của kiểu khai báo (kiểu tĩnh).
+- Đặc trưng `virtual`: chữ ký (kiểu trả về + tham số) ở lớp con phải khớp y hệt lớp cha; không cần lặp lại `virtual` ở lớp con (ghi cũng không sao); không được là hàm thành viên `static`; có thể là `friend` của lớp khác, nhưng hàm `friend` của lớp thì không thể là phương thức ảo.
+- Nếu chữ ký KHÔNG khớp (sơ suất đổi tham số), trình biên dịch xem như hàm khác - không override, gọi qua con trỏ cơ sở sẽ vẫn chạy phiên bản lớp cơ sở.
+- Cơ chế (vtable): mỗi đối tượng có thêm con trỏ tới bảng phương thức ảo của lớp; bảng chứa địa chỉ các hàm ảo, do trình biên dịch khởi tạo ngầm định lúc tạo đối tượng; lời gọi `p->Xuat()` tra vtable lúc chạy để chọn đúng hàm (kết nối động/dynamic binding).
+- Destructor ảo: khi `delete` đối tượng dẫn xuất qua con trỏ lớp cơ sở, nếu destructor lớp cơ sở không `virtual` thì chỉ destructor lớp cơ sở chạy, gây rò rỉ tài nguyên của lớp con; phải khai báo `virtual ~Nguoi()`.
+- Hàm thuần ảo (pure virtual): `virtual void draw() = 0;` - phương thức ảo không có nội dung (có thể có định nghĩa nhưng chỉ lớp con gọi được); đóng vai trò "chừa chỗ" để lớp con cài đặt.
+- Lớp trừu tượng (abstract class): lớp có ít nhất một hàm thuần ảo; KHÔNG tạo được đối tượng thuộc lớp này, nhưng vẫn tạo được con trỏ tới nó (`Shape *s;`). Lớp con của lớp trừu tượng có thể vẫn là lớp trừu tượng.
+- Lớp dẫn xuất phải cài đặt TẤT CẢ hàm thuần ảo của lớp cha mới tạo được đối tượng; nếu thiếu (ví dụ `Circle` định nghĩa `print()` thay vì `draw()`), lớp con vẫn là lớp trừu tượng.
+- Ví dụ chương: Hình học `Shape` (trừu tượng, `virtual void draw() = 0`) -> `Circle`, `Rectangle`, `Triangle`; Tính tiền lương `NhanVien` -> `NhanVienVanPhong` (`LCB + ngày*200000 + TC`), `NhanVienSanXuat` (`LCB + SP*2000`), `NhanVienQuanLy` (`LCB*HSCV + Thuong`) với `tinhLuong()` ảo.
+- Từ khóa kích hoạt trong đề: "`virtual`", "vùng chọn kiểu/`enum`+`switch`", "vtable", "destructor ảo", "hàm thuần ảo `= 0`", "lớp trừu tượng", "con trỏ lớp cơ sở".

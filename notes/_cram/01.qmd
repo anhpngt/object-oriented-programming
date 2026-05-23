@@ -1,9 +1,16 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- C++ là ngôn ngữ biên dịch, mở rộng từ C, hỗ trợ lập trình thủ tục, hướng đối tượng và tổng quát.
-- Nhớ cấu trúc chương trình: `#include`, `using namespace std;`, hàm `main()`, lệnh nhập xuất `cin`/`cout`.
-- Tham chiếu (Reference) là bí danh của biến, thường dùng để truyền tham số hiệu quả: `void f(int& x)`.
-- `const` dùng để bảo vệ dữ liệu không bị thay đổi; rất hay xuất hiện trong tham số, biến hằng, hàm thành viên hằng.
-- C++ cho phép nạp chồng hàm (Function overloading): cùng tên hàm nhưng khác danh sách tham số.
-- Cấp phát động: `new` đi với `delete`, `new[]` đi với `delete[]`; sai cặp dễ gây rò rỉ bộ nhớ.
-- Từ khóa kích hoạt trong đề: "tham chiếu", "`const`", "nạp chồng", "cấp phát động", "`namespace`", "biên dịch".
+- C++ là mở rộng của C, là ngôn ngữ lai: vừa lập trình thủ tục/cấu trúc, vừa hướng đối tượng (khác Smalltalk thuần OOP).
+- So sánh: lập trình cấu trúc tổ chức theo hàm/thủ tục, dữ liệu tách rời, trao đổi qua đối số và biến toàn cục; OOP tổ chức theo lớp, lớp gói cả dữ liệu lẫn phương thức, xem như mở rộng của `struct`.
+- Cấu trúc chương trình: `#include <iostream>`, `using namespace std;`, hàm `main()`, nhập xuất bằng `cin >>` và `cout <<`; xuống dòng dùng `endl`; định dạng cần `<iomanip>` (`setprecision`, `setw`).
+- Hằng dùng `const` đặt trước khai báo có khởi gán (`const int MAXSIZE = 1000;`), có thể khởi gán bằng giá trị trả về của hàm.
+- Ép kiểu hai dạng: `(Kiểu)biểu_thức` kiểu C và `Kiểu(biểu_thức)` kiểu hàm; khai báo biến có thể đặt bất kỳ chỗ nào trước khi dùng.
+- Toán tử phạm vi `::`: (1) truy cập biến toàn cục khi bị biến cục bộ che (`::x`), (2) chỉ rõ phương thức thuộc lớp khi định nghĩa ngoài lớp (`Kiểu Tên_lớp::Tên_hàm`), (3) dùng với `using std::cout;`.
+- Kiểu dữ liệu C++: đơn giản (`char`, `int`, `float`, `bool`, `enum`) và có cấu trúc (`array`, `struct`, `union`, `class`); thêm `pointer`, `reference`. Khai báo: `struct TS{...};`, `enum MAU{xanh, do, tim};`, `union {...};`, `typedef` để đặt tên kiểu mới (`typedef int MT[20][20];`).
+- Cấp phát động: `Kiểu *p = new Kiểu;` hoặc `new Kiểu[n]`; giải phóng bằng `delete p;` hoặc `delete[] pn;`; thất bại ném `std::bad_alloc` (hoặc trả `NULL` nếu dùng `new (std::nothrow)`; slide cũ ghi `NULL`).
+- Đối có giá trị mặc định: khởi gán trong prototype (không lặp lại trong định nghĩa), các đối mặc định phải nằm cuối danh sách; tham số thiếu khi gọi phải tính từ phải sang trái; có thể khởi gán bằng hằng, biến toàn cục, hàm.
+- Biến tham chiếu là bí danh của biến giá trị, không có địa chỉ riêng, dùng chung vùng nhớ; bắt buộc khởi gán khi khai báo (`int &y = x;`); không có mảng tham chiếu, nhưng được tham chiếu một phần tử mảng.
+- Truyền tham số 3 cách qua ví dụ `swap`: `swap1(int x, int y)` truyền giá trị (không đổi gốc), `swap2(int *x, int *y)` truyền con trỏ, `swap3(int &x, int &y)` truyền tham chiếu (đổi trực tiếp).
+- Con trỏ hàm: khai báo cùng kiểu trả về và bộ đối với hàm cần trỏ tới, gán bằng tên hàm. Ví dụ: `double (*f)(double); f = nhandoi;` rồi truyền vào `void tinh(double (*f)(double), double x)`.
+- Hàm `inline`: thay lời gọi bằng mã hàm để tăng tốc (bỏ thao tác cấp phát/truyền/giải phóng); chỉ dùng cho hàm nhỏ; không inline được hàm có `static`, đệ quy, vòng lặp, `goto`, `switch`.
+- Nạp chồng hàm (overloading): cùng tên, khác bộ đối về số lượng/thứ tự/kiểu; KHÔNG được chỉ khác kiểu trả về; trình biên dịch chọn hàm có bộ đối gần kiểu nhất, có thể ép kiểu để khớp.
+- Nạp chồng toán tử: dùng để thao tác trên kiểu tự định nghĩa (cấu trúc, mảng) một cách tự nhiên. Cú pháp `Kiểu_trả_về operator<Phép_toán>(đối số){...}`, ví dụ `PS operator+(PS p1, PS p2);`. Số đối tùy số toán hạng.
+- Từ khóa kích hoạt trong đề: "toán tử phạm vi `::`", "đối mặc định", "tham chiếu", "con trỏ hàm", "`inline`", "nạp chồng hàm/toán tử", "`new`/`delete`", "`typedef`".

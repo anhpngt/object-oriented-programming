@@ -1,9 +1,23 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- Kế thừa (Inheritance) tạo lớp dẫn xuất từ lớp cơ sở để tái sử dụng và mở rộng.
-- Cú pháp: `class Derived : public Base { ... };`.
-- `public` inheritance biểu diễn quan hệ "là một" (is-a). Ví dụ: `SinhVien` là một `Nguoi`.
-- Thành viên `private` của lớp cơ sở không truy cập trực tiếp từ lớp dẫn xuất; dùng `protected` khi muốn lớp con truy cập có kiểm soát.
-- Thứ tự gọi: constructor lớp cơ sở trước, constructor lớp dẫn xuất sau; destructor theo chiều ngược lại.
-- Có thể override hàm lớp cha ở lớp con; nếu cần đa hình động thì hàm lớp cha phải là `virtual`.
-- Từ khóa kích hoạt trong đề: "base/derived", "`public` inheritance", "`protected`", "constructor order", "is-a", "override".
+- Bốn loại quan hệ giữa các lớp đối tượng: một-một (1-1, ví dụ `LOPHOC`-`GIAOVIEN`), một-nhiều (1-n, `LOPHOC`-`HOCSINH`), nhiều-nhiều (n-n, `BACSI`-`BENHNHAN`), và đặc biệt hóa/tổng quát hóa (specialization/generalization) → cài đặt bằng kế thừa.
+- Kế thừa là cơ chế biểu diễn quan hệ đặc biệt hóa-tổng quát hóa, tổ chức lớp thành sơ đồ phân cấp (cây kế thừa); kế thừa cài đặt quan hệ "là một" (is-a), ví dụ "một sinh viên là một người".
+- Lợi ích: tái sử dụng mã, dễ nâng cấp, định nghĩa sự tương thích kiểu (cho phép chuyển kiểu tự động trong C++).
+- Cú pháp: `class Derived : public/protected/private Base { ... };`; lớp cơ sở = lớp cha/superclass, lớp dẫn xuất = lớp con/subclass.
+- Một lớp cha có thể có nhiều lớp con; một lớp có thể là dẫn xuất của nhiều lớp cơ sở (đa kế thừa); kế thừa không giới hạn ở một mức.
+- Truy xuất theo chiều dọc (lớp con truy xuất thành phần lớp cha) do lớp cha quyết định qua specifier: `private` cấm cả lớp con, `protected` cho phép lớp con-cháu nhưng cấm bên ngoài, `public` mở cho mọi nơi.
+- Thường dùng `protected` cho dữ liệu và `public` cho phương thức để vừa đóng gói vừa cho lớp con dùng; thay thế cho cách khai báo `friend class` từng lớp con (vốn phải sửa lại lớp cha mỗi khi thêm lớp con mới).
+- Truy xuất theo chiều ngang (kiểu kế thừa) - bảng tác động lên thành viên kế thừa:
+  - `public` inheritance: public→public, protected→protected, private→ẩn (không truy cập trực tiếp).
+  - `protected` inheritance: public→protected, protected→protected, private→ẩn.
+  - `private` inheritance: public→private, protected→private, private→ẩn.
+- Thành viên `private` của lớp cha luôn ẩn trong lớp con (chỉ truy cập gián tiếp qua hàm public/protected của lớp cha) bất kể kiểu kế thừa.
+- Phương thức thiết lập (constructor) của lớp cơ sở KHÔNG được kế thừa; constructor lớp cha luôn được gọi trước khi tạo đối tượng lớp con.
+- Nếu lớp cha không có constructor mặc định (chỉ có constructor có tham số), lớp con BẮT BUỘC phải gọi tường minh trong member-init list: `Derived(args) : Base(args) { ... }`; ngược lại constructor mặc định của cha tự động được gọi.
+- Hàm `friend` không được kế thừa.
+- Có thể override phương thức lớp cha ở lớp con (cùng signature); muốn gọi bản của cha từ lớp con dùng `Base::ham()`, từ đối tượng dùng `obj.Base::ham()`.
+- Phương thức hủy bỏ (destructor): destructor lớp con chạy trước, rồi tự động gọi destructor lớp cha; lớp con không được/không cần dọn dẹp dữ liệu của cha.
+- Con trỏ và kế thừa: con trỏ lớp cơ sở có thể trỏ tới đối tượng lớp dẫn xuất; chiều ngược lại không hợp lệ (phải ép kiểu tường minh, và có thể nguy hiểm).
+- Có thể ràng buộc ngữ nghĩa ở lớp con (ví dụ `Imag : public Complex` ép phần thực = 0) bằng cách định nghĩa lại các hàm có thể vi phạm (như `operator=`).
+- Đa kế thừa: `class C : public A, public B { ... };`; mọi đặc điểm kế thừa đơn vẫn áp dụng.
+- Nhập nhằng đa kế thừa (ambiguity): nếu A và B có thành viên cùng tên, `c.f()` hay `c.a` gây lỗi mơ hồ → giải bằng `::`: `c.A::f()`, `c.B::a`.
+- Bài toán kim cương (diamond): D kế thừa từ B và C, cả B và C cùng kế thừa từ A → D có 2 bản sao của A; khắc phục bằng kế thừa ảo `class B : virtual public A` và `class C : virtual public A` để chỉ còn 1 bản A trong D (ngoài slide, tham khảo).
+- Từ khóa kích hoạt trong đề: "is-a", "kế thừa public/protected/private", "đa kế thừa", "kim cương", "thứ tự constructor/destructor", "`Base(args)` trong member-init list", "`::`".

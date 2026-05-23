@@ -1,9 +1,17 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- Lớp (Class) là khuôn mẫu; đối tượng (Object) là thể hiện cụ thể của lớp.
-- Thuộc tính mô tả trạng thái; phương thức mô tả hành vi.
-- Đóng gói (Encapsulation): gom dữ liệu và hành vi vào một lớp, che giấu dữ liệu bằng `private`, cung cấp truy cập qua hàm thành viên.
-- Trừu tượng hóa (Abstraction): chỉ giữ đặc điểm quan trọng của đối tượng trong bài toán, bỏ qua chi tiết không cần thiết.
-- Kế thừa (Inheritance): lớp mới dùng lại và mở rộng lớp có sẵn.
-- Đa hình (Polymorphism): cùng một giao diện/lời gọi nhưng có thể có hành vi khác nhau tùy đối tượng.
-- Khi phân tích đề, tìm danh từ để gợi ý lớp/đối tượng, tìm động từ để gợi ý phương thức.
+- Tiến trình lập trình: không cấu trúc (Assembly/Basic, GOTO, biến toàn cục) -> có cấu trúc/thủ tục (Pascal, C; chương trình = cấu trúc dữ liệu + giải thuật, nhưng tách rời dữ liệu) -> hướng đối tượng (xoay quanh dữ liệu, gom dữ liệu + hành vi).
+- Lớp (Class) là khuôn mẫu; đối tượng (Object) là thể hiện cụ thể (instance) của lớp.
+- Thuộc tính (Attribute) mô tả trạng thái; thao tác/hành vi mô tả những gì đối tượng có thể làm.
+- Phân biệt Thao tác (Operation) vs Phương thức (Method): thao tác là hành vi trừu tượng khai báo ở lớp; phương thức là cài đặt cụ thể của thao tác đó. Cùng một thao tác có nhiều cài đặt khác nhau ở các lớp -> đa hình.
+- Đóng gói (Encapsulation): gom dữ liệu và hành vi liên quan vào một đơn vị, kèm che giấu thông tin (private) để bên ngoài không truy cập tự do vào chi tiết nội bộ.
+- Trừu tượng hóa (Abstraction): khái quát hóa tập đối tượng theo các đặc điểm được quan tâm, bỏ qua chi tiết không cần thiết; ánh xạ thực thể -> thuộc tính + hành động -> dữ liệu + hàm.
+- Kế thừa (Inheritance): lớp con dùng lại thuộc tính/thao tác của lớp cha; cài đặt quan hệ đặc biệt hóa ("là") và khái quát hóa.
+- Đa hình (Polymorphism): cùng tên thao tác/thuộc tính được định nghĩa ở nhiều lớp với cài đặt khác nhau.
+- Sơ đồ đối tượng = sơ đồ lớp (hình chữ nhật 3 phần: tên lớp / thuộc tính / thao tác) + sơ đồ thể hiện (giá trị cụ thể của một instance).
+- Mục tiêu thiết kế OOP: tái sử dụng (reusability), mở rộng (extensibility - plug-in/add-in), mềm dẻo/linh hoạt (flexibility - thay đổi cục bộ, ít ảnh hưởng toàn hệ thống).
+- OOA (Phân tích hướng đối tượng) 5 bước: (B1) định nghĩa bài toán, (B2) đặc tả yêu cầu người dùng/hệ thống, (B3) xác định đối tượng + thuộc tính (danh từ trong văn bản, dữ liệu trong DFD), (B4) xác định hành vi (động từ, xử lý trong DFD), (B5) xác định quan hệ giữa các đối tượng.
+- OOD (Thiết kế hướng đối tượng) 6 bước theo hướng Bottom-Up: (B1) đối tượng trong không gian lời giải, (B2) đặc tả lớp + quan hệ (kế thừa, thành phần, sử dụng), (B3) cấu trúc phân cấp lớp (tổng quát hóa), (B4) thiết kế lớp (hàm quản lý/cài đặt/truy nhập/xử lý lỗi), (B5) thiết kế hàm thành phần dùng Top-Down (tuần tự, tuyển chọn, vòng lặp), (B6) thiết kế chương trình chính.
+- 5 nguyên lý SOLID: SRP (Single Responsibility), OCP (Open-Closed - mở để mở rộng, đóng với sửa đổi), LSP (Liskov Substitution - lớp con thay thế được lớp cha), ISP (Interface Segregation - nhiều interface chuyên biệt hơn một interface tổng quát), DIP (Dependency Inversion - phụ thuộc vào trừu tượng, không phụ thuộc vào cài đặt cụ thể).
+- OOP (cài đặt): tổ chức theo lớp gồm dữ liệu + phương thức; dữ liệu bao bọc, các đối tượng trao đổi qua hàm (message passing); chương trình thiết kế theo Bottom-Up; dễ bổ sung dữ liệu/hàm mới.
+- Ưu điểm OOP: kế thừa loại bỏ lặp lại và mở rộng lớp có sẵn; đóng gói/che giấu thông tin tránh ảnh hưởng chéo; mô phỏng thế giới thực tốt hơn; hệ thống dễ mở rộng nâng cấp.
+- Khi phân tích đề: danh từ -> lớp/đối tượng/thuộc tính; động từ -> thao tác/phương thức; quan hệ giữa thực thể -> kế thừa/thành phần/sử dụng.
+- Từ khóa kích hoạt trong đề: SOLID, OOA, OOD, Bottom-Up, Top-Down, sơ đồ lớp, sơ đồ thể hiện, thao tác vs phương thức.

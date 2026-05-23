@@ -10,114 +10,566 @@ title: "Chương 06 - Tính kế thừa (Inheritance)"
 [Tải bản PDF in](06-ke-thua.pdf)
 :::
 
-## Quan hệ giữa các lớp (Relationships Between Classes)
+## Quan hệ giữa các lớp đối tượng (Relationships Between Classes)
 
-Trước khi học kế thừa, slide gốc liệt kê bốn loại quan hệ giữa các lớp đối tượng:
+Trước khi giới thiệu kế thừa, slide gốc liệt kê bốn loại quan hệ cơ bản giữa các lớp đối tượng. Mỗi loại quan hệ gợi ý một cách cài đặt khác nhau trong C++; chỉ có một loại quan hệ tự nhiên dẫn đến kế thừa.
 
-- **Một - một (1-1)**: mỗi đối tượng lớp này gắn với đúng một đối tượng lớp kia. Ví dụ `LopHoc - GiaoVien` (chủ nhiệm), `Vo - Chong` (hôn nhân).
-- **Một - nhiều (1-n)**: một đối tượng lớp này gắn với nhiều đối tượng lớp kia, nhưng mỗi đối tượng lớp kia chỉ thuộc về một đối tượng lớp này. Ví dụ `LopHoc - HocSinh`, `CongTy - NhanVien`.
-- **Nhiều - nhiều (n-n)**: hai phía đều có nhiều. Ví dụ `BacSi - BenhNhan` (khám bệnh), sinh viên - môn học.
-- **Đặc biệt hóa - tổng quát hóa**: lớp này là trường hợp đặc biệt của lớp kia. Ví dụ `TamGiacCan` là trường hợp đặc biệt của `TamGiac`; `SinhVien` là trường hợp đặc biệt của `Nguoi`. Chính quan hệ này là cơ sở của **kế thừa**.
+### Quan hệ một - một (1-1)
 
-Ba quan hệ đầu thường được cài bằng thành phần (composition) hoặc tham chiếu giữa các đối tượng. Chỉ quan hệ thứ tư mới hợp lý để dùng kế thừa.
+Hai lớp gọi là có quan hệ một - một khi mỗi đối tượng của lớp này gắn với đúng một đối tượng của lớp kia, và ngược lại. Ví dụ:
+
+- `LOPHOC` - `GIAOVIEN` qua quan hệ "chủ nhiệm": mỗi lớp học có đúng một giáo viên chủ nhiệm, và mỗi giáo viên (trong vai trò chủ nhiệm) phụ trách đúng một lớp.
+- `VO` - `CHONG` qua quan hệ "hôn nhân".
+- `COUNTRY` - `CAPITAL` qua quan hệ "có thủ đô".
+
+### Quan hệ một - nhiều (1-n)
+
+Một đối tượng lớp này gắn với nhiều đối tượng lớp kia, nhưng mỗi đối tượng lớp kia chỉ thuộc về đúng một đối tượng lớp này. Ví dụ:
+
+- `LOPHOC` - `HOCSINH`: một lớp có nhiều học sinh, mỗi học sinh thuộc đúng một lớp.
+- `CONGTY` - `NHANVIEN`: một công ty có nhiều nhân viên.
+- `HOASI` - `TACPHAM` qua quan hệ "sáng tác".
+
+### Quan hệ nhiều - nhiều (n-n)
+
+Cả hai phía đều có thể gắn với nhiều đối tượng phía bên kia. Ví dụ:
+
+- `BACSI` - `BENHNHAN` qua quan hệ "khám bệnh": một bác sĩ khám nhiều bệnh nhân, một bệnh nhân cũng có thể được nhiều bác sĩ khám.
+- Sinh viên - môn học (qua đăng ký học).
+- `NAM` - `NU` qua quan hệ "yêu" (ví dụ vui trong slide).
+
+### Quan hệ đặc biệt hóa - tổng quát hóa (Specialization - Generalization)
+
+Lớp này là trường hợp đặc biệt của lớp kia; ngược lại, lớp kia là dạng tổng quát hóa của lớp này. Ví dụ:
+
+- `TAMGIACCAN` là trường hợp đặc biệt của `TAMGIAC`.
+- `SINHVIEN` là trường hợp đặc biệt của `NGUOI`.
+- Trong động vật: `TerrestrialAnimal` và `AquaticAnimal` đều là trường hợp đặc biệt của `Animal`; `Cat`, `Horse`, `Chicken` lại là trường hợp đặc biệt của `TerrestrialAnimal`.
+
+Chính quan hệ đặc biệt hóa - tổng quát hóa là cơ sở để dùng **kế thừa**. Ba quan hệ đầu (1-1, 1-n, n-n) thường được cài đặt bằng thành phần (composition) hoặc tham chiếu giữa các đối tượng - không phải bằng kế thừa.
 
 ## Khái niệm kế thừa (Inheritance Concept)
 
-Kế thừa (Inheritance) là cơ chế cho phép xây dựng lớp mới từ lớp đã có. Lớp đã có gọi là lớp cơ sở (Base class), lớp mới gọi là lớp dẫn xuất (Derived class).
+Kế thừa là cơ chế ngôn ngữ dùng để biểu diễn quan hệ đặc biệt hóa - tổng quát hóa giữa các lớp. Các lớp có đặc điểm tương tự được tổ chức thành một sơ đồ phân cấp (cây kế thừa). Đây là một mức trừu tượng cao hơn việc đóng gói: ta gom các lớp liên quan thành một mức khái quát hóa chung.
 
-Mục tiêu chính của kế thừa là tái sử dụng phần chung và mở rộng phần riêng. Ví dụ `GiangVien` và `SinhVien` đều có họ tên, ngày sinh, địa chỉ, nên có thể kế thừa từ lớp `Nguoi`.
+Kế thừa thường dùng để biểu diễn quan hệ "là một" (is-a):
 
-## Cú pháp kế thừa (Inheritance Syntax)
+- Một sinh viên **là một** người.
+- Một hình tròn **là một** hình ellipse.
+- Một tam giác **là một** đa giác.
+
+Trong C++:
+
+- Lớp đã có gọi là **lớp cha** (superclass) hoặc **lớp cơ sở** (base class).
+- Lớp mới gọi là **lớp con** (subclass) hoặc **lớp dẫn xuất** (derived class).
+
+Kế thừa cho phép:
+
+- Nhiều lớp con dẫn xuất từ cùng một lớp cơ sở.
+- Một lớp con dẫn xuất từ nhiều lớp cơ sở (đa kế thừa).
+- Một lớp dẫn xuất có thể tiếp tục là lớp cơ sở cho lớp khác - kế thừa không bị giới hạn ở một mức.
+
+### Lợi ích của kế thừa
+
+- Xây dựng lớp mới từ lớp đã có mà không phải viết lại phần chung.
+- Tổ chức các lớp chia sẻ mã chương trình chung, dễ sửa chữa và nâng cấp.
+- Trong C++, kế thừa định nghĩa sự tương thích kiểu, mở đường cho cơ chế chuyển kiểu tự động giữa lớp cơ sở và lớp dẫn xuất.
+
+## Cú pháp khai báo kế thừa
+
+```cpp
+class SuperClass {
+    // Thanh phan cua lop co so
+};
+
+class DerivedClass : public/protected/private SuperClass {
+    // Thanh phan bo sung cua lop dan xuat
+};
+```
+
+Ví dụ:
+
+```cpp
+class TamGiac {
+    // ...
+};
+
+class TamGiacCan : public TamGiac {
+    // ...
+};
+```
+
+Lớp `TamGiacCan` kế thừa toàn bộ thành phần của `TamGiac`, sau đó có thể bổ sung hoặc định nghĩa lại.
+
+## Kế thừa đơn - Ví dụ Nguoi/SinhVien
+
+Slide gốc dùng cặp lớp `Nguoi` và `SinhVien` để minh họa kế thừa đơn. Đây là ví dụ chạy xuyên suốt cả chương.
+
+```cpp
+class Nguoi {
+    char *HoTen;
+    int NamSinh;
+public:
+    Nguoi();
+    Nguoi(const char *ht, int ns) : NamSinh(ns) {
+        HoTen = new char[strlen(ht) + 1];
+        strcpy(HoTen, ht);
+    }
+    ~Nguoi() { delete[] HoTen; }
+    void An() const  { cout << HoTen << " an 3 chen com\n"; }
+    void Ngu() const { cout << HoTen << " ngu ngay 8 tieng\n"; }
+    void Xuat() const;
+    friend ostream& operator<<(ostream &os, Nguoi &p);
+};
+
+class SinhVien : public Nguoi {
+    char *MaSo;
+public:
+    SinhVien();
+    SinhVien(const char *ht, const char *ms, int ns) : Nguoi(ht, ns) {
+        MaSo = new char[strlen(ms) + 1];
+        strcpy(MaSo, ms);
+    }
+    ~SinhVien() { delete[] MaSo; }
+    void Xuat() const;
+};
+```
+
+Định nghĩa các hàm `Xuat()`:
+
+```cpp
+void Nguoi::Xuat() const {
+    cout << "Nguoi, ho ten: " << HoTen
+         << " sinh " << NamSinh << endl;
+}
+
+void SinhVien::Xuat() const {
+    cout << "Sinh vien, ma so: " << MaSo << endl;
+}
+```
+
+Cách dùng:
+
+```cpp
+void main() {
+    Nguoi    p1("Le Van Nhan", 1980);
+    SinhVien s1("Vo Vien Sinh", "200002541", 1984);
+
+    p1.An();   s1.An();          // s1 ke thua An() tu Nguoi
+    p1.Xuat(); s1.Xuat();        // s1 dung ban Xuat() cua SinhVien
+    s1.Nguoi::Xuat();            // goi tuong minh ban Xuat() cua Nguoi
+}
+```
+
+Hai điểm đáng chú ý trong ví dụ:
+
+- `s1.An()` chạy được vì `SinhVien` kế thừa phương thức `An()` từ `Nguoi`. Không phải khai báo lại.
+- `s1.Nguoi::Xuat()` cho phép gọi tường minh phiên bản `Xuat()` của lớp cha trên đối tượng lớp con. Cú pháp này hữu ích khi lớp con đã định nghĩa lại `Xuat()` nhưng vẫn muốn truy cập bản gốc.
+
+## Những gì lớp con kế thừa từ lớp cha
+
+Khi khai báo `class SinhVien : public Nguoi`, đối tượng `SinhVien` tự động có:
+
+- **Về mặt dữ liệu**: các thành phần dữ liệu của `Nguoi` (`HoTen`, `NamSinh`) - mỗi đối tượng `SinhVien` có chứa phần dữ liệu của một `Nguoi` bên trong.
+- **Về mặt thao tác**: các phương thức của `Nguoi` được kế thừa, cho phép dùng lại mã chương trình. Khả năng này có thể truyền qua vô hạn mức (lớp con của lớp con vẫn kế thừa lên đến lớp gốc).
+
+Tuy nhiên có hai ngoại lệ quan trọng:
+
+### Phương thức thiết lập (constructor) không được kế thừa
+
+Constructor của lớp cha **không** trở thành constructor của lớp con. Lớp con phải tự khai báo constructor của riêng nó, và trong member-init list có thể chỉ định constructor nào của cha sẽ được gọi.
+
+Constructor của lớp cơ sở **luôn** được gọi mỗi khi tạo đối tượng lớp dẫn xuất, theo thứ tự: constructor lớp cha chạy trước, rồi đến constructor lớp con.
+
+**Ví dụ 1**: lớp cha có constructor mặc định, lớp con không chỉ định.
+
+```cpp
+class A {
+public:
+    A()        { cout << "A:default" << endl; }
+    A(int a)   { cout << "A:parameter" << endl; }
+};
+
+class B : public A {
+public:
+    B(int a) { cout << "B" << endl; }
+};
+
+B test(1);
+// Output:
+//   A:default
+//   B
+```
+
+Constructor mặc định `A()` được tự động gọi vì `B(int)` không nói gì khác.
+
+**Ví dụ 2**: chỉ định tường minh constructor có tham số của cha.
+
+```cpp
+class C : public A {
+public:
+    C(int a) : A(a) { cout << "C" << endl; }
+};
+
+C test(1);
+// Output:
+//   A:parameter
+//   C
+```
+
+Quy tắc quan trọng: nếu lớp cha **không có constructor mặc định** (tức là chỉ có constructor có tham số), lớp con **bắt buộc** phải gọi tường minh một constructor phù hợp của cha trong member-init list:
+
+```cpp
+class Derived : public Base {
+public:
+    Derived(int x, int y) : Base(x) {
+        // ...
+    }
+};
+```
+
+### Hàm `friend` không được kế thừa
+
+Một hàm được khai báo `friend` của lớp cha không tự động trở thành `friend` của lớp con. Quan hệ bạn bè không truyền theo dòng kế thừa. Nếu lớp con cần một hàm có quyền truy cập tương đương, phải khai báo `friend` lại trong lớp con.
+
+### Destructor
+
+Khi đối tượng lớp con bị hủy, destructor lớp con chạy trước, rồi C++ **tự động** gọi destructor lớp cha. Lớp con không cần (và không được phép) dọn dẹp các thành phần thuộc lớp cha - lớp cha tự lo phần đó.
+
+Đây là lý do destructor `~SinhVien()` chỉ giải phóng `MaSo`, còn `HoTen` do `~Nguoi()` xử lý.
+
+## Định nghĩa lại phương thức ở lớp con (Method Redefinition)
+
+Lớp con có thể định nghĩa lại phương thức đã có ở lớp cha bằng cách khai báo phương thức cùng tên và cùng chữ ký.
+
+```cpp
+class SinhVien : public Nguoi {
+    char *MaSo;
+public:
+    // ...
+    void Xuat() const;          // dinh nghia lai Xuat() cua Nguoi
+};
+
+void SinhVien::Xuat() const {
+    cout << "Sinh vien, ma so: " << MaSo;
+}
+```
+
+(Lưu ý: với khai báo `Nguoi` hiện tại, `HoTen` là `private` nên `SinhVien::Xuat()` không truy cập trực tiếp được. Cách mở quyền cho lớp con sẽ bàn ở mục "Phạm vi truy xuất trong kế thừa" bên dưới.)
+
+Khi gọi `s1.Xuat()` trên đối tượng `SinhVien`, phiên bản của `SinhVien` được dùng. Khi muốn gọi tường minh bản của lớp cha, dùng cú pháp `Base::method()`:
+
+- Từ trong hàm thành phần của lớp con: `Nguoi::Xuat()`.
+- Từ đối tượng bên ngoài: `s1.Nguoi::Xuat()`.
+
+Ví dụ cụ thể trong slide với cặp `Point`/`Circle`:
+
+```cpp
+class Point {
+protected:
+    int x, y;
+public:
+    void set(int a, int b) { x = a; y = b; }
+    void foo();
+    void print();
+};
+
+class Circle : public Point {
+    double r;
+public:
+    void set(int a, int b, double c) {
+        Point::set(a, b);    // goi tuong minh set() cua Point
+        r = c;
+    }
+    void print() { /* ... */ }
+};
+```
+
+Lớp `Circle` định nghĩa lại `set()` (với chữ ký khác) và `print()` (cùng chữ ký). Bên trong `Circle::set()` ta gọi `Point::set(a, b)` để tái sử dụng phần khởi tạo của cha thay vì viết lại.
+
+::: {.callout-note}
+Slide chương 6 chỉ nói "lớp dẫn xuất có thể override các phương thức đã được định nghĩa ở lớp cha". Cơ chế đa hình động qua từ khóa `virtual` (cho phép lời gọi qua con trỏ lớp cha gọi đúng bản của lớp con thật sự) thuộc về Chương 07.
+:::
+
+## Ràng buộc ngữ nghĩa ở lớp con
+
+Đôi khi quan hệ kế thừa mang ý nghĩa **ràng buộc**: đối tượng lớp con vẫn là đối tượng lớp cha, nhưng dữ liệu bị thu hẹp theo một điều kiện. Ví dụ:
+
+- Hình tròn là Ellipse với ràng buộc hai bán kính bằng nhau.
+- Số ảo là số phức với ràng buộc phần thực bằng 0.
+
+Khi áp ràng buộc như vậy, lớp con phải định nghĩa lại các hàm thành phần có thể vi phạm bất biến.
+
+### Ví dụ: lớp `Imag` kế thừa `Complex`
+
+```cpp
+class Complex {
+    friend ostream& operator<<(ostream&, Complex);
+    friend class Imag;
+    double re, im;
+public:
+    Complex(double r = 0, double i = 0) : re(r), im(i) {}
+    Complex operator+(Complex b);
+    Complex operator-(Complex b);
+    Complex operator*(Complex b);
+    Complex operator/(Complex b);
+    double  Norm() const { return sqrt(re*re + im*im); }
+};
+
+class Imag : public Complex {
+public:
+    Imag(double i = 0)         : Complex(0, i)    {}
+    Imag(const Complex &c)     : Complex(0, c.im) {}
+
+    Imag& operator=(const Complex &c) {
+        re = 0;       // ep phan thuc ve 0 de giu rang buoc
+        im = c.im;
+        return *this;
+    }
+
+    double Norm() const { return fabs(im); }
+};
+```
+
+Sử dụng:
+
+```cpp
+void main() {
+    Imag i = 1;
+    Complex z1(1, 1);
+    Complex z3 = z1 - i;      // z3 = (1, 0)
+    i = Complex(5, 2);        // i la so ao (0, 2) vi operator= ep re = 0
+    Imag j = z1;              // j la so ao (0, 1)
+}
+```
+
+Lớp `Imag` kế thừa hầu hết phép toán từ `Complex`, nhưng `operator=` phải được định nghĩa lại để ép `re = 0`. Nếu không, dòng `i = Complex(5, 2)` sẽ phá ràng buộc "phần thực = 0" của số ảo.
+
+Pattern này tổng quát: bất kỳ phép toán nào có thể đặt giá trị vi phạm bất biến (phép gán, các phép thay đổi trạng thái) đều phải được định nghĩa lại ở lớp con.
+
+## Phạm vi truy xuất trong kế thừa
+
+Khi kế thừa, tính đóng gói và che giấu thông tin vẫn phải được giữ. Có hai câu hỏi cần trả lời:
+
+- **Truy xuất theo chiều dọc**: hàm thành phần của lớp con có quyền truy cập thành phần của lớp cha hay không?
+- **Truy xuất theo chiều ngang**: sau khi kế thừa, thế giới bên ngoài có quyền truy cập thành phần (kế thừa từ cha) thông qua đối tượng lớp con hay không?
+
+### Truy xuất theo chiều dọc
+
+Truy xuất theo chiều dọc do **lớp cha quyết định**, qua thuộc tính truy cập đặt cho từng thành phần:
+
+- `public`: ai cũng truy cập được - bên ngoài, lớp con, hàm bạn.
+- `protected`: bên ngoài cấm; lớp con và lớp cháu (kế thừa nhiều mức) được truy cập; hàm bạn được truy cập.
+- `private`: chỉ hàm thành phần của chính lớp đó và hàm bạn được truy cập. **Lớp con cũng không có quyền.**
+
+Ví dụ minh họa trên lớp `A`:
+
+```cpp
+class A {
+private:
+    int a;
+    void f();
+protected:
+    int b;
+    void g();
+public:
+    int c;
+    void h();
+};
+
+// Trong hàm thành phần của A, ca a, b, c deu truy cap duoc.
+void A::f() { a = 1; b = 2; c = 3; }   // OK
+void A::g() { a = 4; b = 5; c = 6; }   // OK
+void A::h() { a = 7; b = 8; c = 9; }   // OK
+```
+
+Nhưng bên ngoài lớp `A`:
+
+```cpp
+void main() {
+    A x;
+    x.a = 10;   // Loi: a la private
+    x.f();      // Loi: f() la private
+    x.b = 20;   // Loi: b la protected
+    x.g();      // Loi: g() la protected
+    x.c = 30;   // OK: c la public
+    x.h();      // OK: h() la public
+}
+```
+
+### Ví dụ private chặn lớp con
+
+Trong cặp `Nguoi`/`SinhVien` ban đầu, `HoTen` và `NamSinh` là `private`, nên đoạn mã sau ở lớp con báo lỗi biên dịch:
+
+```cpp
+void SinhVien::Xuat() const {
+    cout << "Sinh vien, ma so: " << MaSo
+         << ", ho ten: " << HoTen;  // LOI: HoTen la private cua Nguoi
+}
+```
+
+### Workaround: dùng `friend class` (kém tốt)
+
+Một cách khắc phục là khai báo lớp con là bạn của lớp cha:
+
+```cpp
+class Nguoi {
+    friend class SinhVien;
+    char *HoTen;
+    int  NamSinh;
+public:
+    // ...
+};
+```
+
+Khi đó `SinhVien` truy cập trực tiếp được `HoTen` và `NamSinh`. Nhưng cách này có nhược điểm rõ ràng: **mỗi khi thêm một lớp con mới, phải sửa lại lớp cha** (và mọi lớp ở cấp cao hơn) để bổ sung `friend class`. Nếu cây kế thừa lớn, đây là gánh nặng bảo trì.
+
+```cpp
+class Nguoi {
+    friend class SinhVien;
+    friend class NuSinh;    // them lop con => phai sua lai lop cha
+    char *HoTen;
+    int  NamSinh;
+public:
+    // ...
+};
+
+class SinhVien : public Nguoi {
+    friend class NuSinh;    // them mot lan nua o lop trung gian
+    char *MaSo;
+public:
+    // ...
+};
+```
+
+Cách này không đảm bảo tính đóng gói tốt. Đây chính là động lực để C++ đưa ra mức truy cập `protected`.
+
+### Giải pháp tốt hơn: `protected`
+
+Đặt dữ liệu cần lớp con dùng ở `protected`:
 
 ```cpp
 class Nguoi {
 protected:
-    string hoTen;
+    char *HoTen;
+    int  NamSinh;
 public:
-    void nhap();
-    void xuat() const;
+    // ...
 };
 
 class SinhVien : public Nguoi {
-private:
-    string maSV;
+protected:
+    char *MaSo;
 public:
-    void nhapSinhVien();
+    SinhVien(const char *ht, const char *ms, int ns) : Nguoi(ht, ns) {
+        MaSo = new char[strlen(ms) + 1];
+        strcpy(MaSo, ms);
+    }
+    ~SinhVien() { delete[] MaSo; }
+    void Xuat() const;
+};
+
+class NuSinh : public SinhVien {
+public:
+    NuSinh(const char *ht, const char *ms, int ns) : SinhVien(ht, ms, ns) {}
+    void An() const {
+        cout << HoTen << " ma so " << MaSo << " an 2 to pho";
+        // Truy cap duoc Nguoi::HoTen va SinhVien::MaSo
+    }
 };
 ```
 
-Với `public` inheritance, các thành viên `public` của lớp cơ sở vẫn là `public` ở lớp dẫn xuất, còn `protected` vẫn là `protected`. Hai dạng kế thừa khác (`protected`, `private`) làm thay đổi mức truy cập - xem bảng trong mục [Phạm vi truy xuất](#phạm-vi-truy-xuất-trong-kế-thừa-access-specifiers-in-inheritance) bên dưới.
+Bây giờ thêm lớp con `NuSinh` không cần sửa `Nguoi` hay `SinhVien`. Tính đóng gói vẫn được bảo toàn vì thế giới bên ngoài không thấy `HoTen`, `MaSo`.
 
-## Quan hệ is-a (Is-A Relationship)
+Quy ước thường dùng: **`protected` cho dữ liệu, `public` cho phương thức**. Tuy nhiên không nên đẩy mọi thứ lên `protected` chỉ vì tiện; nếu có thể, lớp cha nên cung cấp hàm `public` hoặc `protected` có kiểm soát để bảo vệ bất biến dữ liệu.
 
-Kế thừa công khai nên biểu diễn quan hệ "là một" (is-a). Nếu có thể nói "`SinhVien` là một `Nguoi`" thì kế thừa có thể hợp lý. Nếu chỉ là "có một" (has-a), nên dùng thành phần đối tượng thay vì kế thừa.
+### Truy xuất theo chiều ngang
 
-Ví dụ `Xe` có một `DongCo`, không nên nói `Xe` kế thừa từ `DongCo`.
+Truy xuất theo chiều ngang do **lớp con quyết định**, qua **kiểu kế thừa** (`public`, `protected`, `private` đặt trước tên lớp cha). Kiểu kế thừa tác động lên mức truy cập của các thành viên kế thừa khi nhìn từ bên ngoài đối tượng lớp con.
 
-## Phạm vi truy xuất trong kế thừa (Access Specifiers in Inheritance)
-
-Thành viên `private` của lớp cơ sở không bao giờ truy cập trực tiếp được từ lớp dẫn xuất (dù dùng dạng kế thừa nào). Nếu muốn lớp con dùng trực tiếp một thành viên nhưng vẫn che giấu với bên ngoài, lớp cơ sở phải đặt thành viên đó ở `protected`.
-
-C++ có ba dạng kế thừa, tổ hợp với ba mức truy cập của thành viên cho bảng sau:
+Bảng tác động đầy đủ:
 
 | Thành viên lớp cơ sở | `public` inheritance | `protected` inheritance | `private` inheritance |
 |---|---|---|---|
 | `public` | `public` ở lớp con | `protected` ở lớp con | `private` ở lớp con |
 | `protected` | `protected` ở lớp con | `protected` ở lớp con | `private` ở lớp con |
-| `private` | Không truy cập trực tiếp | Không truy cập trực tiếp | Không truy cập trực tiếp |
+| `private` | Ẩn (truy cập gián tiếp) | Ẩn (truy cập gián tiếp) | Ẩn (truy cập gián tiếp) |
 
-Cách đọc: kế thừa `public` giữ nguyên mức truy cập (trừ `private` luôn ẩn). Kế thừa `protected` và `private` làm "hạ cấp" các thành viên `public` và `protected` của lớp cơ sở.
+Cách đọc:
 
-Trong giáo trình OOP cơ bản, gần như luôn dùng `public` inheritance vì nó tương ứng với quan hệ "là một". `protected` và `private` inheritance dùng cho các kỹ thuật cài đặt nâng cao hơn.
+- Kế thừa `public` giữ nguyên mức truy cập (trừ `private` luôn ẩn).
+- Kế thừa `protected` hạ `public` của cha xuống `protected` ở con; còn lại như cũ.
+- Kế thừa `private` hạ cả `public` và `protected` của cha xuống `private` ở con.
 
-Không nên đưa mọi dữ liệu lên `protected` chỉ vì tiện. Nếu có thể, lớp cơ sở nên cung cấp hàm `public` hoặc `protected` có kiểm soát để bảo vệ bất biến dữ liệu.
+Trong **mọi** kiểu kế thừa, thành viên `private` của lớp cha luôn **ẩn** trong lớp con: lớp con không truy cập trực tiếp được, chỉ có thể truy cập gián tiếp qua các hàm `public` hoặc `protected` mà lớp cha cung cấp.
 
-## Constructor và destructor trong kế thừa (Constructors and Destructors in Inheritance)
-
-Khi tạo đối tượng lớp dẫn xuất, constructor lớp cơ sở chạy trước, sau đó constructor lớp dẫn xuất chạy. Khi hủy đối tượng, thứ tự ngược lại: destructor lớp dẫn xuất chạy trước, rồi destructor lớp cơ sở.
-
-```cpp
-class SinhVien : public Nguoi {
-public:
-    SinhVien() : Nguoi() {
-        // khoi tao phan rieng cua SinhVien
-    }
-};
-```
-
-Nếu lớp cơ sở không có constructor mặc định, lớp dẫn xuất phải gọi constructor phù hợp của lớp cơ sở trong danh sách khởi tạo.
-
-## Ghi đè phương thức (Method Overriding)
-
-Lớp dẫn xuất có thể định nghĩa lại phương thức có cùng tên và chữ ký với lớp cơ sở. Cần phân biệt hai trường hợp:
-
-- **Che giấu (redefinition / hiding)**: nếu phương thức lớp cơ sở **không** `virtual`, lớp con chỉ "che" phiên bản kia. Lời gọi qua con trỏ lớp cơ sở vẫn chạy bản của lớp cơ sở (đa hình tĩnh, dispatch theo kiểu khai báo).
-- **Ghi đè (override)**: nếu phương thức lớp cơ sở **là** `virtual`, lời gọi qua con trỏ hoặc tham chiếu lớp cơ sở sẽ chạy bản của lớp đối tượng thực tế. Đây là đa hình động (xem [Chương 07](07-da-hinh.qmd)).
+### Ví dụ kế thừa `public` (daughter)
 
 ```cpp
-class NhanVien {
+class mother {
+protected:
+    int x, y;
 public:
-    virtual double tinhLuong() const;     // virtual -> co the override
+    void set(int a, int b);
+private:
+    int z;
 };
 
-class NhanVienVanPhong : public NhanVien {
+class daughter : public mother {
+private:
+    double a;
 public:
-    double tinhLuong() const override;    // override la tu khoa C++11
+    void foo();
 };
+
+void daughter::foo() {
+    x = y = 20;                  // OK: x, y protected -> protected o daughter
+    set(5, 10);                  // OK: set() public -> public
+    cout << "value of a " << a;  // OK: a la cua daughter
+    z = 100;                     // LOI: z private cua mother, an o daughter
+}
 ```
 
-Từ khóa `override` (C++11) là tùy chọn - nó báo trình biên dịch kiểm tra rằng hàm thật sự ghi đè một hàm `virtual` ở lớp cơ sở. Nếu không có `virtual` ở lớp cha, `override` sẽ báo lỗi biên dịch. Slide gốc không dùng `override`; bài thi viết tay có thể bỏ qua từ khóa này.
+`daughter` truy cập được 3 trong 4 thành phần kế thừa.
+
+### Ví dụ kế thừa `private` (son)
+
+```cpp
+class son : private mother {
+private:
+    double b;
+public:
+    void foo();
+};
+
+void son::foo() {
+    x = y = 20;                  // OK: x, y protected -> private o son, trong than ham van truy cap duoc
+    set(5, 10);                  // OK: set() public -> private o son, trong than ham van goi duoc
+    cout << "value of b " << b;  // OK
+    z = 100;                     // LOI: z luon an
+}
+```
+
+Khác biệt với `daughter`: bên ngoài lớp `son`, không gọi được `son_obj.set()` nữa vì kế thừa `private` đã đẩy `set()` thành `private`.
+
+Trong giáo trình OOP cơ bản, gần như luôn dùng **`public` inheritance** vì nó tương ứng với quan hệ "là một". `protected` và `private` inheritance dành cho các kỹ thuật cài đặt nâng cao hơn (cài đặt theo cách "implemented in terms of" thay vì "is-a").
 
 ## Con trỏ và kế thừa (Pointers in Inheritance)
 
-Con trỏ lớp cơ sở có thể trỏ đến đối tượng lớp dẫn xuất, nhưng chiều ngược lại không hợp lệ nếu không ép kiểu rõ ràng.
+Con trỏ trong kế thừa hoạt động theo các nguyên tắc sau:
+
+- Con trỏ lớp cơ sở **có thể** trỏ đến đối tượng lớp dẫn xuất (vì lớp dẫn xuất "là một" lớp cơ sở).
+- Con trỏ lớp dẫn xuất **không** thể trỏ đến đối tượng lớp cơ sở mà không ép kiểu tường minh.
+- Có thể ép kiểu (downcast) để con trỏ lớp dẫn xuất trỏ vào đối tượng lớp cơ sở, nhưng thao tác này **nguy hiểm**: nếu đối tượng gốc không thật sự là lớp dẫn xuất, truy cập thành phần riêng của lớp dẫn xuất sẽ đọc/ghi vào vùng nhớ không hợp lệ.
 
 ```cpp
-Nguoi* p = new SinhVien;     // OK: SinhVien la mot Nguoi
-SinhVien* q = new Nguoi;     // Loi: Nguoi khong phai SinhVien
-```
+Nguoi*    p = new SinhVien;   // OK: SinhVien la mot Nguoi
+SinhVien* q = new Nguoi;      // LOI bien dich
 
-Đây là nền tảng cho đa hình động: code thao tác qua con trỏ lớp cơ sở, đối tượng thực tế có thể thuộc bất kỳ lớp con nào.
+Nguoi*    r = new Nguoi;
+SinhVien* s = (SinhVien*) r;  // Ep kieu duoc, nhung nguy hiem:
+                              // r khong thuc su tro vao SinhVien
+```
 
 ## Đa kế thừa (Multiple Inheritance)
 
@@ -129,23 +581,75 @@ class A : public B, private C {
 };
 ```
 
-Mọi đặc điểm của kế thừa đơn vẫn áp dụng. Nhưng đa kế thừa kéo theo ba vấn đề thường được hỏi:
+Mọi đặc điểm của kế thừa đơn vẫn áp dụng cho đa kế thừa. Tuy nhiên, đa kế thừa mở ra ba câu hỏi mới (slide nêu ở dạng câu hỏi mở):
 
-1. **Thành phần cùng tên ở nhiều lớp cha**: nếu cả `B` và `C` có hàm `f()`, lời gọi `obj.f()` từ `A` gây lỗi nhập nhằng (ambiguous). Phải viết `obj.B::f()` hoặc `obj.C::f()` để chỉ rõ.
-2. **Thứ tự gọi constructor/destructor**: constructor các lớp cơ sở chạy theo thứ tự khai báo trong dòng `class A : public B, private C`, sau đó constructor `A`. Destructor theo chiều ngược lại.
-3. **Bài toán kim cương (diamond problem)**: nếu `D` kế thừa từ `B` và `C`, mà cả `B` và `C` cùng kế thừa từ `A`, thì đối tượng `D` chứa **hai bản** của phần `A` - gây trùng lặp và nhập nhằng. Giải pháp là dùng **kế thừa ảo** (`virtual` inheritance) ở `B` và `C` để chỉ giữ một bản `A` duy nhất.
+1. Làm sao biểu thị tính độc lập của các thành phần cùng tên đến từ các lớp cha khác nhau?
+2. Phương thức thiết lập và hủy bỏ của các lớp cha được gọi theo thứ tự nào, và làm sao truyền tham số cho từng cái?
+3. Làm sao giải quyết tình trạng kế thừa xung đột: lớp `D` dẫn xuất từ `B` và `C`, mà cả `B` và `C` đều dẫn xuất từ cùng một lớp `A` (bài toán kim cương).
+
+### Vấn đề 1: nhập nhằng tên (Name Ambiguity)
+
+Nếu cả hai lớp cha có thành viên cùng tên, lời gọi không định danh đầy đủ sẽ gây lỗi mơ hồ ở thời điểm biên dịch:
 
 ```cpp
-class ClassC : public BASE_A, public BASE_B {};
+class BASE_A {
+public:
+    int a;
+    int f() { return 0; }
+    int g() { return 0; }
+    int h() { return 0; }
+};
 
-ClassC c;
-c.a = 1;     // Loi mo ho: BASE_A::a hay BASE_B::a?
-c.g();       // Loi mo ho
-c.BASE_A::a = 1;  // OK: chi ro
+class BASE_B {
+public:
+    int a;
+    int f() { return 0; }
+    int g() { return 0; }
+};
+
+class ClassC : public BASE_A, public BASE_B {
+    // ...
+};
+
+void main() {
+    ClassC c;
+    c.a = 1;            // Loi mo ho: BASE_A::a hay BASE_B::a?
+    c.g();              // Loi mo ho
+    c.h();              // OK: chi BASE_A co h()
+
+    c.BASE_A::a = 1;    // OK: chi ro la BASE_A::a
+    c.BASE_B::g();      // OK: chi ro la BASE_B::g()
+}
 ```
 
-Đa kế thừa mạnh nhưng dễ gây phức tạp; nhiều ngôn ngữ OOP khác (Java, C#) chỉ cho kế thừa đơn và bù bằng interface.
+Khi có thành phần cùng tên ở nhiều lớp cha, ta phải dùng toán tử `::` để định danh đầy đủ.
 
-## Khi nào dùng kế thừa (When to Use Inheritance)
+### Vấn đề 2: thứ tự constructor/destructor
 
-Dùng kế thừa khi các lớp có phần chung rõ ràng và lớp con thật sự là một dạng chuyên biệt của lớp cha (quan hệ "là một"). Không dùng kế thừa chỉ để "tiết kiệm vài dòng mã", vì phân cấp sai sẽ làm chương trình khó mở rộng và khó hiểu. Khi nghi ngờ, ưu tiên thành phần (composition) trước.
+Slide chỉ đặt câu hỏi mà không tuyên bố luật cụ thể. Tham khảo thêm (ngoài slide): trong C++, constructor các lớp cơ sở chạy theo thứ tự xuất hiện trong khai báo `class A : public B, private C` (B trước, rồi C), không theo thứ tự liệt kê trong member-init list. Destructor chạy ngược lại.
+
+### Vấn đề 3: bài toán kim cương (Diamond Problem)
+
+Khi `D` kế thừa từ cả `B` và `C`, mà cả `B` lẫn `C` cùng kế thừa từ `A`, đối tượng `D` chứa **hai bản** của phần `A` - gây trùng lặp và nhập nhằng khi truy cập thành viên của `A` qua `D`.
+
+```
+        A
+       / \
+      B   C
+       \ /
+        D
+```
+
+Slide gốc nêu vấn đề này nhưng không đi sâu vào giải pháp. **Tham khảo thêm (ngoài slide):** C++ giải bài toán kim cương bằng **kế thừa ảo** (`virtual` inheritance) - khai báo `class B : virtual public A` và `class C : virtual public A` để đối tượng `D` chỉ chứa duy nhất một bản `A`. Chi tiết về cơ chế này không thuộc phạm vi Chương 06.
+
+Đa kế thừa rất mạnh nhưng dễ gây phức tạp. Nhiều ngôn ngữ OOP khác (Java, C#) chỉ cho kế thừa đơn lớp và bù bằng interface để tránh các vấn đề nói trên.
+
+## Khi nào nên dùng kế thừa
+
+Dùng kế thừa khi:
+
+- Quan hệ giữa các lớp thực sự là "là một" (is-a), không phải "có một" (has-a). `SinhVien` là một `Nguoi`: hợp lý. `Xe` có một `DongCo`: không nên kế thừa, dùng thành phần.
+- Có phần dữ liệu hoặc thao tác chung rõ ràng mà nhiều lớp con đều cần.
+- Cây phân cấp ổn định; ít có nguy cơ lớp con sau này phá vỡ bất biến của lớp cha.
+
+Không dùng kế thừa chỉ để "tiết kiệm vài dòng mã". Phân cấp sai sẽ làm hệ thống khó mở rộng và khó hiểu. Khi nghi ngờ, ưu tiên thành phần (composition) trước, rồi cân nhắc kế thừa khi quan hệ "là một" thực sự rõ ràng.

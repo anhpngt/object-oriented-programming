@@ -1,9 +1,19 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- Đa năng hóa toán tử (Operator overloading) cho phép toán tử có ý nghĩa phù hợp với kiểu dữ liệu tự định nghĩa.
-- Cú pháp tổng quát: `KieuTraVe operator+(DanhSachThamSo);`.
-- Toán tử có thể cài bằng hàm thành viên hoặc hàm tự do/`friend`.
-- Với toán tử hai ngôi, hàm thành viên nhận toán hạng phải; toán hạng trái là đối tượng hiện tại.
-- `<<` và `>>` thường cài bằng hàm `friend` để toán hạng trái là `ostream`/`istream`.
-- Không thể tạo toán tử mới; không đổi được độ ưu tiên, số ngôi, tính kết hợp vốn có của toán tử.
-- Các toán tử không nên nạp chồng tùy tiện nếu làm mất ý nghĩa tự nhiên của phép toán.
+- Đa năng hóa toán tử (operator overloading) cho phép dùng cú pháp toán học tự nhiên trên kiểu tự định nghĩa thay vì gọi hàm: viết `a = b + c;` thay cho `a.Set(b.Cong(c));`; bản chất vẫn là gọi hàm.
+- Cú pháp tổng quát: tên hàm là `operator@` cho toán tử `@`, ví dụ `PhanSo operator+(PhanSo b) const;`.
+- Hạn chế: không tạo toán tử mới, không đổi độ ưu tiên, không tạo cú pháp mới, không định nghĩa lại toán tử có sẵn của kiểu cơ bản.
+- Hàm thành phần: số tham số = số ngôi - 1, toán hạng trái ngầm định là `*this`; `a + b` -> `a.operator+(b)`, `-a` -> `a.operator-()`.
+- Hàm toàn cục/`friend`: số tham số = số ngôi; `a + b` -> `operator+(a, b)`; dùng khi toán hạng trái không thuộc lớp đang xét (ví dụ `3 + a` với `a` là `PhanSo`).
+- Một số toán tử BẮT BUỘC là hàm thành phần: `=`, `[]`, `()`, `->`, và phép toán chuyển kiểu (`operator T()`).
+- `<<` và `>>` PHẢI là hàm toàn cục/`friend` vì toán hạng trái là `ostream&`/`istream&` (không thuộc lớp tự định nghĩa); trả về tham chiếu để xâu chuỗi: `friend ostream& operator<<(ostream& os, PhanSo p);`.
+- Chuyển kiểu qua constructor một tham số: dùng khi cần chuyển từ kiểu đã có sang lớp đang định nghĩa (số nguyên -> phân số), có quan hệ "là một"; nhờ vậy `PhanSo d = 5;` tương đương `PhanSo d(5);`, và `a + 5` chuyển `5` thành `PhanSo(5)`.
+- Chuyển kiểu qua `operator T()`: là hàm thành phần dạng `X::operator T()` (không khai báo kiểu trả về), chuyển từ lớp đang định nghĩa sang kiểu đã có; ví dụ `operator double() const { return double(tu)/mau; }` cho phép `sqrt(a)`.
+- Sự nhập nhằng: khi có cả constructor một tham số `PhanSo(long)` và `operator double()`, biểu thức `a + 2` hoặc `2.5 + a` có nhiều cách chuyển kiểu, trình biên dịch không quyết định được; khắc phục bằng ép kiểu tường minh (`a + PhanSo(2)`, `double(a) + 2.5`) hoặc bỏ bớt một cơ chế chuyển kiểu.
+- Khởi tạo khác phép gán: `PhanSo b = a;` gọi copy constructor (khởi tạo), `b = a;` gọi `operator=` (gán trên đối tượng đã tồn tại).
+- Lớp quản lý tài nguyên (con trỏ, cấp phát động) phải tự cài `operator=` để tránh chia sẻ vùng nhớ rồi `delete` nhiều lần (rule of three: destructor + copy constructor + `operator=`).
+- `operator=` chuẩn: trả về tham chiếu `Lop&` để gán dây chuyền `a = b = c;`; kiểm tra tự gán `if (this != &other)`; giải phóng tài nguyên cũ rồi sao chép mới; kết thúc bằng `return *this;`.
+- `operator[]`: cài hai phiên bản để vừa đọc vừa ghi, phiên bản thường `char& operator[](int i);` trả tham chiếu (dùng làm lvalue: `a[7] = 'V';`), phiên bản `const` `char operator[](int i) const;` dành cho đối tượng hằng.
+- `operator()` (gọi hàm): có thể nhận nhiều tham số, khắc phục giới hạn một tham số của `[]`; ví dụ `float& MATRIX::operator()(int i, int j);` cho phép truy cập `a(i, j)` trên ma trận hai chiều.
+- `++` và `--` có hai cách dùng: prefix `++a` (tăng rồi trả tham chiếu đến chính nó) và postfix `a++` (tăng nhưng trả về giá trị cũ trước khi tăng).
+- Phân biệt prefix vs postfix bằng tham số `int` giả: prefix `Lop& operator++();` trả tham chiếu; postfix `Lop operator++(int);` trả về bản sao giá trị cũ.
+- Lưu ý khi nạp chồng: tôn trọng ý nghĩa gốc của toán tử (cộng phải ra cộng), tận dụng lại mã (`operator+=` cài từ `operator+`), không nạp chồng tùy tiện làm mất tính tự nhiên.
+- Từ khóa kích hoạt trong đề: "`operator+`", "hàm thành phần vs hàm toàn cục", "hàm bạn `<<`/`>>`", "chuyển kiểu", "ép kiểu", "`explicit`", "nhập nhằng", "`operator=`", "tự gán", "rule of three", "`operator[]`", "`operator()`", "prefix vs postfix", "tham số `int` giả".

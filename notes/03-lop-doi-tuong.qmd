@@ -10,136 +10,505 @@ title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
 [Tải bản PDF in](03-lop-doi-tuong.pdf)
 :::
 
-## Khai báo lớp (Class Declaration)
+Chương này đi sâu vào hai khái niệm trung tâm của lập trình hướng đối tượng trong C++: lớp (class) và đối tượng (object). Nội dung bám theo thứ tự trình bày của slide bài giảng: cú pháp khai báo lớp, định nghĩa hàm thành phần, cách tạo và dùng đối tượng, phạm vi truy xuất, con trỏ `this`, phép gán, constructor và destructor, phương thức truy vấn/cập nhật, và cuối cùng là thành viên `static` cùng đối tượng toàn cục.
 
-Một lớp trong C++ được khai báo bằng từ khóa `class`. Bên trong lớp có thể có thuộc tính và phương thức. Các mức truy cập phổ biến là `private`, `protected` và `public`.
+## Cú pháp khai báo lớp
+
+Một lớp trong C++ là một kiểu dữ liệu do người dùng định nghĩa, bao gồm các thành phần dữ liệu (thuộc tính) và các phương thức (hàm thành phần). Lớp được khai báo bằng từ khóa `class`.
+
+Cú pháp tổng quát:
 
 ```cpp
-class Diem {
+class <tên_lớp> {
 private:
-    int x;
-    int y;
+    // khai báo thành phần riêng của từng đối tượng
+protected:
+    // khai báo thành phần riêng, cho phép lớp dẫn xuất truy cập
 public:
-    void nhap();
-    void xuat() const;
+    // khai báo thành phần công cộng
 };
 ```
 
-Với `class`, các thành viên mặc định là `private`. Vì vậy nên ghi rõ mức truy cập để mã dễ đọc và tránh hiểu nhầm.
+Lưu ý dấu chấm phẩy `;` bắt buộc sau dấu `}` cuối khai báo lớp.
 
-Ba mức truy cập:
-
-- `private`: chỉ truy cập được bên trong lớp và các hàm `friend`.
-- `protected`: như `private`, nhưng cho phép lớp dẫn xuất truy cập trực tiếp. Hay dùng khi thiết kế lớp cơ sở (xem [Chương 06](06-ke-thua.qmd)).
-- `public`: ai cũng truy cập được; đây là giao diện sử dụng của lớp.
-
-## Tạo và dùng đối tượng (Creating and Using Objects)
-
-Đối tượng được tạo như biến của kiểu lớp:
+Ví dụ khai báo lớp `Rectangle` với hai thuộc tính `width`, `length` và hai phương thức `set`, `area`:
 
 ```cpp
-Diem a;
-a.nhap();
-a.xuat();
-```
-
-Toán tử dấu chấm `.` dùng để truy cập thành viên thông qua một đối tượng. Nếu có con trỏ đến đối tượng, dùng toán tử `->`.
-
-```cpp
-Diem* p = new Diem;
-p->nhap();
-delete p;
-```
-
-## Dữ liệu private và hàm truy cập (Private Data and Accessor Functions)
-
-Nguyên tắc thường dùng là không cho bên ngoài sửa trực tiếp thuộc tính. Thay vào đó, lớp cung cấp hàm truy cập hoặc hàm nghiệp vụ có kiểm tra hợp lệ.
-
-```cpp
-class SinhVien {
+class Rectangle {
 private:
-    double diem;
+    int width;
+    int length;
 public:
-    void setDiem(double value) {
-        if (value >= 0 && value <= 10) {
-            diem = value;
-        }
-    }
-
-    double getDiem() const {
-        return diem;
-    }
+    void set(int w, int l);
+    int area();
 };
 ```
 
-Trong bài thi, đây là ví dụ điển hình để giải thích đóng gói.
+Lớp đặc tả một nhóm đối tượng cùng bản chất; mỗi đối tượng là một thể hiện cụ thể của lớp đó. Cơ chế tạo lập một lớp gồm ba bước: xác định các thuộc tính (đối tượng biết gì), xác định các phương thức (đối tượng làm được gì), và xác định các mức truy xuất.
 
-### Quy ước đặt tên get/set/is
+## Định nghĩa hàm thành phần
 
-Slide gốc quy ước tên phương thức truy vấn/cập nhật như sau:
+Có hai cách định nghĩa phần thi hành của một phương thức: định nghĩa ngay trong khai báo lớp, hoặc định nghĩa bên ngoài lớp.
 
-- Phương thức truy vấn (query) đơn giản: tiền tố `get` + tên thuộc tính, ví dụ `getX()`, `getSize()`.
-- Phương thức truy vấn điều kiện (trả về `bool`): tiền tố `is`, ví dụ `isEmpty()`, `isValid()`.
-- Phương thức cập nhật (update): tiền tố `set` + tên thuộc tính, ví dụ `setX(int)`, `setGPA(double)`.
+### Định nghĩa trong lớp
 
-Phương thức cập nhật thường trả về mã lỗi (hoặc `bool`) để báo việc gán có hợp lệ hay không, ví dụ slide minh họa `setGPA` trả về `0` khi thành công, `-1` khi giá trị ngoài khoảng `[0.0, 4.0]`.
+Khi viết thân hàm ngay trong khai báo lớp, hàm đó được coi là `inline`:
+
+```cpp
+class Rectangle {
+private:
+    int width, length;
+public:
+    void set(int w, int l);
+    int area() { return width * length; }   // inline
+};
+```
+
+### Định nghĩa ngoài lớp
+
+Cú pháp định nghĩa bên ngoài khai báo lớp dùng toán tử định phạm vi `::`:
+
+```cpp
+<kiểu trả về> <tên lớp>::<tên hàm>(<danh sách tham số>) {
+    <nội dung>
+}
+```
+
+Ví dụ định nghĩa hàm `set` của lớp `Rectangle` ngoài lớp:
+
+```cpp
+void Rectangle::set(int w, int l) {
+    width = w;
+    length = l;
+}
+```
+
+Toán tử `::` cho trình biên dịch biết hàm `set` thuộc về lớp `Rectangle`, nhờ đó nó có quyền truy cập các thành phần `private` của lớp.
+
+Ví dụ đầy đủ với lớp `point`:
+
+```cpp
+class point {
+private:
+    int x, y;
+public:
+    void init(int ox, int oy);
+    void move(int dx, int dy);
+    void display();
+};
+
+void point::init(int ox, int oy) {
+    x = ox; y = oy;
+}
+
+void point::move(int dx, int dy) {
+    x += dx; y += dy;
+}
+
+void point::display() {
+    cout << "Toa do: " << x << " " << y << "\n";
+}
+```
+
+## Khai báo và tạo lập đối tượng
+
+Đối tượng được khai báo như một biến thuộc kiểu lớp:
+
+```cpp
+<tên lớp> <tên đối tượng>;
+```
+
+Gọi hàm thành phần qua đối tượng dùng toán tử `.`, qua con trỏ dùng toán tử `->`:
+
+```cpp
+<tên đối tượng>.<tên hàm thành phần>(<tham số>);
+<tên con trỏ đối tượng>-><tên hàm thành phần>(<tham số>);
+```
+
+Slide trình bày ba cách tạo đối tượng, ứng với ba kiểu cấp phát bộ nhớ khác nhau.
+
+### Cấp phát tĩnh trên stack
+
+Đối tượng được tạo trực tiếp như biến cục bộ, dùng toán tử `.` để truy cập thành viên:
+
+```cpp
+void main() {
+    Rectangle r1;
+    r1.set(5, 8);
+}
+```
+
+`r1` có thời gian sống bằng phạm vi khối lệnh chứa nó. Khi rời khỏi khối, đối tượng tự động bị hủy.
+
+### Qua con trỏ trỏ tới đối tượng có sẵn
+
+Có thể lấy địa chỉ của một đối tượng đã có và truy cập qua con trỏ:
+
+```cpp
+void main() {
+    Rectangle r1;
+    r1.set(5, 8);          // dot notation
+
+    Rectangle *r2;
+    r2 = &r1;
+    r2->set(8, 10);        // arrow notation
+}
+```
+
+Ở đây `r2` không phải là một đối tượng mới; nó chỉ trỏ tới `r1`. Mọi thay đổi qua `r2` đều phản ánh trên `r1`.
+
+### Cấp phát động trên heap
+
+Dùng `new` để cấp phát đối tượng trên heap, và `delete` để thu hồi vùng nhớ:
+
+```cpp
+void main() {
+    Rectangle *r3;
+    r3 = new Rectangle();
+    r3->set(80, 100);      // arrow notation
+    delete r3;
+    r3 = NULL;
+}
+```
+
+Mỗi `new` phải có đúng một `delete` tương ứng. Sau khi `delete`, gán con trỏ về `NULL` để tránh truy cập vùng nhớ đã giải phóng (dangling pointer).
+
+## Phạm vi truy xuất
+
+Ba mức truy xuất xác định ai có thể nhìn thấy thành phần của lớp:
+
+- `private`: chỉ truy cập được bên trong lớp. Đây là mặc định khi dùng `class`.
+- `protected`: như `private` nhưng cho phép lớp dẫn xuất truy cập trực tiếp. Phạm vi này được khai thác kỹ khi học kế thừa ở [Chương 06](06-ke-thua.qmd).
+- `public`: mọi nơi đều truy cập được; đây là giao diện sử dụng của lớp.
+
+Trong một lớp có thể có nhiều nhãn `private` và `public` xen kẽ nhau. Mỗi nhãn có phạm vi ảnh hưởng cho đến khi gặp nhãn kế tiếp hoặc hết khai báo lớp. Nhãn `private` đầu tiên có thể bỏ qua vì C++ ngầm hiểu các thành phần trước `public` đầu tiên là `private`. Dù vậy, nên ghi rõ nhãn truy cập để mã dễ đọc.
+
+Ví dụ minh họa nhiều nhãn xen kẽ:
+
+```cpp
+class TamGiac {
+private:
+    float a, b, c;                  // độ dài ba cạnh
+public:
+    void Nhap();
+    void In();
+private:
+    int Loaitg();                    // 1-d, 2-vc, 3-c, 4-v, 5-t
+    float DienTich();
+};
+```
+
+Hai phương thức `Loaitg` và `DienTich` ở đây là chi tiết cài đặt nội bộ, không lộ ra ngoài, dù vẫn nằm sau phần `public`.
+
+## Tham số là đối tượng cùng lớp
+
+Hàm thành phần có quyền truy cập đến mọi thành phần `private` của đối tượng đang gọi nó. Quan trọng hơn, nó cũng truy cập được các thành phần `private` của các đối tượng, tham chiếu đối tượng, hay con trỏ đối tượng cùng kiểu lớp khi được truyền vào làm tham số.
+
+Cùng một hàm `Trung` so sánh hai điểm, ba dạng tham số dưới đây đều hợp lệ:
+
+```cpp
+int point::Trung(point pt) {
+    return (x == pt.x && y == pt.y);
+}
+
+int point::Trung(point *pt) {
+    return (x == pt->x && y == pt->y);
+}
+
+int point::Trung(point &pt) {
+    return (x == pt.x && y == pt.y);
+}
+```
+
+Cả ba phiên bản đều truy cập trực tiếp `pt.x`, `pt.y` mặc dù chúng là `private`, vì hàm `Trung` là thành viên của chính lớp `point`.
+
+## Con trỏ `this`
+
+Trong định nghĩa của mỗi hàm thành phần, từ khóa `this` là con trỏ ngầm trỏ đến đối tượng đang gọi hàm. Nó hữu ích khi tên tham số trùng tên thuộc tính, hoặc khi cần phân biệt rõ thuộc tính của đối tượng hiện tại với đối tượng khác.
+
+```cpp
+int point::Trung(point pt) {
+    return (this->x == pt.x && this->y == pt.y);
+}
+```
+
+`this->x` luôn nghĩa là thuộc tính `x` của đối tượng đang gọi `Trung`.
+
+## Phép gán đối tượng
+
+Theo mặc định, phép gán giữa hai đối tượng cùng lớp là sao chép từng thành phần dữ liệu (member-wise copy) từ vế phải sang vế trái.
+
+```cpp
+point a, b;
+a.init(5, 2);
+b = a;   // b.x = a.x; b.y = a.y;
+```
+
+Sau lệnh `b = a`, các thành phần của `b` có giá trị bằng các thành phần tương ứng của `a`. Khi lớp chứa con trỏ sở hữu vùng nhớ động, cơ chế sao chép mặc định này có thể không phù hợp; chủ đề "sao chép sâu/sao chép nông" sẽ được bàn ở các chương sau.
 
 ## Constructor
 
-Constructor là hàm đặc biệt được gọi khi đối tượng được tạo. Constructor có cùng tên với lớp và không có kiểu trả về.
+Constructor (phương thức thiết lập) là phương thức đặc biệt được gọi tự động khi đối tượng được tạo. Mục đích chính là khởi tạo các thành phần dữ liệu.
+
+Đặc điểm:
+
+- Tên trùng tên lớp.
+- Không có kiểu trả về, kể cả `void`.
+- Thường khai báo `public` để dùng được từ bên ngoài.
+- Có thể nạp chồng (overload) như hàm C++ thông thường, và có thể có tham số mặc định.
+
+### Constructor mặc định và constructor có tham số
 
 ```cpp
-class Diem {
-private:
-    int x;
-    int y;
+class point {
+    int x, y;
 public:
-    Diem() : x(0), y(0) {}
-    Diem(int xValue, int yValue) : x(xValue), y(yValue) {}
+    point() { x = 0; y = 0; }                       // constructor mặc định
+    point(int ox, int oy) { x = ox; y = oy; }       // constructor có tham số
+    void move(int dx, int dy);
+    void display();
 };
 ```
 
-Danh sách khởi tạo sau dấu `:` thường được ưu tiên vì khởi tạo trực tiếp thành viên, đặc biệt hữu ích với `const`, tham chiếu hoặc đối tượng thành viên.
+Constructor mặc định là constructor được gọi khi đối tượng được khai báo mà không cung cấp tham số:
+
+```cpp
+point a(5, 2);   // gọi point(int, int)
+point b;         // gọi point()
+point c(3);      // lỗi: không có constructor 1 tham số
+```
+
+### Constructor có tham số mặc định
+
+Có thể nạp chồng bằng cách thêm giá trị mặc định cho tham số:
+
+```cpp
+class point {
+    int x, y;
+public:
+    point() { x = 0; y = 0; }
+    point(int ox, int oy = 1) { x = ox; y = oy; }
+};
+
+point a(5, 2);   // x=5, y=2
+point b;         // x=0, y=0
+point c(3);      // x=3, y=1 (dùng oy mặc định)
+```
+
+### Quy tắc tự sinh constructor mặc định
+
+Nếu lập trình viên không khai báo bất kỳ constructor nào, trình biên dịch C++ tự sinh một constructor mặc định rỗng. Tuy nhiên, nếu đã có một constructor khác (ví dụ `point(int, int)`) mà không có constructor mặc định, trình biên dịch sẽ không tự sinh thêm; khai báo kiểu `point b;` sẽ báo lỗi không tìm thấy constructor mặc định.
+
+```cpp
+class point {
+    int x, y;
+public:
+    point(int ox, int oy = 1) { x = ox; y = oy; }
+};
+
+point a(5, 2);  // OK
+point b;        // lỗi biên dịch: không có constructor mặc định
+point c(3);     // OK, dùng oy mặc định
+```
+
+### Copy constructor
+
+Đôi khi cần tạo đối tượng mới từ một đối tượng có sẵn theo cách do người lập trình quy định, không hoàn toàn giống phép gán mặc định. C++ cho phép định nghĩa copy constructor (constructor sao chép) với tham số là tham chiếu hằng đến đối tượng cùng lớp:
+
+```cpp
+class point {
+    int x, y;
+public:
+    point() { x = 0; y = 0; }
+    point(int ox, int oy) { x = ox; y = oy; }
+    point(const point &p) { x = p.x; y = p.y; }   // copy constructor
+};
+```
+
+Trong copy constructor, có thể chỉ lấy một số thành phần của đối tượng nguồn, hoặc bổ sung xử lý riêng tùy ý.
 
 ## Destructor
 
-Destructor được gọi khi đối tượng kết thúc vòng đời. Destructor có tên là `~TenLop()` và không có tham số, không có kiểu trả về.
+Destructor (phương thức hủy bỏ) được gọi tự động ngay trước khi đối tượng bị thu hồi. Mục đích thường là dọn dẹp tài nguyên (giải phóng bộ nhớ, đóng tập tin, ngắt kết nối, ...).
+
+Đặc điểm:
+
+- Tên trùng tên lớp, có dấu `~` đặt trước.
+- Không có tham số, không có kiểu trả về.
+- Mỗi lớp chỉ có duy nhất một destructor.
+- Thường khai báo `public`.
+- Tự động được gọi khi đối tượng hết phạm vi sử dụng (với đối tượng cấp phát tĩnh) hoặc khi `delete` (với đối tượng cấp phát động).
 
 ```cpp
-class Mang {
-private:
-    int* data;
+class vector {
+    int n;          // số chiều
+    float *v;       // vùng nhớ tọa độ
 public:
-    Mang(int n) {
-        data = new int[n];
-    }
-
-    ~Mang() {
-        delete[] data;
-    }
+    vector();
+    vector(int size);
+    vector(int size, float *a);
+    ~vector();      // destructor, không tham số
+    void display();
 };
 ```
 
-Nếu lớp không quản lý tài nguyên động, destructor mặc định thường đủ. Nếu lớp có con trỏ sở hữu vùng nhớ, destructor là bắt buộc để tránh rò rỉ bộ nhớ.
+Nếu lớp không quản lý tài nguyên động, destructor mặc định thường đã đủ. Nếu lớp có con trỏ sở hữu vùng nhớ cấp phát động, viết destructor là bắt buộc để tránh rò rỉ bộ nhớ.
 
-## Con trỏ this (The this Pointer)
+## Thao tác với dữ liệu private
 
-`this` là con trỏ trỏ đến đối tượng hiện tại. Nó thường dùng khi tên tham số trùng tên thuộc tính hoặc khi cần trả về chính đối tượng hiện tại.
+Khi dữ liệu được khai báo `private`, bên ngoài lớp không thể đọc/ghi trực tiếp. Lớp cần cung cấp phương thức công cộng để bên ngoài tương tác với dữ liệu một cách có kiểm soát. Có hai dạng phương thức phổ biến: truy vấn (query) và cập nhật (update).
+
+### Phương thức truy vấn
+
+Phương thức truy vấn cho phép đọc trạng thái của đối tượng. Có ba loại:
+
+- Truy vấn đơn giản: "giá trị của `x` là bao nhiêu?"
+- Truy vấn điều kiện: "thành viên `x` có lớn hơn 10 không?"
+- Truy vấn dẫn xuất: "tổng giá trị của `x` và `y` là bao nhiêu?"
+
+Đặc điểm quan trọng của phương thức truy vấn là không nên làm thay đổi trạng thái của đối tượng. Trên chữ ký hàm, có thể thêm `const` sau danh sách tham số để báo rằng hàm không sửa đổi đối tượng, ví dụ:
 
 ```cpp
-void setX(int x) {
-    this->x = x;
+void Write() const;
+```
+
+Quy ước đặt tên slide đưa ra:
+
+- Truy vấn đơn giản: tiền tố `get` + tên thành viên, ví dụ `getX()`, `getSize()`.
+- Truy vấn điều kiện (trả về `bool`): tiền tố `is`.
+- Các loại khác nên đặt tên mô tả rõ.
+
+### Phương thức cập nhật
+
+Phương thức cập nhật thường để sửa đổi một hoặc nhiều thành viên dữ liệu. Dạng đơn giản nhất là gán một giá trị mới cho một thành viên. Quy ước đặt tên: tiền tố `set` + tên thành viên cần sửa, ví dụ `setX(int)`.
+
+Nếu setter chỉ gán giá trị tùy ý vào thành viên, việc giữ `private` không còn ý nghĩa bảo vệ. Đặc trưng quan trọng của setter là *kiểm tra tính hợp lệ* trước khi gán, và báo cho người gọi biết phép gán có thành công hay không. Slide minh họa bằng `Student::setGPA` trả về `int`: `0` khi thành công, `-1` khi giá trị nằm ngoài khoảng `[0.0, 4.0]`.
+
+```cpp
+int Student::setGPA(double newGPA) {
+    if ((newGPA >= 0.0) && (newGPA <= 4.0)) {
+        this->gpa = newGPA;
+        return 0;   // báo thành công
+    } else {
+        return -1;  // báo thất bại
+    }
 }
 ```
 
-## Hàm thành viên const (const Member Functions)
+Nhờ thiết kế này, bên gọi có thể phản ứng với lỗi (in thông báo, yêu cầu nhập lại, ...) thay vì âm thầm chấp nhận giá trị sai.
 
-Hàm thành viên `const` cam kết không thay đổi trạng thái logic của đối tượng.
+## Thành viên static
+
+Trong C, từ khóa `static` đứng trước một biến trong hàm cho phép biến đó giữ lại giá trị giữa các lần gọi hàm, giống biến toàn cục. Trong C++, `static` áp dụng cho thành viên của lớp mang ý nghĩa khác: thành viên thuộc về *lớp*, không thuộc về *đối tượng*.
+
+### Ý nghĩa với dữ liệu
+
+Một thành viên dữ liệu `static` của lớp:
+
+- Tồn tại một bản duy nhất trong suốt quá trình chạy chương trình.
+- Dùng chung cho tất cả các thể hiện của lớp.
+- Tồn tại ngay cả khi chưa có đối tượng nào của lớp được tạo.
+
+Ví dụ đếm số đối tượng của một lớp:
 
 ```cpp
-int getX() const {
-    return x;
+class Rectangle {
+private:
+    int width;
+    int length;
+    static int count;   // chỉ khai báo, không định nghĩa
+public:
+    void set(int w, int l);
+    int area();
+};
+```
+
+Hình minh họa trên slide cho thấy `count` không nằm trong bất kỳ đối tượng `r1`, `r2`, `r3` nào, mà nằm ngoài cả ba, được mọi đối tượng dùng chung.
+
+### Định nghĩa thành viên static
+
+Khai báo `static` trong lớp chưa cấp phát bộ nhớ cho biến. Cần định nghĩa nó *bên ngoài lớp* để cấp phát:
+
+```cpp
+class MyClass {
+public:
+    MyClass();
+    ~MyClass();
+    void printCount();
+private:
+    static int count;
+};
+
+int MyClass::count = 0;     // định nghĩa và khởi tạo ngoài lớp
+
+MyClass::MyClass()  { this->count++; }
+MyClass::~MyClass() { this->count--; }
+
+void MyClass::printCount() {
+    cout << "There are currently " << this->count
+         << " instance(s) of MyClass.\n";
 }
 ```
 
-Các hàm chỉ đọc dữ liệu nên khai báo `const`. Đây là dấu hiệu của thiết kế lớp tốt và thường được kiểm tra trong bài code C++.
+Thành viên `static` có thể là `public`, `private`, hoặc `protected`.
+
+### Phương thức static
+
+Phương thức `static` có ý nghĩa tương tự với dữ liệu `static`, nhưng có một đặc điểm cốt lõi: nó *không có con trỏ `this`*, vì không gắn với một đối tượng cụ thể. Do đó, phương thức `static` không tự ý truy cập được các thành viên không phải `static` của lớp (vì không có đối tượng ngầm định để tham chiếu); nhưng nếu được truyền một đối tượng của lớp làm tham số tường minh, nó vẫn truy cập được các thành viên của đối tượng đó.
+
+Cách gọi:
+
+- Phương thức `static` `public` có thể được gọi qua bất kỳ đối tượng nào của lớp, hoặc qua tên lớp và toán tử định phạm vi `::`: `Lop::ham()`.
+- Phương thức `static` `private` hoặc `protected` phải được truy cập gián tiếp qua một hàm thành viên `public` của lớp.
+
+Điểm đặc biệt nhất: có thể gọi phương thức `static` ngay cả khi *chưa có đối tượng* nào của lớp tồn tại, chỉ cần dùng tên lớp:
+
+```cpp
+MyClass::someStaticFunction();
+```
+
+Tương tự, để truy cập dữ liệu `static` `public` khi chưa có đối tượng, dùng `MyClass::count`. Để truy cập dữ liệu `static` `private`/`protected` khi chưa có đối tượng, cần gọi một hàm thành viên `public` `static` đóng vai trò trung gian.
+
+## Đối tượng toàn cục
+
+Đối tượng khai báo ở phạm vi toàn cục có vòng đời bằng cả chương trình: constructor được gọi *trước* khi `main()` chạy, destructor được gọi *sau* khi `main()` kết thúc. Đặc điểm này được khai thác để chèn hành vi vào/ra chương trình mà không phải sửa `main()`.
+
+Ví dụ: cho đoạn chương trình sau và yêu cầu in thêm một thông điệp vào, một thông điệp ra mà không thay đổi `main()`:
+
+```cpp
+#include <iostream>
+using namespace std;
+
+void main() {
+    cout << "Hello, world.\n";
+}
+```
+
+Kết quả mong muốn:
+
+```
+Entering a C++ program saying...
+Hello, world.
+And then exitting...
+```
+
+Giải pháp dùng một đối tượng toàn cục có constructor và destructor in ra thông điệp:
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Dummy {
+public:
+    Dummy()  { cout << "Entering a C++ program saying...\n"; }
+    ~Dummy() { cout << "And then exitting..."; }
+};
+
+Dummy A;                // đối tượng toàn cục
+
+void main() {
+    cout << "Hello, world.\n";
+}
+```
+
+Khi chương trình khởi động, runtime gọi constructor của `A` trước khi vào `main()`, in thông điệp vào. Khi `main()` kết thúc, runtime gọi destructor của `A` trước khi chương trình thoát hẳn, in thông điệp ra. Hàm `main()` không phải sửa dòng nào.

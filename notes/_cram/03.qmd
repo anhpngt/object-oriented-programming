@@ -1,19 +1,17 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- Cú pháp lớp:
-
-```cpp
-class TenLop {
-private:
-    // thuoc tinh
-public:
-    // phuong thuc
-};
-```
-
-- Mặc định trong `class` là `private`, trong `struct` là `public`.
-- Nên để dữ liệu là `private` và truy cập qua getter/setter hoặc hàm nghiệp vụ.
-- Constructor khởi tạo đối tượng; destructor dọn tài nguyên khi đối tượng kết thúc vòng đời.
-- `this` là con trỏ trỏ đến đối tượng hiện tại.
-- Hàm thành viên `const` cam kết không làm đổi trạng thái logic của đối tượng: `int getX() const;`.
-- Từ khóa kích hoạt trong đề: "`private`/`public`", "constructor", "destructor", "`this`", "getter/setter", "hàm thành viên".
+- Cú pháp lớp: `class TenLop { private: ... protected: ... public: ... };`. Mặc định trong `class` là `private`; nhãn `private` đầu tiên có thể bỏ qua.
+- Ba phạm vi truy xuất: `private` chỉ trong lớp, `protected` trong lớp và lớp dẫn xuất, `public` truy cập tự do. Có thể có nhiều nhãn private/public trong cùng một lớp, phạm vi kéo dài đến nhãn kế tiếp.
+- Hai cách định nghĩa hàm thành viên: trong lớp (inline) hoặc ngoài lớp dùng toán tử `::`, ví dụ `void Diem::nhap() { ... }`.
+- Ba cách tạo và dùng đối tượng: trên stack `Rectangle r1; r1.set(...)`; qua con trỏ trỏ tới đối tượng có sẵn `Rectangle *r2 = &r1; r2->set(...)`; cấp phát động `Rectangle *r3 = new Rectangle(); r3->set(...); delete r3;`.
+- Hàm thành viên truy cập được mọi thành phần `private` của đối tượng gọi nó, và cả của đối tượng/con trỏ/tham chiếu cùng kiểu lớp truyền vào làm tham số.
+- Con trỏ `this` là tham số ngầm định trỏ đến đối tượng đang gọi hàm thành viên: `this->x`.
+- Phép gán đối tượng (`b = a;`) mặc định là sao chép từng thành phần dữ liệu (member-wise copy).
+- Constructor: trùng tên lớp, không có kiểu trả về (kể cả `void`), thường là `public`. Có thể nạp chồng và có tham số mặc định.
+- Bốn dạng constructor trong slide: mặc định (không tham số), có tham số, có tham số mặc định, và sao chép (copy constructor nhận `const TenLop&`).
+- Nếu không khai báo constructor nào, C++ tự sinh constructor mặc định rỗng; nếu đã có constructor khác mà thiếu constructor mặc định thì khai báo `TenLop x;` sẽ lỗi biên dịch.
+- Destructor: tên là `~TenLop`, không tham số, không kiểu trả về, mỗi lớp chỉ có một, `public`; tự động gọi khi đối tượng hết phạm vi, dùng để dọn dẹp tài nguyên.
+- Phương thức truy vấn (getter) không nên đổi trạng thái đối tượng, đặt tên `getX()`, truy vấn điều kiện dùng tiền tố `is`; phương thức cập nhật (setter) `setX(...)` thường kiểm tra hợp lệ trước khi gán. Có thể khai báo `const` sau danh sách tham số, ví dụ `void Write() const;`.
+- Thành viên `static`: thuộc về lớp, không thuộc đối tượng; tồn tại một bản duy nhất dùng chung cho mọi thể hiện, tồn tại ngay cả khi chưa có đối tượng nào.
+- Dữ liệu `static` phải định nghĩa ngoài lớp: `int Lop::bien = 0;`. Có thể là `public`, `private`, hoặc `protected`.
+- Hàm `static` không có con trỏ `this` ngầm định nên không tự ý truy cập thành viên không phải static; nếu được truyền một đối tượng làm tham số tường minh thì vẫn truy cập được thành viên của đối tượng đó. Truy cập qua tên lớp và toán tử `::` (ví dụ `Lop::ham()`), gọi được khi chưa có đối tượng nào; `static` private/protected truy cập qua hàm thành viên public.
+- Đối tượng toàn cục: constructor chạy trước `main()`, destructor chạy sau khi `main()` kết thúc — dùng được để in thông điệp vào/ra chương trình mà không sửa `main()`.
+- Từ khóa kích hoạt trong đề: "`class`", "`private`/`protected`/`public`", "`::`", "constructor mặc định/sao chép", "destructor", "`this`", "`new`/`delete`", "`static`", "getter/setter", "đối tượng toàn cục".

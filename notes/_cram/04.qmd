@@ -1,9 +1,16 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- Khi lớp quản lý tài nguyên động, cần nhớ bộ ba: destructor, copy constructor, toán tử gán (`operator=`).
-- Copy constructor tạo đối tượng mới từ đối tượng đã có: `A(const A& other);`.
-- Toán tử gán cập nhật một đối tượng đã tồn tại: `A& operator=(const A& other);`.
-- Sao chép nông (Shallow copy) chỉ copy địa chỉ; sao chép sâu (Deep copy) cấp phát vùng nhớ mới và copy nội dung.
-- Thành viên `static` thuộc về lớp, dùng chung cho mọi đối tượng.
-- Hàm bạn (Friend function) có quyền truy cập thành viên `private`, nhưng dùng vừa đủ để không phá đóng gói.
-- Từ khóa kích hoạt trong đề: "copy constructor", "deep copy", "shallow copy", "`static`", "`friend`", "`operator=`".
+- Đối tượng là thành phần của lớp: tạo đối tượng "lớn" thì các thành phần được tạo theo, constructor gọi từ trong (thành phần) ra ngoài (lớp chứa), destructor ngược lại.
+- Danh sách khởi tạo thành phần (member-initializer list) dùng dấu `:` sau bộ đối, liệt kê `tên_thành_phần(tham_số)`, ví dụ `TamGiac(int a, int b, int c) : canhA(a), canhB(b), canhC(c) { }`; áp dụng cho cả thành phần kiểu lớp lẫn kiểu cơ sở.
+- Member-init list là cách DUY NHẤT để khởi tạo thành phần là `const`, tham chiếu (`&`), hoặc thuộc lớp không có constructor mặc định; nếu thành phần thuộc lớp cần tham số thì lớp chứa bắt buộc viết constructor để truyền tham số xuống.
+- Đối tượng là thành phần của mảng: khai báo `Lop arr[n]` phải gọi constructor cho từng phần tử mà không truyền tham số được, nên lớp phải "tự khởi động": (1) không có constructor nào, (2) có constructor không tham số, hoặc (3) constructor có mọi tham số đều có giá trị mặc nhiên.
+- Cấp phát động một đối tượng: `new` cấp trong heap và gọi constructor, ví dụ `Diem *pd = new Diem(20,40);` `String *ps = new String("A");`; hủy bằng `delete pd;` (gọi destructor).
+- Cấp phát động mảng: `new Lop[n]` không thể truyền tham số cho từng phần tử, nên YÊU CẦU lớp có constructor không tham số, nếu không sẽ lỗi "Cannot find default constructor"; hủy bằng `delete[] p;` (có dấu `[]`), không gộp được nhiều con trỏ vào một `delete`.
+- Hàm bạn (`friend`): khai báo trong lớp bằng `friend Kieu Ten(...);`, nhưng KHÔNG thuộc lớp, không có `this`, vẫn được truy cập thành viên `private`; dùng khi hàm cần làm việc đồng thời với nhiều lớp (ví dụ nhân `Vector` với `Matrix`).
+- Lớp bạn (`friend class`): khai báo `friend class B;` trong lớp `A` thì MỌI phương thức của `B` truy cập được `private` của `A`.
+- Ba tính chất của quan hệ friend (hay hỏi): (1) phải được CHO không được nhận - chỉ lớp chủ mới khai báo ai là bạn, (2) KHÔNG đối xứng - `A` friend `B` không suy ra `B` friend `A`, (3) KHÔNG bắc cầu - `A` friend `B` và `B` friend `C` không suy ra `A` friend `C`.
+- Giao diện vs chi tiết cài đặt: lớp `ThoiDiem` có hai cách cài đặt khác nhau với cùng giao diện public (`Set`, `LayGio`, `LayPhut`, `LayGiay`, `Nhap`, `Xuat`, `Tang`, `Giam`) - Cách 1 dữ liệu là ba trường `int gio, phut, giay`; Cách 2 dữ liệu là một trường `long tsgiay`; thay đổi cài đặt không ảnh hưởng người dùng nếu giữ nguyên giao diện.
+- Nguyên tắc thiết kế lớp: tên lớp và thuộc tính là DANH TỪ trong đề, phương thức là ĐỘNG TỪ; "nghĩ đến nó như một khái niệm riêng lẻ" thì lập lớp cho khái niệm đó.
+- Thuộc tính suy diễn được nên thay bằng hàm thành phần thay vì lưu trực tiếp (ví dụ `TamGiac` không lưu `ChuVi`, `DienTich` mà có `TinhChuVi()`, `TinhDienTich()`); nhưng nếu tính toán nặng (ví dụ `TuoiTrungBinh` của `QuocGia`) thì nên lưu thẳng.
+- Dữ liệu thành phần có quan hệ nên được GOM thành lớp con: `TamGiac` chứa `Diem A,B,C` thay vì 6 biến `double`; `HinhTron` chứa `Diem Tam` và `double BanKinh` thay vì `tx, ty, BanKinh` rời rạc; ngày-tháng-năm gom vào `NgayThang`.
+- Luôn nên có constructor để khởi động đối tượng, và nên có constructor "tự khởi động" (không tham số hoặc mọi tham số mặc nhiên) để dùng được với mảng và `new[]`.
+- Nếu đối tượng cấp phát tài nguyên động thì cần đủ bộ: constructor, copy constructor, destructor; phép gán thuộc chương 5.
+- Từ khóa kích hoạt trong đề: "danh sách khởi tạo `:`", "constructor không tham số / tự khởi động", "`new Lop[n]`", "`delete[]`", "`friend`", "lớp bạn / `friend class`", "phải được cho không được nhận", "không đối xứng / không bắc cầu", "giao diện vs cài đặt".
