@@ -2,15 +2,9 @@
 title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
 ---
 
-## Cram sheet {.unnumbered .unlisted .cram-heading}
-
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/03.qmd >}}
 ::::
-
-::: {.content-visible when-format="html"}
-[Tải bản PDF in](03-lop-doi-tuong.pdf)
-:::
 
 ## Cú pháp khai báo lớp (Class Declaration Syntax)
 

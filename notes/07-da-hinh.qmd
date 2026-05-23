@@ -2,15 +2,9 @@
 title: "Chương 07 - Tính đa hình (Polymorphism)"
 ---
 
-## Cram sheet {.unnumbered .unlisted .cram-heading}
-
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/07.qmd >}}
 ::::
-
-::: {.content-visible when-format="html"}
-[Tải bản PDF in](07-da-hinh.pdf)
-:::
 
 ## Khái niệm đa hình (Polymorphism Concept)
 

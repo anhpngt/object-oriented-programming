@@ -2,15 +2,9 @@
 title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
 ---
 
-## Cram sheet {.unnumbered .unlisted .cram-heading}
-
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/04.qmd >}}
 ::::
-
-::: {.content-visible when-format="html"}
-[Tải bản PDF in](04-lop-doi-tuong-2.pdf)
-:::
 
 ## Đối tượng là thành phần của lớp (Objects as Class Members)
 

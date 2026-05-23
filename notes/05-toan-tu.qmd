@@ -2,15 +2,9 @@
 title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
 ---
 
-## Cram sheet {.unnumbered .unlisted .cram-heading}
-
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/05.qmd >}}
 ::::
-
-::: {.content-visible when-format="html"}
-[Tải bản PDF in](05-toan-tu.pdf)
-:::
 
 ## Khái niệm (Concept)
 

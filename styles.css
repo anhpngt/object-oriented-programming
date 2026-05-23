@@ -79,13 +79,29 @@ pre.sourceCode {
 [data-bs-theme="dark"] code span.im { color: #ff7b72; }                     /* preprocessor / import */
 [data-bs-theme="dark"] code span.va { color: #e6edf3; }                     /* variables */
 
-/* Shift code blocks right so they read as a sub-element of the surrounding paragraph.
-   Scoped to code blocks that immediately follow a paragraph so top-level code blocks
-   under headings stay flush left. With `code-copy: true`, Quarto wraps the sourceCode
-   div in an outer `.code-copy-outer-scaffold` div — handle both shapes. */
+/* Shift code blocks right so they read as a sub-element of the surrounding prose.
+   Scoped to code blocks that follow body content (paragraphs, lists, or callouts)
+   so top-level code blocks immediately under a heading stay flush left. With
+   `code-copy: true`, Quarto wraps the sourceCode div in an outer
+   `.code-copy-outer-scaffold` div — handle both shapes. */
 p + div.code-copy-outer-scaffold,
-p + div.sourceCode {
+p + div.sourceCode,
+ul + div.code-copy-outer-scaffold,
+ul + div.sourceCode,
+ol + div.code-copy-outer-scaffold,
+ol + div.sourceCode,
+div.callout + div.code-copy-outer-scaffold,
+div.callout + div.sourceCode {
   margin-left: 1.5rem;
+}
+
+/* Code blocks nested inside list items already inherit the list's indent; keep
+   them flush within the item rather than adding another 1.5rem on top. */
+li > div.code-copy-outer-scaffold,
+li > div.sourceCode,
+li p + div.code-copy-outer-scaffold,
+li p + div.sourceCode {
+  margin-left: 0;
 }
 
 code {
@@ -113,25 +129,6 @@ code {
 
 .sidebar-title {
   font-weight: 700;
-}
-
-/* "Heading 0" style for the Cram sheet label sitting just above its callout.
-   Renders as a small uppercase eyebrow in the cram orange instead of a full h2. */
-h2.cram-heading {
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--oop-cram-border);
-  margin-top: 0.5rem;
-  margin-bottom: 0.4rem;
-  padding: 0;
-  border-bottom: none;
-}
-
-h2.cram-heading::before {
-  content: "▸ ";
-  margin-right: 0.15em;
 }
 
 /* Hover info tooltip — small (i) icon that reveals an elaboration on hover/focus.

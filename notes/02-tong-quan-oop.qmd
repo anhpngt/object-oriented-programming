@@ -2,15 +2,9 @@
 title: "Chương 02 - Tổng quan về lập trình hướng đối tượng (OOP Overview)"
 ---
 
-## Cram sheet {.unnumbered .unlisted .cram-heading}
-
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/02.qmd >}}
 ::::
-
-::: {.content-visible when-format="html"}
-[Tải bản PDF in](02-tong-quan-oop.pdf)
-:::
 
 ## Các phương pháp lập trình (Programming Paradigms)
 

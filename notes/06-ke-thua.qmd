@@ -2,15 +2,9 @@
 title: "Chương 06 - Tính kế thừa (Inheritance)"
 ---
 
-## Cram sheet {.unnumbered .unlisted .cram-heading}
-
 :::: {.callout-important title="Cram sheet" collapse="true"}
 {{< include _cram/06.qmd >}}
 ::::
-
-::: {.content-visible when-format="html"}
-[Tải bản PDF in](06-ke-thua.pdf)
-:::
 
 ## 4 quan hệ giữa các lớp đối tượng (Relationships Between Classes)
 
