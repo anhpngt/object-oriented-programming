@@ -47,7 +47,6 @@ format:
     mainfont: "Noto Serif"
     sansfont: "Noto Sans"
     monofont: "Noto Sans Mono"
-    babel-lang: vietnamese
     colorlinks: true
     listings: true
 
