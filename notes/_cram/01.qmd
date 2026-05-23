@@ -1,16 +1,90 @@
-- C++ là mở rộng của C, là ngôn ngữ lai: vừa lập trình thủ tục/cấu trúc, vừa hướng đối tượng (khác Smalltalk thuần OOP).
-- So sánh: lập trình cấu trúc tổ chức theo hàm/thủ tục, dữ liệu tách rời, trao đổi qua đối số và biến toàn cục; OOP tổ chức theo lớp, lớp gói cả dữ liệu lẫn phương thức, xem như mở rộng của `struct`.
-- Cấu trúc chương trình: `#include <iostream>`, `using namespace std;`, hàm `main()`, nhập xuất bằng `cin >>` và `cout <<`; xuống dòng dùng `endl`; định dạng cần `<iomanip>` (`setprecision`, `setw`).
-- Hằng dùng `const` đặt trước khai báo có khởi gán (`const int MAXSIZE = 1000;`), có thể khởi gán bằng giá trị trả về của hàm.
-- Ép kiểu hai dạng: `(Kiểu)biểu_thức` kiểu C và `Kiểu(biểu_thức)` kiểu hàm; khai báo biến có thể đặt bất kỳ chỗ nào trước khi dùng.
-- Toán tử phạm vi `::`: (1) truy cập biến toàn cục khi bị biến cục bộ che (`::x`), (2) chỉ rõ phương thức thuộc lớp khi định nghĩa ngoài lớp (`Kiểu Tên_lớp::Tên_hàm`), (3) dùng với `using std::cout;`.
-- Kiểu dữ liệu C++: đơn giản (`char`, `int`, `float`, `bool`, `enum`) và có cấu trúc (`array`, `struct`, `union`, `class`); thêm `pointer`, `reference`. Khai báo: `struct TS{...};`, `enum MAU{xanh, do, tim};`, `union {...};`, `typedef` để đặt tên kiểu mới (`typedef int MT[20][20];`).
-- Cấp phát động: `Kiểu *p = new Kiểu;` hoặc `new Kiểu[n]`; giải phóng bằng `delete p;` hoặc `delete[] pn;`; thất bại ném `std::bad_alloc` (hoặc trả `NULL` nếu dùng `new (std::nothrow)`; slide cũ ghi `NULL`).
-- Đối có giá trị mặc định: khởi gán trong prototype (không lặp lại trong định nghĩa), các đối mặc định phải nằm cuối danh sách; tham số thiếu khi gọi phải tính từ phải sang trái; có thể khởi gán bằng hằng, biến toàn cục, hàm.
-- Biến tham chiếu là bí danh của biến giá trị, không có địa chỉ riêng, dùng chung vùng nhớ; bắt buộc khởi gán khi khai báo (`int &y = x;`); không có mảng tham chiếu, nhưng được tham chiếu một phần tử mảng.
-- Truyền tham số 3 cách qua ví dụ `swap`: `swap1(int x, int y)` truyền giá trị (không đổi gốc), `swap2(int *x, int *y)` truyền con trỏ, `swap3(int &x, int &y)` truyền tham chiếu (đổi trực tiếp).
-- Con trỏ hàm: khai báo cùng kiểu trả về và bộ đối với hàm cần trỏ tới, gán bằng tên hàm. Ví dụ: `double (*f)(double); f = nhandoi;` rồi truyền vào `void tinh(double (*f)(double), double x)`.
-- Hàm `inline`: thay lời gọi bằng mã hàm để tăng tốc (bỏ thao tác cấp phát/truyền/giải phóng); chỉ dùng cho hàm nhỏ; không inline được hàm có `static`, đệ quy, vòng lặp, `goto`, `switch`.
-- Nạp chồng hàm (overloading): cùng tên, khác bộ đối về số lượng/thứ tự/kiểu; KHÔNG được chỉ khác kiểu trả về; trình biên dịch chọn hàm có bộ đối gần kiểu nhất, có thể ép kiểu để khớp.
-- Nạp chồng toán tử: dùng để thao tác trên kiểu tự định nghĩa (cấu trúc, mảng) một cách tự nhiên. Cú pháp `Kiểu_trả_về operator<Phép_toán>(đối số){...}`, ví dụ `PS operator+(PS p1, PS p2);`. Số đối tùy số toán hạng.
-- Từ khóa kích hoạt trong đề: "toán tử phạm vi `::`", "đối mặc định", "tham chiếu", "con trỏ hàm", "`inline`", "nạp chồng hàm/toán tử", "`new`/`delete`", "`typedef`".
+- C++: mở rộng C (mọi thứ C dùng được). C: cấu trúc. C++: ngôn ngữ lai — lớp + hàm. Smalltalk thuần OOP, chỉ có lớp.
+- LT cấu trúc: hàm/thủ tục, dữ liệu tách rời, trao đổi qua đối số + biến toàn cục → "CT = CTDL + Giải thuật". OOP: tổ chức theo lớp; lớp = dữ liệu + phương thức (mở rộng `struct`); chương trình = tập lớp có quan hệ.
+- Phong cách: tên gợi nghĩa; quy tắc xuống hàng; Tab + `{}` thống nhất. Hàm gọi trước định nghĩa → BẮT BUỘC có prototype trước lời gọi.
+- Chú thích: `/* nhiều dòng */`, `// một dòng`.
+- Ép kiểu: `(Kiểu)bt` (C-style), `Kiểu(bt)` (function-style). VD `(float)i`, `float(i+1)`.
+- Khai báo biến: bất kỳ chỗ nào trước khi dùng.
+- `const`: đặt trước khai báo có khởi gán; không đổi giá trị. `const int MAXSIZE = 1000;`. Khởi gán bằng hàm: `const DIEM gmh = {getmaxx()/2, getmaxy()/2, WHITE};`.
+- Nhập xuất: `#include <iostream>`, `using namespace std;`. `cin >> x` nhập, `cout << x` xuất; nối `>>`/`<<`. Chuỗi: `cin.get(ht,50,'\n')`, `cin.getline(ht,50)`, `getline(cin, s)` (cần `<string>`).
+- `cout << endl` → xuống dòng + về đầu dòng.
+- `<iomanip>`: `setprecision(p)` số chữ số sau dấu chấm — hiệu lực **mọi** `cout` sau. `setw(w)` độ rộng tối thiểu — hiệu lực **1** giá trị xuất kế tiếp.
+- Toán tử phạm vi `::`:
+  1. Truy cập biến toàn cục bị biến cục bộ trùng tên che: `y = ::x + 3`.
+  2. Chỉ rõ phương thức thuộc lớp khi định nghĩa ngoài lớp: `Kiểu Tên_lớp::Tên_hàm`.
+  3. `using std::cout;`.
+- Phân loại kiểu C++:
+  - simple → integral (`char`, `short`, `int`, `long`, `bool`, `enum`), floating (`float`, `double`, `long double`).
+  - structured → `array`, `struct`, `union`, `class`.
+  - address → `pointer`, `reference`.
+- `sizeof(int) = 2`; `sizeof('A') = 1`.
+- `struct TS { char ht[25]; long sbd; };` → `TS a;`, `TS ts[1000];`.
+- `enum MAU{xanh, do, tim, vang};`
+- `union Có_tên/Không_tên {...};`
+- `typedef`: định nghĩa kiểu mới. `typedef struct {int tu, mau;} PS;` → `PS p;`. `typedef int MT[20][20];` → `MT m;`.
+- Truy xuất trường: `p.tu` (biến), `p->tu` (con trỏ).
+- Cấp phát động `new`/`delete`:
+  - 1 phần tử: `Kiểu *p = new Kiểu;`. n phần tử: `new Kiểu[n]`.
+  - Giải phóng: `delete p;`, `delete[] pn;`.
+  - Thành công → `p` chứa địa chỉ đầu vùng nhớ. Thất bại → `p = NULL`.
+
+::: {.callout-note title="Đối có giá trị mặc định"}
+Gán giá trị mặc định cho các đối số của hàm. Giá trị này sẽ được sử dụng khi không truyền giá trị cho các đối số của hàm trong lời gọi hàm.
+:::
+
+- Khai báo:
+  - Có prototype → khởi gán mặc định **trong prototype**, KHÔNG lặp lại trong định nghĩa: `void delay(int n = 1000); void delay(int n){...}`.
+  - Không prototype → khởi gán trong dòng đầu định nghĩa: `void delay(int n = 1000){...}`.
+- Gọi hàm: tham số thiếu phải tương ứng với đối mặc định, **tính từ trái sang phải**.
+  - VD `void f(int d1, float d2, char *d3="Ha Noi", int d4=100, double d5=3.14)`:
+    - `f(3)` SAI (d2 không có mặc định).
+    - `f(3,3.4)`, `f(3,3.4,"ABC")`, `f(3,3.4,"ABC",10)`, `f(3,3.4,"ABC",10,1.0)` đúng.
+- Đối mặc định khởi gán bằng hằng, biến toàn cục, hàm: `void f(int n, int m = MAX, int xmax = getmaxx())`.
+- Ba loại biến: **giá trị** (chứa dữ liệu), **con trỏ** (chứa địa chỉ), **tham chiếu** (alias cho biến giá trị).
+
+::: {.callout-note title="Biến tham chiếu"}
+Biến tham chiếu dùng làm bí danh (alias) cho một biến giá trị.
+:::
+
+- Đặc điểm:
+  - Không cấp phát bộ nhớ → không có địa chỉ riêng.
+  - Dùng chung vùng nhớ với biến tham chiếu đến.
+  - BẮT BUỘC chỉ rõ tham chiếu đến biến nào khi khai báo: `int &y = x;`. Không khởi gán → lỗi biên dịch.
+  - Tham chiếu tới phần tử mảng được: `int a[5], &r = a[0];`.
+  - KHÔNG có mảng tham chiếu.
+- Truyền tham số:
+  - **Tham trị**: gán giá trị tham số vào đối; làm việc trên vùng nhớ đối → KHÔNG đổi tham số gốc.
+  - **Tham chiếu**: thao tác trực tiếp trên vùng nhớ tham số → ĐỔI tham số gốc. Tham số phải là biến/phần tử mảng cùng kiểu.
+  - VD `swap`:
+    ```cpp
+    void swap1(int x, int y)   { int t=x; x=y; y=t; }    // tham tri  - khong doi
+    void swap2(int *x, int *y) { int *t=x; x=y; y=t; }   // con tro    - khong doi (sai)
+    void swap3(int &x, int &y) { int t=x; x=y; y=t; }    // tham chieu - doi
+    ```
+- Con trỏ hàm: khai báo cùng Kiểu trả về + Bộ đối với hàm cần trỏ tới; gán Tên hàm cho con trỏ.
+  - `double tinh_max(double *a, int n){...}; double (*f)(double *, int); f = tinh_max;`.
+  - Hàm nhận con trỏ hàm: `void tinh(double (*f)(double), double x) { cout << f(x); }`.
+
+::: {.callout-note title="Inline function — ưu điểm"}
+Tốc độ chương trình tăng lên do không phải thực hiện các thao tác có tính thủ tục khi gọi hàm (cấp phát vùng nhớ cho các đối và biến cục bộ, truyền dữ liệu của các tham số cho các đối, giải phóng vùng nhớ trước khi thoát khỏi hàm, …).
+:::
+
+- Lưu ý:
+  - Chỉ dùng cho hàm **nhỏ** (làm tăng kích thước chương trình).
+  - KHÔNG inline được: hàm có `static`, đệ quy, có vòng lặp / `goto` / `switch`.
+
+::: {.callout-note title="Định nghĩa chồng các hàm (overloading)"}
+Định nghĩa chồng các hàm là dùng cùng một tên để định nghĩa các hàm khác nhau. Trình biên dịch C++ sẽ dựa vào sự khác nhau về tập đối của các hàm này để đổi tên thành các hàm khác nhau.
+:::
+
+- Khác về **số lượng**, **thứ tự**, hoặc **kiểu dữ liệu** của đối.
+- KHÔNG được trùng tên chỉ khác Kiểu trả về.
+- Trình biên dịch chọn hàm có **bộ đối gần kiểu nhất**; có thể ép kiểu để khớp.
+- Chỉ overload khi cùng công việc, trên kiểu khác nhau.
+
+::: {.callout-note title="Định nghĩa chồng các toán tử"}
+Để thực hiện các phép toán trên các kiểu dữ liệu không chuẩn (kiểu dữ liệu tự định nghĩa như mảng, cấu trúc,…) một cách tự nhiên ta dùng cách định nghĩa chồng các toán tử.
+:::
+
+- Cú pháp: `Kiểu_trả_về operator<phép_toán>(danh sách đối){...}`. VD `PS operator+(PS p1, PS p2);`.
+- Số đối tùy số toán hạng (toán tử 2 ngôi → ≥ 2 đối).
+- Dùng như phép toán có sẵn; `()` định thứ tự.

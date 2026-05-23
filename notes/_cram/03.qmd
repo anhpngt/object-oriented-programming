@@ -1,17 +1,90 @@
-- Cú pháp lớp: `class TenLop { private: ... protected: ... public: ... };`. Mặc định trong `class` là `private`; nhãn `private` đầu tiên có thể bỏ qua.
-- Ba phạm vi truy xuất: `private` chỉ trong lớp, `protected` trong lớp và lớp dẫn xuất, `public` truy cập tự do. Có thể có nhiều nhãn private/public trong cùng một lớp, phạm vi kéo dài đến nhãn kế tiếp.
-- Hai cách định nghĩa hàm thành viên: trong lớp (inline) hoặc ngoài lớp dùng toán tử `::`, ví dụ `void Diem::nhap() { ... }`.
-- Ba cách tạo và dùng đối tượng: trên stack `Rectangle r1; r1.set(...)`; qua con trỏ trỏ tới đối tượng có sẵn `Rectangle *r2 = &r1; r2->set(...)`; cấp phát động `Rectangle *r3 = new Rectangle(); r3->set(...); delete r3;`.
-- Hàm thành viên truy cập được mọi thành phần `private` của đối tượng gọi nó, và cả của đối tượng/con trỏ/tham chiếu cùng kiểu lớp truyền vào làm tham số.
-- Con trỏ `this` là tham số ngầm định trỏ đến đối tượng đang gọi hàm thành viên: `this->x`.
-- Phép gán đối tượng (`b = a;`) mặc định là sao chép từng thành phần dữ liệu (member-wise copy).
-- Constructor: trùng tên lớp, không có kiểu trả về (kể cả `void`), thường là `public`. Có thể nạp chồng và có tham số mặc định.
-- Bốn dạng constructor trong slide: mặc định (không tham số), có tham số, có tham số mặc định, và sao chép (copy constructor nhận `const TenLop&`).
-- Nếu không khai báo constructor nào, C++ tự sinh constructor mặc định rỗng; nếu đã có constructor khác mà thiếu constructor mặc định thì khai báo `TenLop x;` sẽ lỗi biên dịch.
-- Destructor: tên là `~TenLop`, không tham số, không kiểu trả về, mỗi lớp chỉ có một, `public`; tự động gọi khi đối tượng hết phạm vi, dùng để dọn dẹp tài nguyên.
-- Phương thức truy vấn (getter) không nên đổi trạng thái đối tượng, đặt tên `getX()`, truy vấn điều kiện dùng tiền tố `is`; phương thức cập nhật (setter) `setX(...)` thường kiểm tra hợp lệ trước khi gán. Có thể khai báo `const` sau danh sách tham số, ví dụ `void Write() const;`.
-- Thành viên `static`: thuộc về lớp, không thuộc đối tượng; tồn tại một bản duy nhất dùng chung cho mọi thể hiện, tồn tại ngay cả khi chưa có đối tượng nào.
-- Dữ liệu `static` phải định nghĩa ngoài lớp: `int Lop::bien = 0;`. Có thể là `public`, `private`, hoặc `protected`.
-- Hàm `static` không có con trỏ `this` ngầm định nên không tự ý truy cập thành viên không phải static; nếu được truyền một đối tượng làm tham số tường minh thì vẫn truy cập được thành viên của đối tượng đó. Truy cập qua tên lớp và toán tử `::` (ví dụ `Lop::ham()`), gọi được khi chưa có đối tượng nào; `static` private/protected truy cập qua hàm thành viên public.
-- Đối tượng toàn cục: constructor chạy trước `main()`, destructor chạy sau khi `main()` kết thúc — dùng được để in thông điệp vào/ra chương trình mà không sửa `main()`.
-- Từ khóa kích hoạt trong đề: "`class`", "`private`/`protected`/`public`", "`::`", "constructor mặc định/sao chép", "destructor", "`this`", "`new`/`delete`", "`static`", "getter/setter", "đối tượng toàn cục".
+::: {.callout-note title="Lớp (class)"}
+Lớp là một mô tả trừu tượng của nhóm các đối tượng cùng bản chất, ngược lại mỗi một đối tượng là một thể hiện cụ thể cho những mô tả trừu tượng đó. Lớp trong C++ thực chất là một kiểu dữ liệu do người sử dụng định nghĩa.
+:::
+
+- Cú pháp:
+  ```cpp
+  class TenLop {
+  private:    // riêng từng đối tượng
+    ...
+  protected:  // riêng từng đối tượng + truy cập từ lớp dẫn xuất
+    ...
+  public:     // công cộng
+    ...
+  };
+  ```
+- Mặc định trong `class` là `private`. Nhãn `private` đầu tiên có thể bỏ qua (C++ ngầm hiểu các thành phần trước nhãn `public` đầu tiên là `private`).
+- Có thể có nhiều nhãn `private`/`public` xen kẽ; phạm vi mỗi nhãn kéo dài đến nhãn kế tiếp hoặc hết khai báo lớp.
+- Định nghĩa hàm thành phần — 2 cách:
+  - Trong lớp (inline): `int area() { return width*length; }`.
+  - Ngoài lớp dùng `::`: `void Rectangle::set(int w, int l) { width=w; length=l; }`.
+- 3 cách tạo và dùng đối tượng:
+  - Stack: `Rectangle r1; r1.set(5, 8);` (dot notation).
+  - Con trỏ tới đối tượng có sẵn: `Rectangle *r2 = &r1; r2->set(8, 10);` (arrow notation).
+  - Cấp phát động: `Rectangle *r3 = new Rectangle(); r3->set(80, 100); delete r3; r3 = NULL;`.
+- Hàm thành phần truy nhập:
+  - Mọi thành phần `private` của đối tượng gọi nó.
+  - Mọi thành phần `private` của các đối tượng / con trỏ / tham chiếu **cùng kiểu lớp** truyền vào làm tham số.
+
+::: {.callout-note title="Con trỏ this"}
+Từ khóa `this` trong định nghĩa của các hàm thành phần lớp dùng để xác định địa chỉ của đối tượng dùng làm tham số ngầm định cho hàm thành phần. Con trỏ `this` tham chiếu đến đối tượng đang gọi hàm thành phần.
+:::
+
+::: {.callout-note title="Phép gán đối tượng"}
+Là việc sao chép giá trị các thành phần dữ liệu từ đối tượng `a` sang đối tượng `b` tương ứng từng đôi một (member-wise copy).
+:::
+
+::: {.callout-note title="Phương thức thiết lập (Constructor)"}
+Phương thức thiết lập hay còn gọi là constructor, là một loại phương thức đặc biệt dùng để khởi tạo thể hiện của lớp. Bất kỳ một đối tượng nào được khai báo đều phải sử dụng một hàm thiết lập để khởi tạo các giá trị thành phần của đối tượng. Hàm thiết lập được khai báo giống như một phương thức với tên phương thức trùng với tên lớp và không có giá trị trả về (kể cả `void`). Constructor thường phải có thuộc tính `public`.
+:::
+
+- Constructor có thể được khai báo chồng (overload) như hàm C++ thông thường.
+- Constructor có thể có tham số mặc định.
+- 4 dạng constructor: mặc định (không tham số), có tham số, có tham số mặc định, sao chép (copy).
+
+::: {.callout-note title="Constructor mặc định (default constructor)"}
+Constructor mặc định là constructor được gọi khi thể hiện được khai báo mà không có đối số nào được cung cấp: `MyClass x;` hoặc `MyClass *p = new MyClass;`. Ngược lại, nếu tham số được cung cấp tại khai báo thể hiện, trình biên dịch sẽ gọi constructor khác (overload).
+:::
+
+- Nếu không cung cấp **bất kỳ** constructor nào → C++ tự sinh constructor mặc định **rỗng**.
+- Nếu **không** định nghĩa constructor mặc định nhưng **có** các constructor khác → trình biên dịch BÁO LỖI "không tìm thấy constructor mặc định" khi tạo thể hiện không tham số.
+
+::: {.callout-note title="Constructor sao chép (copy constructor)"}
+Phương thức thiết lập có tham số là hằng tham chiếu đến đối tượng thuộc chính lớp này: `TenLop(const TenLop& other)`.
+:::
+
+::: {.callout-note title="Phương thức hủy bỏ (Destructor)"}
+Phương thức hủy bỏ hay còn gọi là destructor, được gọi ngay trước khi một đối tượng bị thu hồi. Destructor thường được dùng để thực hiện việc dọn dẹp cần thiết trước khi một đối tượng bị hủy.
+
+Một lớp chỉ có duy nhất một Destructor. Tên trùng tên lớp, có dấu `~` đặt trước. Không có giá trị trả về. Được tự động gọi khi đối tượng hết phạm vi sử dụng. Destructor phải có thuộc tính `public`.
+:::
+
+- Phương thức truy vấn (getter):
+  - Loại: đơn giản ("giá trị x?"), điều kiện ("x > 10?"), dẫn xuất ("tổng x + y?").
+
+::: {.callout-note title="Đặc điểm phương thức truy vấn"}
+Đặc điểm quan trọng của phương thức truy vấn là nó không nên thay đổi trạng thái hiện tại của đối tượng.
+:::
+
+- Quy ước tên: tiền tố `get` (`getX()`, `getSize()`); truy vấn điều kiện dùng tiền tố `is`.
+- Có thể khai báo `const` sau danh sách tham số: `void Write() const;`.
+- Phương thức cập nhật (setter):
+  - Tiền tố `set`: `setX(int)`.
+  - Đặc trưng quan trọng: **kiểm tra hợp lệ** trước khi gán; báo cho người gọi biết phép gán có thành công không.
+  - VD `Student::setGPA` trả `int`: `0` thành công, `-1` thất bại (`newGPA` ngoài `[0.0, 4.0]`).
+
+::: {.callout-note title="Thành viên `static`"}
+Trong C++, nếu `static` xuất hiện trước một dữ liệu hoặc một phương thức của lớp thì giá trị của nó vẫn được lưu lại và có ý nghĩa cho đối tượng khác của cùng lớp này.
+:::
+
+- Dữ liệu `static`:
+  - **Một bản duy nhất** tồn tại trong suốt quá trình chạy.
+  - Dùng chung cho tất cả thể hiện, bất kể có bao nhiêu thể hiện.
+  - Tồn tại ngay cả khi đối tượng của lớp không tồn tại.
+  - Phải định nghĩa ngoài lớp: `int Lop::bien = 0;`.
+  - Có thể `public`, `private`, `protected`.
+- Phương thức `static`:
+  - Truy cập được khi **chưa khai báo đối tượng** (qua tên lớp + `::`).
+  - `public static`: truy cập qua đối tượng bất kỳ hoặc qua `Lop::ham()`.
+  - `private`/`protected static`: truy cập qua hàm thành viên `public` của lớp hoặc qua `friend`.
+- Đối tượng toàn cục: constructor chạy **trước** `main()`, destructor chạy **sau** `main()` — dùng để in thông điệp vào/ra chương trình mà không sửa `main()`.

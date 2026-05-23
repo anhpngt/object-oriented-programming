@@ -1,17 +1,92 @@
-- Tiến trình lập trình: không cấu trúc (Assembly/Basic, GOTO, biến toàn cục) -> có cấu trúc/thủ tục (Pascal, C; chương trình = cấu trúc dữ liệu + giải thuật, nhưng tách rời dữ liệu) -> hướng đối tượng (xoay quanh dữ liệu, gom dữ liệu + hành vi).
-- Lớp (Class) là khuôn mẫu; đối tượng (Object) là thể hiện cụ thể (instance) của lớp.
-- Thuộc tính (Attribute) mô tả trạng thái; thao tác/hành vi mô tả những gì đối tượng có thể làm.
-- Phân biệt Thao tác (Operation) vs Phương thức (Method): thao tác là hành vi trừu tượng khai báo ở lớp; phương thức là cài đặt cụ thể của thao tác đó. Cùng một thao tác có nhiều cài đặt khác nhau ở các lớp -> đa hình.
-- Đóng gói (Encapsulation): gom dữ liệu và hành vi liên quan vào một đơn vị, kèm che giấu thông tin (private) để bên ngoài không truy cập tự do vào chi tiết nội bộ.
-- Trừu tượng hóa (Abstraction): khái quát hóa tập đối tượng theo các đặc điểm được quan tâm, bỏ qua chi tiết không cần thiết; ánh xạ thực thể -> thuộc tính + hành động -> dữ liệu + hàm.
-- Kế thừa (Inheritance): lớp con dùng lại thuộc tính/thao tác của lớp cha; cài đặt quan hệ đặc biệt hóa ("là") và khái quát hóa.
-- Đa hình (Polymorphism): cùng tên thao tác/thuộc tính được định nghĩa ở nhiều lớp với cài đặt khác nhau.
-- Sơ đồ đối tượng = sơ đồ lớp (hình chữ nhật 3 phần: tên lớp / thuộc tính / thao tác) + sơ đồ thể hiện (giá trị cụ thể của một instance).
-- Mục tiêu thiết kế OOP: tái sử dụng (reusability), mở rộng (extensibility - plug-in/add-in), mềm dẻo/linh hoạt (flexibility - thay đổi cục bộ, ít ảnh hưởng toàn hệ thống).
-- OOA (Phân tích hướng đối tượng) 5 bước: (B1) định nghĩa bài toán, (B2) đặc tả yêu cầu người dùng/hệ thống, (B3) xác định đối tượng + thuộc tính (danh từ trong văn bản, dữ liệu trong DFD), (B4) xác định hành vi (động từ, xử lý trong DFD), (B5) xác định quan hệ giữa các đối tượng.
-- OOD (Thiết kế hướng đối tượng) 6 bước theo hướng Bottom-Up: (B1) đối tượng trong không gian lời giải, (B2) đặc tả lớp + quan hệ (kế thừa, thành phần, sử dụng), (B3) cấu trúc phân cấp lớp (tổng quát hóa), (B4) thiết kế lớp (hàm quản lý/cài đặt/truy nhập/xử lý lỗi), (B5) thiết kế hàm thành phần dùng Top-Down (tuần tự, tuyển chọn, vòng lặp), (B6) thiết kế chương trình chính.
-- 5 nguyên lý SOLID: SRP (Single Responsibility), OCP (Open-Closed - mở để mở rộng, đóng với sửa đổi), LSP (Liskov Substitution - lớp con thay thế được lớp cha), ISP (Interface Segregation - nhiều interface chuyên biệt hơn một interface tổng quát), DIP (Dependency Inversion - phụ thuộc vào trừu tượng, không phụ thuộc vào cài đặt cụ thể).
-- OOP (cài đặt): tổ chức theo lớp gồm dữ liệu + phương thức; dữ liệu bao bọc, các đối tượng trao đổi qua hàm (message passing); chương trình thiết kế theo Bottom-Up; dễ bổ sung dữ liệu/hàm mới.
-- Ưu điểm OOP: kế thừa loại bỏ lặp lại và mở rộng lớp có sẵn; đóng gói/che giấu thông tin tránh ảnh hưởng chéo; mô phỏng thế giới thực tốt hơn; hệ thống dễ mở rộng nâng cấp.
-- Khi phân tích đề: danh từ -> lớp/đối tượng/thuộc tính; động từ -> thao tác/phương thức; quan hệ giữa thực thể -> kế thừa/thành phần/sử dụng.
-- Từ khóa kích hoạt trong đề: SOLID, OOA, OOD, Bottom-Up, Top-Down, sơ đồ lớp, sơ đồ thể hiện, thao tác vs phương thức.
+- Tiến trình: không cấu trúc (Assembly/Basic, GOTO, biến toàn cục) → có cấu trúc / thủ tục (Pascal, C; CT = CTDL + Giải thuật, dữ liệu tách rời) → hướng đối tượng (xoay quanh dữ liệu, gom dữ liệu + hành vi).
+- Cấu trúc: dùng `for`, `do`, `while`, `if then else`. Ưu: module hóa, dễ tạo thư viện. Nhược: dữ liệu tách rời, không tự khởi tạo/giải phóng dữ liệu động, không mô tả đầy đủ thực tế.
+
+::: {.callout-note title="Lập trình hướng đối tượng"}
+Lập trình hướng đối tượng là phương pháp lập trình lấy đối tượng làm nền tảng để xây dựng chương trình. Một chương trình hướng đối tượng sẽ bao gồm tập các đối tượng có quan hệ với nhau.
+:::
+
+::: {.callout-note title="Đối tượng (Object)"}
+Trong thế giới thực, đối tượng được hiểu như là một thực thể: người, vật, … Một đối tượng là 1 thực thể bao gồm thuộc tính và hành động.
+:::
+
+::: {.callout-note title="Lớp (Class)"}
+Các đối tượng có các đặc tính tương tự nhau được gom chung thành lớp đối tượng. Một lớp đối tượng đặc trưng bằng các thuộc tính và các hành động (hành vi, thao tác) của các đối tượng thuộc lớp. Một đối tượng cụ thể thuộc một lớp được gọi là một thể hiện (instance) của lớp đó.
+:::
+
+::: {.callout-note title="Thuộc tính (Attribute)"}
+Một thành phần của đối tượng, có giá trị nhất định cho mỗi đối tượng tại mỗi thời điểm trong hệ thống.
+:::
+
+::: {.callout-note title="Thao tác (Operation)"}
+Thể hiện hành vi của một đối tượng tác động qua lại với các đối tượng khác hoặc với chính nó.
+:::
+
+::: {.callout-note title="Phương thức (Method)"}
+Mỗi thao tác trên một lớp đối tượng cụ thể tương ứng với một cài đặt cụ thể. Một cài đặt như vậy được gọi là một phương thức (method). Cùng một phương thức có thể được áp dụng cho nhiều lớp đối tượng khác nhau. Một thao tác như vậy được gọi là có tính đa hình (polymorphism).
+:::
+
+- VD đối tượng Người: thuộc tính = tên, tuổi, địa chỉ, màu mắt; hành động = đi, nói, thở.
+- Sơ đồ đối tượng = sơ đồ lớp + sơ đồ thể hiện.
+  - Lớp: hình chữ nhật 3 phần — tên lớp / thuộc tính / thao tác.
+  - Thể hiện: giá trị cụ thể của một instance.
+- Tương tác: đối tượng trao đổi qua **gửi thông điệp (message passing)** trên giao diện công khai. Lớp gồm phần `private` (data + methods nội bộ) và `public` (constructor, destructor, methods công khai).
+
+::: {.callout-note title="Trừu tượng hóa (Abstraction)"}
+Trừu tượng hóa là cách nhìn khái quát hóa về một tập các đối tượng có chung các đặc điểm được quan tâm (bỏ qua những chi tiết không cần thiết).
+:::
+
+- Ánh xạ: thế giới thực (thực thể, thuộc tính, hành động) → phần mềm (dữ liệu, hàm).
+
+::: {.callout-note title="Đóng gói (Encapsulation)"}
+Đóng gói: nhóm những gì có liên quan với nhau vào làm một để sau này có thể dùng một cái tên để gọi đến. Các hàm/thủ tục đóng gói các câu lệnh; các đối tượng đóng gói dữ liệu của chúng và các thủ tục có liên quan.
+:::
+
+::: {.callout-note title="Che dấu thông tin"}
+Đóng gói để che một số thông tin và chi tiết cài đặt nội bộ để bên ngoài không nhìn thấy. Che giấu những gì mà mình cần giữ bí mật. Che giấu những gì mà người dùng không cần.
+:::
+
+::: {.callout-note title="Kế thừa (Inheritance)"}
+Là cơ chế cho phép một lớp D có được các thuộc tính và thao tác của lớp C (như thể các thuộc tính và thao tác đó đã được định nghĩa tại lớp D). Cho phép cài đặt các quan hệ: đặc biệt hóa ("là"), khái quát hóa.
+:::
+
+::: {.callout-note title="Đa hình (Polymorphism)"}
+Là cơ chế cho phép tên một thao tác hoặc thuộc tính có thể được định nghĩa tại nhiều lớp và có thể có những cài đặt khác nhau tại các lớp đó.
+:::
+
+- Mục tiêu thiết kế:
+  - **Tái sử dụng** (reusability): thiết kế thành phần dùng lại cho nhiều phần mềm.
+  - **Mở rộng** (extensibility): hỗ trợ plug-in / add-in.
+  - **Mềm dẻo** (flexibility): dễ thay đổi khi thêm dữ liệu/tính năng; thay đổi không ảnh hưởng nhiều toàn hệ thống.
+- 3 hoạt động: **OOA** (phân tích) → **OOD** (thiết kế) → **OOP** (lập trình).
+- **OOA — 5 bước**:
+  - B1: định nghĩa bài toán (tìm hiểu hệ thống cũ, lấy yêu cầu, định nghĩa lại theo quan điểm phát triển).
+  - B2: đặc tả yêu cầu của người sử dụng và hệ thống.
+  - B3: xác định đối tượng + thuộc tính (DFD: dữ liệu/kho dữ liệu; văn bản: **danh từ**).
+  - B4: xác định hành vi (DFD: xử lý; văn bản: **động từ**).
+  - B5: xác định quan hệ giữa các đối tượng (mỗi thực thể có ≥ 1 quan hệ với thực thể khác).
+- **OOD — 6 bước Bottom-Up**:
+  - B1: xác định đối tượng trong không gian lời giải dựa trên đối tượng đã có.
+  - B2: đặc tả lớp + quan hệ — kế thừa (dùng lại thuộc tính/hàm của lớp khác), thành phần (đối tượng lớp này là phần tử lớp khác), sử dụng (lớp này đọc/xử lý đối tượng lớp khác).
+  - B3: cấu trúc phân cấp lớp theo nguyên lý tổng quát hóa, dùng lại tối đa.
+  - B4: thiết kế lớp — hàm quản lý lớp (tạo/hủy), hàm cài đặt (phép toán trên dữ liệu lớp), hàm truy nhập (đọc biến nội bộ), hàm xử lý lỗi.
+  - B5: thiết kế hàm thành phần Top-Down → tuần tự, tuyển chọn, vòng lặp; một lối vào, một lối ra.
+  - B6: thiết kế chương trình chính (nhập, tạo đối tượng, trao đổi thông tin, lưu/hiện kết quả).
+- **SOLID** — nguyên tắc thiết kế:
+  - **SRP** Single Responsibility Principle.
+  - **OCP** Open Closed Principle: "Open for extension but Closed for modification".
+  - **LSP** Liskov Substitution Principle: "Subclasses should be substitutable for their base classes".
+  - **ISP** Interface Segregation Principle: "Many client specific interfaces are better than one general purpose interface".
+  - **DIP** Dependency Inversion Principle: "Depend upon Abstractions. Do not depend upon concretions".
+- OOP (cài đặt):
+  - Tổ chức theo lớp (lớp = dữ liệu + phương thức xử lý).
+  - CTDL thiết kế đặc tả được đối tượng.
+  - Dữ liệu **bao bọc**, **che giấu**, không cho hàm ngoại lai truy nhập tự do.
+  - Đối tượng trao đổi qua **hàm**.
+  - Dễ bổ sung dữ liệu / hàm mới.
+  - Thiết kế Bottom-Up.
+- Ưu điểm OOP:
+  - **Kế thừa** → loại bỏ đoạn lặp, mở rộng lớp đã có.
+  - **Đóng gói + che dấu** → CT không bị đoạn khác làm thay đổi.
+  - **Mô phỏng thực tế** tốt hơn (ánh xạ đối tượng bài toán → đối tượng CT).
+  - Hệ thống dễ mở rộng, nâng cấp thành hệ thống lớn hơn.
+- Phân tích đề: **danh từ** → lớp/đối tượng/thuộc tính; **động từ** → thao tác/phương thức; quan hệ → kế thừa/thành phần/sử dụng.

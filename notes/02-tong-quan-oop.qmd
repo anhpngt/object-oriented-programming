@@ -2,9 +2,9 @@
 title: "Chương 02 - Tổng quan về lập trình hướng đối tượng (OOP Overview)"
 ---
 
-::: {.callout-important title="Cram sheet"}
+:::: {.callout-important title="Cram sheet"}
 {{< include _cram/02.qmd >}}
-:::
+::::
 
 ::: {.content-visible when-format="html"}
 [Tải bản PDF in](02-tong-quan-oop.pdf)
@@ -12,13 +12,11 @@ title: "Chương 02 - Tổng quan về lập trình hướng đối tượng (OO
 
 ## Các phương pháp lập trình
 
-Trước khi đi vào lập trình hướng đối tượng, cần đặt nó trong dòng chảy phát triển của các phương pháp lập trình. Lịch sử lập trình thường được chia thành ba giai đoạn nối tiếp nhau: lập trình không có cấu trúc, lập trình có cấu trúc (hướng thủ tục) và lập trình hướng đối tượng. Mỗi giai đoạn ra đời để khắc phục những hạn chế của giai đoạn trước.
+Ba giai đoạn nối tiếp: lập trình **không có cấu trúc** → **có cấu trúc / thủ tục** → **hướng đối tượng**.
 
 ### Lập trình không có cấu trúc
 
-Đây là phương pháp xuất hiện sớm nhất, gắn với các ngôn ngữ như Assembly hay Basic. Chương trình thường được viết tuyến tính từ trên xuống, sử dụng nhiều biến toàn cục và lạm dụng lệnh nhảy `GOTO` để điều khiển luồng thực thi.
-
-Một đoạn mã Basic điển hình có thể trông như sau, với các nhãn số dòng và lệnh `goto`, `gosub`:
+Phương pháp xuất hiện đầu tiên — Assembly, Basic. Đặc trưng: dùng nhiều **biến toàn cục**, lạm dụng `GOTO`.
 
 ```text
 10 k = 1
@@ -32,13 +30,11 @@ Một đoạn mã Basic điển hình có thể trông như sau, với các nhã
 110 return
 ```
 
-Cách viết này nhanh chóng trở nên khó đọc khi chương trình lớn dần. Luồng điều khiển nhảy qua nhảy lại làm cho việc theo dõi và bảo trì rất khó khăn, biến toàn cục dễ bị sửa ngoài ý muốn từ bất cứ đâu trong chương trình.
+Nhược: khó đọc khi chương trình lớn, luồng điều khiển nhảy lung tung, biến toàn cục dễ bị sửa ngoài ý muốn.
 
 ### Lập trình có cấu trúc
 
-Lập trình có cấu trúc tổ chức chương trình thành các chương trình con (hàm hoặc thủ tục), vì vậy còn được gọi là "lập trình thủ tục". Mỗi chương trình con đảm nhận một công việc nhỏ hoặc một nhóm công việc trong toàn bộ hệ thống. Việc trao đổi dữ liệu giữa các chương trình con được thực hiện thông qua đối số của hàm và các biến toàn cục. Bên trong mỗi hàm, người ta dùng các cấu trúc điều khiển có tổ chức như `for`, `do`, `while`, `if-then-else` thay cho `goto`. Các ngôn ngữ tiêu biểu là Pascal và C.
-
-Ví dụ trong C, dữ liệu được khai báo bằng `struct` và xử lý bằng các hàm riêng biệt:
+Tổ chức chương trình thành các chương trình con (hàm/thủ tục) — còn gọi là "lập trình thủ tục". Mỗi chương trình con đảm nhận một công việc nhỏ. Trao đổi dữ liệu qua **đối số của hàm** và **biến toàn cục**. Dùng các cấu trúc điều khiển có tổ chức: `for`, `do`, `while`, `if-then-else`. Ngôn ngữ tiêu biểu: Pascal, C.
 
 ```c
 struct Date {
@@ -50,169 +46,199 @@ void print_date(struct Date d) {
 }
 ```
 
-Ưu điểm của phương pháp này là chương trình được module hóa nên dễ hiểu và dễ bảo trì hơn, đồng thời dễ tạo ra các thư viện phần mềm dùng lại được.
+Ưu: dễ hiểu, dễ bảo trì hơn vì chương trình được module hóa. Dễ tạo thư viện phần mềm.
 
-Nhược điểm là chương trình dùng để xử lý dữ liệu nhưng lại tách rời với dữ liệu. Quan điểm chủ đạo là "Chương trình = Cấu trúc dữ liệu + Giải thuật", trong đó dữ liệu và hành vi tác động lên dữ liệu nằm ở hai chỗ khác nhau. Phương pháp này cũng không tự động khởi tạo hay giải phóng dữ liệu động, và không mô tả đầy đủ, trung thực được các hệ thống phức tạp trong thực tế.
+Nhược:
+
+- Chương trình dùng để xử lý dữ liệu nhưng lại tách rời dữ liệu. Quan điểm: **"Chương trình = Cấu trúc dữ liệu + Giải thuật"**.
+- Không tự động khởi tạo hay giải phóng dữ liệu động.
+- Không mô tả được đầy đủ, trung thực hệ thống trong thực tế.
 
 ### Lập trình hướng đối tượng
 
-Lập trình hướng đối tượng được xây dựng trên nền tảng của lập trình có cấu trúc cộng thêm sự trừu tượng hóa dữ liệu. Thay vì thiết kế xoay quanh các chức năng, chương trình hướng đối tượng được thiết kế xoay quanh dữ liệu mà ta có thể làm việc trên đó.
+::: {.callout-note title="Lập trình hướng đối tượng"}
+Lập trình hướng đối tượng là phương pháp lập trình lấy đối tượng làm nền tảng để xây dựng chương trình. Một chương trình hướng đối tượng sẽ bao gồm tập các đối tượng có quan hệ với nhau.
+:::
 
-Nói cách khác, lập trình hướng đối tượng là phương pháp lấy đối tượng làm nền tảng để xây dựng chương trình. Một chương trình hướng đối tượng bao gồm tập các đối tượng có quan hệ với nhau, mỗi đối tượng tự mang cả dữ liệu lẫn các hành vi thao tác lên dữ liệu đó.
+Xây dựng trên nền tảng lập trình có cấu trúc + sự trừu tượng hóa dữ liệu. Chương trình thiết kế **xoay quanh dữ liệu**, hơn là theo bản thân chức năng của chương trình.
 
 ## Một số khái niệm cơ bản trong OOP
 
-### Đối tượng (Object)
+::: {.callout-note title="Đối tượng (Object)"}
+Trong thế giới thực, đối tượng được hiểu như là một thực thể: người, vật, … Mỗi đối tượng tồn tại trong một hệ thống và có ý nghĩa nhất định trong hệ thống. Đối tượng giúp biểu diễn tốt hơn thế giới thực trên máy tính.
 
-Trong thế giới thực, đối tượng được hiểu như một thực thể: một con người, một chiếc xe, một quyển sách. Mỗi đối tượng tồn tại trong một hệ thống và mang ý nghĩa nhất định trong hệ thống đó. Việc đưa khái niệm đối tượng vào lập trình giúp biểu diễn thế giới thực trên máy tính trung thực hơn so với cách tách rời dữ liệu và hàm xử lý.
+Một đối tượng là 1 thực thể bao gồm thuộc tính và hành động.
+:::
 
-Mỗi đối tượng gồm hai thành phần gắn liền với nhau là thuộc tính và thao tác (hành động). Ví dụ một đối tượng `Người` có các thuộc tính như tên, tuổi, địa chỉ, màu mắt, và các hành động như đi, nói, thở. Có thể tóm gọn: một đối tượng là một thực thể bao gồm thuộc tính và hành động.
+VD đối tượng `Người`: thuộc tính = tên, tuổi, địa chỉ, màu mắt; hành động = đi, nói, thở.
 
-### Lớp (Class)
+::: {.callout-note title="Lớp (Class)"}
+Các đối tượng có các đặc tính tương tự nhau được gom chung thành lớp đối tượng. Một lớp đối tượng đặc trưng bằng các thuộc tính và các hành động (hành vi, thao tác) của các đối tượng thuộc lớp.
 
-Các đối tượng có đặc tính tương tự nhau được gom chung thành một lớp đối tượng. Một lớp đặc trưng bằng tập các thuộc tính và tập các hành động của các đối tượng thuộc lớp đó. Một đối tượng cụ thể thuộc lớp được gọi là một thể hiện (instance) của lớp.
+Một đối tượng cụ thể thuộc một lớp được gọi là một thể hiện (instance) của lớp đó.
+:::
 
-Khi nói về cấu trúc của lớp, slide phân biệt hai khái niệm:
+::: {.callout-note title="Thuộc tính (Attribute)"}
+Một thành phần của đối tượng, có giá trị nhất định cho mỗi đối tượng tại mỗi thời điểm trong hệ thống.
+:::
 
-- **Thuộc tính (Attribute):** một thành phần của đối tượng, có giá trị nhất định cho mỗi đối tượng tại mỗi thời điểm trong hệ thống.
-- **Thao tác (Operation):** thể hiện hành vi của đối tượng, mô tả cách đối tượng tác động qua lại với đối tượng khác hoặc với chính nó.
+::: {.callout-note title="Thao tác (Operation)"}
+Thể hiện hành vi của một đối tượng tác động qua lại với các đối tượng khác hoặc với chính nó.
+:::
 
-### Thao tác và phương thức
+::: {.callout-note title="Phương thức (Method)"}
+Mỗi thao tác trên một lớp đối tượng cụ thể tương ứng với một cài đặt cụ thể. Một cài đặt như vậy được gọi là một phương thức (method).
 
-Slide nhấn mạnh một phân biệt quan trọng: thao tác là khai báo trừu tượng về một hành vi của lớp, còn cài đặt cụ thể của thao tác đó trên một lớp đối tượng được gọi là một **phương thức (method)**. Nguyên văn: "Mỗi thao tác trên một lớp đối tượng cụ thể tương ứng với một cài đặt cụ thể. Một cài đặt như vậy được gọi là một phương thức."
-
-Tiếp theo đó, slide cũng nhấn mạnh: cùng một phương thức (hiểu là cùng tên thao tác) có thể được áp dụng cho nhiều lớp khác nhau, và khi đó thao tác đó được gọi là có tính đa hình. Đây chính là cầu nối khái niệm để bước sang phần đa hình ở mục sau.
+Cùng một phương thức có thể được áp dụng cho nhiều lớp đối tượng khác nhau. Một thao tác như vậy được gọi là có tính đa hình (polymorphism).
+:::
 
 ### Sơ đồ đối tượng
 
-Để mô tả các lớp đối tượng một cách trực quan, slide dùng sơ đồ đối tượng, gồm hai phần: sơ đồ lớp và sơ đồ thể hiện.
+Sơ đồ đối tượng = **sơ đồ lớp** + **sơ đồ thể hiện**.
 
-Một lớp đối tượng được mô tả bằng một hình chữ nhật chia làm ba phần:
+Sơ đồ lớp: hình chữ nhật **3 phần**:
 
-1. Phần đầu ghi tên lớp.
-2. Phần giữa liệt kê các thuộc tính.
-3. Phần cuối liệt kê các thao tác của các đối tượng thuộc lớp.
+1. Tên lớp.
+2. Các thuộc tính.
+3. Các thao tác của các đối tượng thuộc lớp.
 
-Ví dụ với lớp `Sinh viên`, phần đầu là "Sinh viên"; phần giữa liệt kê họ tên, năm sinh, mã số, điểm trung bình; phần cuối liệt kê các hành vi như đi học, đi thi, phân loại. Khi vẽ sơ đồ thể hiện cho một đối tượng cụ thể, ta thay phần thuộc tính bằng các giá trị thực, ví dụ họ tên là "Nguyễn Văn A", năm sinh 1984, mã số 0610234T, điểm TB 9.2.
+VD `Sinh viên`:
 
-### Interacting Objects
+| Sơ đồ lớp | Sơ đồ thể hiện |
+|---|---|
+| Sinh viên | (Sinh viên) |
+| Họ tên / Năm sinh / Mã số / Điểm TB | Nguyễn Văn A / 1984 / 0610234T / 9.2 |
+| Đi học / Đi thi / Phân loại | |
 
-Các đối tượng trong chương trình không tồn tại độc lập mà tương tác với nhau. Slide minh họa hai lớp `A` và `B`, mỗi lớp có phần dữ liệu thành phần `private`, các phương thức `public` (như constructor, destructor, các phương thức công khai khác) và các phương thức `private` nội bộ. Hai đối tượng thuộc hai lớp trao đổi với nhau bằng cách gửi thông điệp (message passing) qua giao diện công khai của nhau. Đây là mô hình thực thi cơ bản của hệ thống hướng đối tượng.
+### Tương tác giữa các đối tượng
+
+Đối tượng trao đổi qua **gửi thông điệp (message passing)** trên giao diện công khai. Mỗi lớp gồm:
+
+- `private`: data members + methods nội bộ.
+- `public`: constructor, destructor, các phương thức công khai khác.
 
 ## Các đặc điểm quan trọng của OOP
 
-Bốn đặc điểm quan trọng thường gắn với OOP gồm trừu tượng hóa, đóng gói, kế thừa và đa hình.
+::: {.callout-note title="Trừu tượng hóa (Abstraction)"}
+Trừu tượng hóa là cách nhìn khái quát hóa về một tập các đối tượng có chung các đặc điểm được quan tâm (bỏ qua những chi tiết không cần thiết).
+:::
 
-### Trừu tượng hóa (Abstraction)
+Ánh xạ thế giới thực → phần mềm:
 
-Trừu tượng hóa là cách nhìn khái quát hóa về một tập các đối tượng có chung những đặc điểm được quan tâm, đồng thời bỏ qua những chi tiết không cần thiết. Trong quá trình chuyển từ thế giới thực sang phần mềm, các thực thể được trừu tượng hóa thành lớp đối tượng; các thuộc tính của thực thể trở thành dữ liệu của đối tượng; các hành động của thực thể trở thành hàm.
+| Thế giới thực | Phần mềm |
+|---|---|
+| Thực thể | (Lớp đối tượng) |
+| Thuộc tính | Dữ liệu |
+| Hành động | Hàm |
 
-### Đóng gói (Encapsulation)
+::: {.callout-note title="Đóng gói (Encapsulation)"}
+Đóng gói: nhóm những gì có liên quan với nhau vào làm một để sau này có thể dùng một cái tên để gọi đến.
 
-Đóng gói có hai khía cạnh được slide nêu rõ:
+- Các hàm/thủ tục đóng gói các câu lệnh.
+- Các đối tượng đóng gói dữ liệu của chúng và các thủ tục có liên quan.
+:::
 
-Thứ nhất là nhóm những gì có liên quan với nhau vào làm một để sau này có thể dùng một cái tên để gọi đến. Ở mức nhỏ, các hàm hoặc thủ tục đóng gói các câu lệnh. Ở mức cao hơn, các đối tượng đóng gói dữ liệu và các thủ tục có liên quan đến dữ liệu đó.
+::: {.callout-note title="Che dấu thông tin"}
+Đóng gói để che một số thông tin và chi tiết cài đặt nội bộ để bên ngoài không nhìn thấy.
 
-Thứ hai là che giấu thông tin: đóng gói nhằm che một số thông tin và chi tiết cài đặt nội bộ để bên ngoài không nhìn thấy. Có hai loại thứ cần che giấu là những gì cần giữ bí mật, và những gì người dùng lớp không cần biết tới.
+- Che giấu những gì mà mình cần giữ bí mật.
+- Che giấu những gì mà người dùng không cần.
+:::
 
-### Kế thừa (Inheritance)
+::: {.callout-note title="Kế thừa (Inheritance)"}
+Là cơ chế cho phép một lớp `D` có được các thuộc tính và thao tác của lớp `C` (như thể các thuộc tính và thao tác đó đã được định nghĩa tại lớp `D`).
 
-Kế thừa là cơ chế cho phép một lớp `D` có được các thuộc tính và thao tác của lớp `C`, như thể những thuộc tính và thao tác đó đã được định nghĩa tại lớp `D`. Nhờ đó, lớp `D` tận dụng được phần đã có ở lớp `C` mà không cần định nghĩa lại.
+Cho phép cài đặt các quan hệ:
 
-Kế thừa cho phép cài đặt hai chiều quan hệ giữa các lớp đối tượng:
+- Đặc biệt hóa ("là").
+- Khái quát hóa.
+:::
 
-- **Đặc biệt hóa ("là"):** đi từ tổng quát đến chi tiết, một lớp con là một loại đặc biệt của lớp cha. Ví dụ `HinhTron` "là một" `Hinh`.
-- **Khái quát hóa:** đi từ chi tiết đến tổng quát, gom những điểm chung của nhiều lớp con thành một lớp cha. Khi thiết kế phân cấp lớp, ta thường rút các thuộc tính và hành vi chung ra lớp cha theo nguyên lý này.
+VD `Hình tròn` "là một" `Hình`; `Sinh viên` "là một" `Người`.
 
-### Đa hình (Polymorphism)
+::: {.callout-note title="Đa hình (Polymorphism)"}
+Là cơ chế cho phép tên một thao tác hoặc thuộc tính có thể được định nghĩa tại nhiều lớp và có thể có những cài đặt khác nhau tại các lớp đó.
+:::
 
-Đa hình là cơ chế cho phép tên một thao tác hoặc thuộc tính có thể được định nghĩa tại nhiều lớp và có thể có những cài đặt khác nhau tại các lớp đó. Định nghĩa của slide rộng hơn cách hiểu hẹp "cùng lời gọi hàm cho ra hành vi khác nhau ở thời gian chạy": nó áp dụng cho cả thao tác lẫn thuộc tính, và nhấn mạnh việc cùng một cái tên được dùng ở nhiều lớp với cài đặt khác nhau.
+Định nghĩa rộng hơn cách hiểu hẹp "cùng lời gọi cho ra hành vi khác nhau ở thời gian chạy" — áp dụng cho cả thao tác lẫn thuộc tính.
 
 ## Phân tích, thiết kế và lập trình hướng đối tượng
 
-### Mục tiêu thiết kế phần mềm hướng đối tượng
+### Mục tiêu thiết kế phần mềm
 
-Thiết kế phần mềm hướng đối tượng nhắm tới ba mục tiêu cốt lõi:
+- **Tính tái sử dụng (reusability)**: thiết kế thành phần dùng lại được trong nhiều phần mềm.
+- **Tính mở rộng (extensibility)**: hỗ trợ plug-in / add-in.
+- **Tính mềm dẻo (flexibility)**: dễ thay đổi khi thêm dữ liệu / tính năng; thay đổi không ảnh hưởng nhiều toàn hệ thống.
 
-- **Tính tái sử dụng (reusability):** thiết kế các thành phần có thể dùng lại được trong nhiều phần mềm khác nhau.
-- **Tính mở rộng (extensibility):** hỗ trợ thêm các plug-in/add-in vào hệ thống.
-- **Tính mềm dẻo (flexibility):** dễ dàng thay đổi khi thêm mới dữ liệu hay tính năng, và các thay đổi đó không gây ảnh hưởng lớn đến toàn bộ hệ thống.
-
-Quy trình phát triển hướng đối tượng được chia làm ba pha: phân tích (OOA), thiết kế (OOD) và cài đặt/lập trình (OOP).
+3 pha: **OOA** (Object Oriented Analysis) → **OOD** (Object Oriented Design) → **OOP** (Object Oriented Programming).
 
 ### Phân tích hướng đối tượng (OOA)
 
-Phân tích hướng đối tượng tập trung vào không gian bài toán, gồm năm bước:
+OOA gồm 5 bước, tập trung vào không gian bài toán.
 
-**B1: Định nghĩa bài toán.** Tìm hiểu bài toán để xác định chính xác cần giải quyết cái gì. Việc này bao gồm tìm hiểu hệ thống cũ (nếu có), lấy yêu cầu từ nhà đầu tư và người sử dụng, sau đó làm rõ và định nghĩa lại các yêu cầu theo quan điểm của người phát triển.
+**B1: Định nghĩa bài toán** — tìm hiểu hệ thống cũ; lấy yêu cầu từ nhà đầu tư và người sử dụng; làm rõ và định nghĩa lại theo quan điểm người phát triển.
 
-**B2: Xây dựng đặc tả yêu cầu.** Dựa trên các yêu cầu đã xác định ở bước 1, đưa ra đặc tả chi tiết của người dùng và của hệ thống, phục vụ cho việc xây dựng và kiểm tra sau này.
+**B2: Đặc tả yêu cầu** — dựa trên yêu cầu, đưa ra đặc tả chi tiết của người dùng và hệ thống, phục vụ xây dựng và kiểm tra sau này.
 
-**B3: Xác định đối tượng và thuộc tính.** Các đối tượng được rút ra từ những thực thể trong thế giới thực rồi trừu tượng hóa thành đối tượng trong chương trình. Hai kỹ thuật hay dùng:
+**B3: Xác định đối tượng và thuộc tính** — đối tượng được xác định qua các thực thể trong thế giới thực, trừu tượng hóa thành đối tượng trừu tượng. Hai kỹ thuật:
 
-- Sơ đồ dòng dữ liệu (DFD): dữ liệu và kho dữ liệu trong DFD có thể được xem như đối tượng.
-- Phân tích văn bản: các đối tượng thường được mô tả bằng các **danh từ** trong mô tả yêu cầu.
+- **Sơ đồ dòng dữ liệu (DFD)**: dữ liệu / kho dữ liệu trong DFD = đối tượng.
+- **Phân tích văn bản**: đối tượng = **danh từ**.
 
-**B4: Xác định hành vi của đối tượng.** Để mô tả đầy đủ, ta xác định các hàm mô tả hành vi của mỗi đối tượng:
+**B4: Xác định hành vi của đối tượng**:
 
-- Trong DFD: các xử lý trong sơ đồ.
-- Phân tích văn bản: các **động từ** chỉ hành động và so sánh.
+- DFD: các xử lý trong sơ đồ.
+- Văn bản: **động từ** chỉ hành động và so sánh.
 
-Heuristic "danh từ -> lớp/thuộc tính, động từ -> thao tác" thuộc vào hai bước B3 và B4 này, không phải là một mục riêng tách rời.
-
-**B5: Xác định mối quan hệ giữa các đối tượng** dựa trên sự trao đổi thông tin giữa chúng. Trong một hệ thống, mỗi thực thể phải có quan hệ ít nhất với một thực thể khác.
+**B5: Xác định mối quan hệ** dựa trên trao đổi thông tin. Mỗi thực thể phải có quan hệ ≥ 1 với thực thể khác.
 
 ### Thiết kế hướng đối tượng (OOD)
 
-Thiết kế hướng đối tượng đi sâu vào không gian lời giải và sử dụng cách tiếp cận **Bottom-Up**: bắt đầu từ các lớp đối tượng nhỏ, rồi ghép thành chương trình lớn. Quy trình gồm sáu bước:
+OOD đi sâu vào không gian lời giải, tiếp cận **Bottom-Up**, gồm 6 bước.
 
-**B1: Xác định các đối tượng trong không gian lời giải** dựa trên các đối tượng đã có trong không gian bài toán ở pha OOA.
+**B1: Xác định đối tượng trong không gian lời giải** dựa trên đối tượng đã có ở OOA.
 
-**B2: Xây dựng đặc tả cho các đối tượng, các lớp và mối quan hệ giữa chúng.** Có ba loại quan hệ chính cần lưu ý:
+**B2: Xây dựng đặc tả lớp + quan hệ**. 3 loại quan hệ:
 
-- **Kế thừa:** một lớp dùng lại một số thuộc tính và hàm của một hay nhiều lớp đã định nghĩa trước.
-- **Thành phần:** đối tượng của lớp này cũng là phần tử của lớp khác.
-- **Sử dụng:** khả năng một lớp đọc và xử lý các đối tượng của lớp khác.
+- **Kế thừa**: lớp dùng lại thuộc tính / hàm của lớp khác.
+- **Thành phần**: đối tượng lớp này là phần tử lớp khác.
+- **Sử dụng**: lớp này đọc / xử lý đối tượng lớp khác.
 
-**B3: Xây dựng cấu trúc phân cấp lớp** theo nguyên lý tổng quát hóa. Dựa vào mối quan hệ giữa các lớp để tổ chức phân cấp sao cho dùng lại tối đa các thuộc tính và hàm của những lớp đã được thiết kế trước.
+**B3: Cấu trúc phân cấp lớp** theo nguyên lý tổng quát hóa, dùng lại tối đa thuộc tính / hàm của lớp đã có.
 
-**B4: Thiết kế chi tiết các lớp** bằng cách bổ sung những thuộc tính và hàm cần thiết. Bốn nhóm hàm điển hình cần xem xét:
+**B4: Thiết kế lớp** — bổ sung thuộc tính / hàm cần thiết:
 
-- **Hàm quản lý lớp:** một đối tượng được tạo lập và hủy bỏ như thế nào.
-- **Hàm thực hiện cài đặt lớp:** những phép toán nào được thực hiện trên dữ liệu kiểu lớp.
-- **Hàm truy nhập vào lớp:** làm thế nào để nhận thông tin về các biến nội bộ.
-- **Hàm xử lý lỗi:** làm thế nào xử lý các lỗi xuất hiện khi thao tác trên đối tượng.
+- Hàm quản lý lớp: tạo / hủy đối tượng.
+- Hàm cài đặt lớp: phép toán trên dữ liệu kiểu lớp.
+- Hàm truy nhập: đọc biến nội bộ.
+- Hàm xử lý lỗi.
 
-**B5: Thiết kế hàm thành phần của lớp.** Mỗi hàm thành phần được thiết kế bằng kỹ thuật phân rã chức năng **Top-Down** kết hợp thiết kế có cấu trúc, tổ hợp từ ba cấu trúc cơ bản: tuần tự, tuyển chọn và vòng lặp. Như vậy, OOD ở mức tổng thể là Bottom-Up nhưng bên trong mỗi hàm vẫn dùng Top-Down truyền thống.
+**B5: Thiết kế hàm thành phần** dùng kỹ thuật phân rã **Top-Down**. Kết quả: cấu trúc 1 lối vào, 1 lối ra, tổ hợp 3 cấu trúc cơ bản — **tuần tự**, **tuyển chọn**, **vòng lặp**.
 
-**B6: Thiết kế chương trình chính.** Chương trình chính có các nhiệm vụ: nhập dữ liệu từ người sử dụng, tạo các đối tượng theo định nghĩa lớp, tổ chức trao đổi thông tin giữa các đối tượng, và lưu trữ hoặc xuất kết quả ra màn hình, máy in hay thiết bị ngoại vi theo yêu cầu.
+→ OOD tổng thể là **Bottom-Up**, mỗi hàm bên trong vẫn **Top-Down**.
+
+**B6: Thiết kế chương trình chính** — nhập dữ liệu, tạo đối tượng, tổ chức trao đổi thông tin giữa đối tượng, lưu / hiện kết quả.
 
 ### Năm nguyên lý SOLID
 
-Slide liệt kê các nguyên tắc thiết kế hướng đối tượng, gọi gộp là SOLID:
-
-- **S - Single Responsibility Principle (SRP):** một lớp chỉ nên có một trách nhiệm duy nhất, tương ứng với một lý do duy nhất để thay đổi.
-- **O - Open-Closed Principle (OCP):** "Open for extension but Closed for modification" - mở để mở rộng, đóng với sửa đổi. Khi thêm chức năng mới, ưu tiên mở rộng (qua kế thừa, đa hình) thay vì sửa mã đang dùng tốt.
-- **L - Liskov Substitution Principle (LSP):** "Subclasses should be substitutable for their base classes" - lớp con phải có thể thay thế được lớp cha mà không phá hành vi mong đợi.
-- **I - Interface Segregation Principle (ISP):** "Many client specific interfaces are better than one general purpose interface" - nhiều giao diện chuyên biệt cho từng nhóm client tốt hơn một giao diện tổng quát.
-- **D - Dependency Inversion Principle (DIP):** "Depend upon Abstractions. Do not depend upon concretions" - phụ thuộc vào trừu tượng, không phụ thuộc vào cài đặt cụ thể.
+- **SRP — Single Responsibility Principle**: một lớp chỉ có một trách nhiệm.
+- **OCP — Open-Closed Principle**: "Open for extension but Closed for modification".
+- **LSP — Liskov Substitution Principle**: "Subclasses should be substitutable for their base classes".
+- **ISP — Interface Segregation Principle**: "Many client specific interfaces are better than one general purpose interface".
+- **DIP — Dependency Inversion Principle**: "Depend upon Abstractions. Do not depend upon concretions".
 
 ### Lập trình hướng đối tượng (cài đặt)
 
-Khi đã có thiết kế, bước cài đặt tổ chức chương trình theo các điểm sau:
-
-- Tổ chức chương trình thành các lớp, mỗi lớp bao gồm dữ liệu và các phương thức xử lý dữ liệu đó.
-- Cấu trúc dữ liệu được thiết kế sao cho đặc tả được các đối tượng.
-- Dữ liệu được bao bọc và che giấu, không cho phép các hàm ngoại lai truy nhập tự do.
-- Các đối tượng trao đổi thông tin với nhau thông qua các hàm (message passing).
-- Dễ dàng bổ sung dữ liệu và các hàm mới vào đối tượng khi cần thiết.
-- Toàn bộ chương trình được thiết kế theo cách tiếp cận **Bottom-Up**, ghép từ những lớp nhỏ lên thành hệ thống lớn.
+- Tổ chức theo lớp (lớp = dữ liệu + phương thức xử lý).
+- Cấu trúc dữ liệu thiết kế đặc tả được đối tượng.
+- Dữ liệu **bao bọc**, **che giấu**, không cho hàm ngoại lai truy nhập tự do.
+- Đối tượng trao đổi qua **hàm** (message passing).
+- Dễ bổ sung dữ liệu / hàm mới.
+- Thiết kế **Bottom-Up**.
 
 ## Ưu điểm của OOP
 
-Slide tổng kết các ưu điểm chính của lập trình hướng đối tượng:
-
-- **Tính kế thừa** giúp loại bỏ những đoạn chương trình lặp lại và mở rộng khả năng sử dụng các lớp đã được xây dựng.
-- **Tính đóng gói và che giấu thông tin** giúp chương trình không bị thay đổi bởi những đoạn chương trình khác, hạn chế các tác dụng phụ chéo giữa các module.
-- **Mô phỏng thế giới thực tốt hơn** nhờ ánh xạ trực tiếp các đối tượng của bài toán vào đối tượng của chương trình.
-- **Dễ mở rộng, nâng cấp** hệ thống hướng đối tượng thành những hệ thống lớn hơn.
+- **Kế thừa** → loại bỏ đoạn chương trình lặp lại; mở rộng khả năng sử dụng lớp đã xây.
+- **Đóng gói + che dấu thông tin** → CT không bị đoạn khác làm thay đổi.
+- **Mô phỏng thế giới thực tốt hơn** — ánh xạ đối tượng bài toán → đối tượng CT.
+- **Hệ thống dễ mở rộng, nâng cấp** thành hệ thống lớn hơn.

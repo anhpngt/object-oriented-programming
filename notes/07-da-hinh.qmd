@@ -2,9 +2,9 @@
 title: "Chương 07 - Tính đa hình (Polymorphism)"
 ---
 
-::: {.callout-important title="Cram sheet"}
+:::: {.callout-important title="Cram sheet"}
 {{< include _cram/07.qmd >}}
-:::
+::::
 
 ::: {.content-visible when-format="html"}
 [Tải bản PDF in](07-da-hinh.pdf)
@@ -12,20 +12,22 @@ title: "Chương 07 - Tính đa hình (Polymorphism)"
 
 ## Khái niệm đa hình
 
-Đa hình (polymorphism) là hiện tượng các đối tượng thuộc các lớp khác nhau có khả năng hiểu cùng một thông điệp theo các cách khác nhau. Cùng một lời gọi, nhưng hành vi thực tế tuỳ thuộc vào lớp của đối tượng nhận thông điệp.
+::: {.callout-note title="Đa hình (Polymorphism)"}
+Đa hình là hiện tượng các đối tượng thuộc các lớp khác nhau có khả năng hiểu cùng một thông điệp theo các cách khác nhau.
+:::
 
-Slide gốc minh hoạ bằng ví dụ trực quan: cùng nhận thông điệp "nhảy", một con kangaroo và một con cóc cùng có hành vi "nhảy" nhưng nội dung hành vi khác nhau hoàn toàn. Đa hình xuất hiện khi có sự kế thừa giữa các lớp: có những phương thức tổng quát nên có mặt ở lớp cơ sở (chẳng hạn "tính diện tích", "xuất thông tin", "tính lương") nhưng nội dung cụ thể chỉ được xác định ở các lớp dẫn xuất.
+VD: cùng nhận thông điệp "nhảy", một con kangaroo và một con cóc cùng có hành vi "nhảy" — nội dung khác nhau hoàn toàn.
 
-Trong cây phả hệ lớp hình học, lớp cơ sở `Hinh` có phương thức `dienTich()` mang tính tổng quát; còn nội dung tính diện tích thực sự khác nhau ở `HinhTron`, `HinhTamGiac`, `HinhChuNhat`,... Đa hình cho phép mã gọi chỉ cần biết tới giao diện chung, còn hành vi cụ thể do từng lớp con đảm nhận.
+→ Đa hình xuất hiện khi có sự kế thừa: phương thức tổng quát nên có ở lớp cơ sở (VD `dienTich()`, `xuat()`, `tinhLuong()`), nhưng nội dung cụ thể chỉ xác định ở các lớp dẫn xuất.
+
+VD lớp hình học: lớp cơ sở `Hinh` có `dienTich()` tổng quát; nội dung tính diện tích khác nhau ở `HinhTron`, `HinhTamGiac`, `HinhChuNhat`. Mã gọi chỉ cần biết giao diện chung — hành vi cụ thể do từng lớp con đảm nhận.
 
 ## Bài toán đặt vấn đề
 
-Giả sử cần quản lý một danh sách các đối tượng có kiểu có thể khác nhau, ví dụ vừa là `Nguoi`, vừa là `SinhVien`, vừa là `CongNhan`. Có hai vấn đề phải giải quyết:
+Quản lý danh sách đối tượng kiểu khác nhau: vừa `Nguoi`, vừa `SinhVien`, vừa `CongNhan`. 2 vấn đề:
 
-- Cách lưu trữ: dùng mảng, danh sách liên kết,...
-- Cách xử lý: thao tác phải hoạt động khác nhau ứng với từng loại đối tượng (yêu cầu đa hình).
-
-Slide gốc đưa ra hệ lớp sau:
+- **Lưu trữ**: mảng / danh sách liên kết.
+- **Xử lý**: thao tác phải khác nhau ứng với từng loại đối tượng (yêu cầu đa hình).
 
 ```cpp
 class Nguoi {
@@ -58,14 +60,6 @@ public:
     }
 };
 
-class NuSinh : public SinhVien {
-public:
-    NuSinh(char *ht, char *ms, int ns) : SinhVien(ht, ms, ns) {}
-    void An() const {
-        cout << HoTen << " ma so " << MaSo << " an 2 to pho";
-    }
-};
-
 class CongNhan : public Nguoi {
 protected:
     double MucLuong;
@@ -79,7 +73,7 @@ public:
 };
 ```
 
-Để lưu trữ chung trong một mảng, ta dùng con trỏ lớp cơ sở `Nguoi*`. Mỗi phần tử mảng có thể trỏ tới đối tượng `SinhVien`, `NuSinh`, `CongNhan`, hoặc `Nguoi`. Hàm xử lý tự nhiên là duyệt mảng và gọi `Xuat()` qua con trỏ:
+Lưu trữ chung trong mảng → dùng con trỏ lớp cơ sở `Nguoi*`:
 
 ```cpp
 void XuatDs(int n, Nguoi *an[]) {
@@ -100,7 +94,7 @@ void main() {
 }
 ```
 
-Vấn đề lộ ra ở kết quả thực tế. Mặc dù `a[0]` trỏ tới một `SinhVien`, `a[1]` trỏ tới một `NuSinh`,..., lời gọi `an[i]->Xuat()` lại in ra phiên bản `Nguoi::Xuat` cho cả bốn đối tượng:
+Kết quả thực tế: lời gọi `an[i]->Xuat()` luôn in `Nguoi::Xuat` cho cả 4 đối tượng:
 
 ```
 Nguoi, ho ten: Vien Van Sinh sinh 1982
@@ -109,15 +103,15 @@ Nguoi, ho ten: Tran Nhan Cong sinh 1984
 Nguoi, ho ten: Nguyen Thanh Nhan sinh 1960
 ```
 
-Trình biên dịch dựa vào kiểu khai báo của con trỏ (`Nguoi*`) để chọn hàm, nên mặc định luôn gọi `Nguoi::Xuat`, không phải phiên bản được định nghĩa lại ở lớp con. Đặt vấn đề: làm sao để qua con trỏ lớp cơ sở vẫn gọi đúng phiên bản tương ứng với loại đối tượng thực tế?
+→ Trình biên dịch dựa vào kiểu khai báo của con trỏ (`Nguoi*`) để chọn hàm — luôn gọi `Nguoi::Xuat`, KHÔNG phải phiên bản định nghĩa lại ở lớp con.
 
-Slide gốc nêu hai hướng giải quyết: dùng vùng chọn kiểu, hoặc dùng phương thức ảo.
+**Vấn đề**: làm sao qua con trỏ lớp cơ sở vẫn gọi đúng phiên bản tương ứng với loại đối tượng thực tế?
 
-## Cách 1 - Vùng chọn kiểu
+→ 2 hướng giải: vùng chọn kiểu, hoặc phương thức ảo.
 
-Ý tưởng đơn giản: vì không tự động phân biệt được loại đối tượng, ta thêm một trường dữ liệu ngay trong lớp cơ sở để "tự khai báo" mình thuộc loại nào. Trường này được gọi là vùng chọn kiểu (type-selector field). Mỗi loại đối tượng sẽ gán cho trường này một giá trị riêng.
+## Cách 1 — Vùng chọn kiểu
 
-Cụ thể, thêm vào lớp `Nguoi` một kiểu liệt kê `LOAI` và một biến `pl`:
+Thêm trường dữ liệu trong lớp cơ sở để "tự khai báo" mình thuộc loại nào (type-selector).
 
 ```cpp
 class Nguoi {
@@ -128,21 +122,19 @@ protected:
     int NamSinh;
 public:
     LOAI pl;
-    Nguoi(const char *ht, int ns)
-        : NamSinh(ns), pl(NGUOI) {
+    Nguoi(const char *ht, int ns) : NamSinh(ns), pl(NGUOI) {
         HoTen = new char[strlen(ht) + 1];
         strcpy(HoTen, ht);
     }
     ~Nguoi() { delete[] HoTen; }
     void An() const { cout << HoTen << " an 3 chen com"; }
     void Xuat() const {
-        cout << "Nguoi, ho ten: " << HoTen
-             << " sinh " << NamSinh;
+        cout << "Nguoi, ho ten: " << HoTen << " sinh " << NamSinh;
     }
 };
 ```
 
-Constructor của các lớp con có nhiệm vụ gán đúng giá trị cho `pl`:
+Constructor lớp con gán đúng giá trị `pl`:
 
 ```cpp
 class SinhVien : public Nguoi {
@@ -164,8 +156,7 @@ class CongNhan : public Nguoi {
 protected:
     double MucLuong;
 public:
-    CongNhan(char *n, double ml, int ns)
-        : Nguoi(n, ns), MucLuong(ml) {
+    CongNhan(char *n, double ml, int ns) : Nguoi(n, ns), MucLuong(ml) {
         pl = CN;
     }
     void Xuat() const {
@@ -175,7 +166,7 @@ public:
 };
 ```
 
-Hàm xử lý nay phải kiểm tra `pl` để biết đối tượng thật là gì, sau đó ép kiểu con trỏ trước khi gọi hàm:
+Hàm xử lý kiểm tra `pl` + ép kiểu:
 
 ```cpp
 void XuatDs(int n, Nguoi *an[]) {
@@ -196,7 +187,7 @@ void XuatDs(int n, Nguoi *an[]) {
 }
 ```
 
-Lần này kết quả đúng như mong muốn:
+Kết quả đúng:
 
 ```
 Sinh vien Vien Van Sinh, ma so 200001234
@@ -205,19 +196,21 @@ Cong nhan, ten Tran Nhan Cong muc luong: 1000000
 Nguoi, ho ten: Nguyen Thanh Nhan sinh 1960
 ```
 
-Tuy nhiên, slide gốc liệt kê rõ một loạt nhược điểm của cách tiếp cận này:
+Nhược điểm:
 
-- Mã lệnh dài dòng vì có nhiều khối `switch-case`.
-- Dễ sai sót: viết nhầm `case`, quên ép kiểu, hoặc gán sai `pl` trong constructor.
-- Khó nâng cấp và bảo trì: mỗi khi thêm một loại đối tượng mới (ví dụ `CaSi`, `BacSi`,...), phải sửa lại tất cả các khối `switch-case` ở mọi nơi sử dụng - vi phạm nguyên tắc mở-đóng (open-closed): mở cho mở rộng nhưng đóng cho sửa đổi.
+- Mã dài dòng vì nhiều khối `switch-case`.
+- Dễ sai sót: nhầm `case`, quên ép kiểu, gán sai `pl` trong constructor.
+- Khó nâng cấp: thêm loại đối tượng mới (`CaSi`, `BacSi`...) → PHẢI sửa lại tất cả `switch-case` ở mọi nơi → vi phạm nguyên tắc **mở-đóng** (open-closed).
 
-Những nhược điểm này có thể khắc phục triệt để nhờ cơ chế phương thức ảo của C++.
+→ Khắc phục triệt để bằng phương thức ảo.
 
-## Cách 2 - Phương thức ảo (`virtual`)
+## Cách 2 — Phương thức ảo (`virtual`)
 
-Phương thức ảo (virtual method) là cách thể hiện tính đa hình "đúng kiểu hướng đối tượng" trong C++. Quy tắc: các phương thức ở lớp cơ sở mong muốn có tính đa hình phải được khai báo là `virtual`. Khi đó, lời gọi qua con trỏ lớp cơ sở sẽ tự động chọn đúng phiên bản tương ứng với lớp của đối tượng thực tế.
+::: {.callout-note title="Phương thức ảo (virtual method)"}
+Các phương thức ở lớp cơ sở mong muốn có tính đa hình phải được khai báo là `virtual`. Khi đó, lời gọi qua con trỏ lớp cơ sở sẽ tự động chọn đúng phiên bản tương ứng với lớp của đối tượng thực tế.
+:::
 
-Trong ví dụ trên, ta chỉ cần thêm một từ khoá `virtual` trước khai báo của `Xuat` ở lớp `Nguoi`:
+Chỉ thêm `virtual` trước `Xuat` ở lớp `Nguoi`:
 
 ```cpp
 class Nguoi {
@@ -232,13 +225,12 @@ public:
     ~Nguoi() { delete[] HoTen; }
     void An() const { cout << HoTen << " an 3 chen com"; }
     virtual void Xuat() const {
-        cout << "Nguoi, ho ten: " << HoTen
-             << " sinh " << NamSinh;
+        cout << "Nguoi, ho ten: " << HoTen << " sinh " << NamSinh;
     }
 };
 ```
 
-Các lớp `SinhVien`, `NuSinh`, `CongNhan` giữ nguyên định nghĩa `Xuat()` như trước. Không cần `enum`, không cần biến `pl`, không cần `switch-case` ở hàm xử lý. Hàm `XuatDs` đơn giản trở lại:
+`SinhVien`, `NuSinh`, `CongNhan` giữ nguyên `Xuat()`. KHÔNG `enum`, KHÔNG `pl`, KHÔNG `switch-case`.
 
 ```cpp
 void XuatDs(int n, Nguoi *an[]) {
@@ -249,75 +241,73 @@ void XuatDs(int n, Nguoi *an[]) {
 }
 ```
 
-Bây giờ lời gọi `an[i]->Xuat()` qua con trỏ `Nguoi*` sẽ tự động chọn `SinhVien::Xuat`, `CongNhan::Xuat`,... tuỳ theo lớp thực sự của đối tượng được trỏ tới.
+→ `an[i]->Xuat()` qua `Nguoi*` tự động chọn `SinhVien::Xuat`, `CongNhan::Xuat`... tùy lớp thực sự của đối tượng.
 
-### Thêm lớp con mới không cần sửa hàm xử lý
-
-Một trong những lợi ích quan trọng nhất của phương thức ảo là khả năng mở rộng. Slide gốc minh hoạ bằng việc thêm lớp `CaSi`:
+### Thêm lớp con mới KHÔNG cần sửa hàm xử lý
 
 ```cpp
 class CaSi : public Nguoi {
 protected:
     double CatXe;
 public:
-    CaSi(char *ht, double cx, int ns)
-        : Nguoi(ht, ns), CatXe(cx) {}
+    CaSi(char *ht, double cx, int ns) : Nguoi(ht, ns), CatXe(cx) {}
     void Xuat() const {
-        cout << "Ca si, " << HoTen
-             << " co cat xe " << CatXe;
+        cout << "Ca si, " << HoTen << " co cat xe " << CatXe;
     }
 };
 ```
 
-Quy trình thêm chỉ gồm hai bước: xây dựng lớp con kế thừa lớp cơ sở và định nghĩa lại các phương thức ảo nếu cần. Hàm `XuatDs` hoàn toàn không thay đổi nhưng vẫn hoạt động đúng với các đối tượng `CaSi` mới ra đời. So với cách dùng vùng chọn kiểu, đây là khác biệt lớn về tính bảo trì.
+Quy trình thêm chỉ 2 bước: xây lớp con + định nghĩa lại phương thức ảo nếu cần. `XuatDs` KHÔNG đổi nhưng vẫn hoạt động đúng với `CaSi`.
 
-### Phương thức ảo chỉ hoạt động qua con trỏ
+### Phương thức ảo CHỈ hoạt động qua con trỏ
 
-Slide gốc nhấn mạnh hai lần: "Phương thức ảo chỉ hoạt động thông qua con trỏ." Nếu ta gọi `Xuat()` trực tiếp trên một đối tượng giá trị (không qua con trỏ), trình biên dịch dùng cài đặt của chính kiểu khai báo, không phải kiểu thực sự của đối tượng. Do đó, để khai thác đa hình, danh sách quản lý các đối tượng kiểu khác nhau bắt buộc phải dùng con trỏ lớp cơ sở (`Nguoi *a[N]`), không thể dùng mảng giá trị.
+::: {.callout-warning title="Chỉ qua con trỏ"}
+Phương thức ảo CHỈ hoạt động thông qua con trỏ. Gọi trực tiếp trên đối tượng giá trị → trình biên dịch dùng cài đặt của chính kiểu khai báo, không phải kiểu thực sự của đối tượng.
+:::
 
-(Slide nhấn mạnh con trỏ; thực tế trong C++ chuẩn, tham chiếu lớp cơ sở (`Nguoi&`) cũng kích hoạt đa hình động giống con trỏ. Trong bài thi nên trả lời theo slide.)
+→ Danh sách quản lý đối tượng kiểu khác nhau BẮT BUỘC dùng con trỏ lớp cơ sở (`Nguoi *a[N]`), không thể dùng mảng giá trị.
 
-Để biến một hàm thành phương thức ảo có hai cách:
+(Tham chiếu lớp cơ sở `Nguoi&` cũng kích hoạt đa hình động giống con trỏ.)
 
-- Khai báo với từ khoá `virtual` ngay ở lớp cơ sở.
-- Hoặc phương thức tương ứng ở lớp cơ sở đã là phương thức ảo - khi đó các phiên bản ở lớp con cũng tự động là phương thức ảo, không cần ghi lại `virtual`.
+2 cách biến hàm thành phương thức ảo:
+
+- Khai báo `virtual` ở lớp cơ sở.
+- Phương thức tương ứng ở lớp cơ sở đã là phương thức ảo → các phiên bản ở lớp con tự động là phương thức ảo, KHÔNG cần ghi lại `virtual`.
 
 ## Đặc trưng của phương thức ảo
 
-Slide gốc liệt kê các đặc trưng cần nhớ khi dùng phương thức ảo:
+- **Chữ ký phải khớp y hệt**: cùng kiểu trả về + cùng danh sách tham số. Ở lớp con đổi tham số đi 1 chút → trình biên dịch xem là hàm khác (overload thông thường), KHÔNG phải override → lời gọi qua con trỏ lớp cơ sở vẫn chạy phiên bản lớp cơ sở.
+- **Không cần lặp `virtual` ở lớp con**: đã `virtual` ở lớp cơ sở → các phiên bản định nghĩa lại tự động là phương thức ảo.
+- **Không thể là `static`**.
+- **Quan hệ với `friend`**: phương thức ảo có thể là `friend` của lớp khác. Nhưng hàm `friend` của lớp (không phải hàm thành viên) KHÔNG thể là phương thức ảo (vì không thuộc về lớp nào).
+- **Tính nhất quán dọc cây phả hệ**: đã quyết định ảo → từ lớp cơ sở đến lớp dẫn xuất nên định nghĩa thống nhất.
 
-- Chữ ký phải khớp y hệt. Phương thức ảo chỉ hoạt động đúng nếu hàm ở lớp cơ sở và ở lớp con có "nghi thức giao tiếp" giống hệt nhau - tức là cùng kiểu trả về và cùng danh sách tham số. Nếu ở lớp dẫn xuất ta sơ suất đổi tham số đi một chút, trình biên dịch sẽ xem đây là một hàm khác (hàm trùng tên thông thường), không phải override. Khi đó, lời gọi qua con trỏ lớp cơ sở sẽ vẫn chạy phiên bản của lớp cơ sở. Đây cũng chính là điều kiện để cơ chế kết nối động hoạt động.
-- Không cần lặp `virtual` ở lớp con. Khi đã khai báo `virtual` ở lớp cơ sở, các phiên bản định nghĩa lại ở lớp dẫn xuất tự động là phương thức ảo. Việc ghi lại từ khoá `virtual` không gây lỗi, chỉ là dư.
-- Không thể là `static`. Phương thức ảo không thể là hàm thành viên tĩnh.
-- Quan hệ với `friend`. Một phương thức ảo có thể được khai báo là `friend` trong một lớp khác. Tuy nhiên, các hàm `friend` của lớp (không phải hàm thành viên) thì không thể là phương thức ảo, vì chúng không thuộc về lớp nào.
-- Tính nhất quán dọc cây phả hệ. Một khi đã quyết định một phương thức là ảo, từ lớp cơ sở đến các lớp dẫn xuất đều nên định nghĩa thống nhất để kết nối động hoạt động đúng theo từng cấp.
+## Cơ chế thực hiện — vtable
 
-## Cơ chế thực hiện - bảng phương thức ảo (vtable)
+::: {.callout-note title="Bảng phương thức ảo (vtable)"}
+Mỗi lớp có phương thức ảo được trình biên dịch sinh thêm một bảng phương thức ảo (virtual method table, vtable) — mỗi lớp một bảng, dùng chung cho mọi đối tượng của lớp đó. Bảng này chứa địa chỉ của các phương thức ảo của lớp tương ứng.
 
-Khả năng chọn đúng phiên bản hàm tuỳ theo đối tượng thực tế khi gọi qua con trỏ lớp cơ sở chính là biểu hiện của tính đa hình. Slide gốc giải thích cơ chế bên dưới như sau.
+Mỗi đối tượng được gắn thêm một con trỏ ngầm (`__vptr`) trỏ tới vtable của lớp mà đối tượng thực sự thuộc về.
+:::
 
-Mỗi lớp có phương thức ảo được trình biên dịch sinh thêm một bảng phương thức ảo (virtual method table, vtable) - mỗi lớp một bảng, dùng chung cho mọi đối tượng của lớp đó. Bảng này chứa địa chỉ của các phương thức ảo của lớp tương ứng. Mỗi đối tượng được gắn thêm một con trỏ ngầm (thường gọi là `__vptr`) trỏ tới vtable của lớp mà đối tượng thực sự thuộc về. Trình biên dịch khởi tạo `__vptr` ngầm định lúc thiết lập đối tượng, sao cho con trỏ này trỏ đúng vào vtable của lớp dẫn xuất thực sự.
+- `Nguoi`: 1 vtable; ô `Xuat` = địa chỉ `Nguoi::Xuat`. Mọi đối tượng `Nguoi` dùng chung.
+- `SinhVien`: 1 vtable riêng; ô `Xuat` = địa chỉ `SinhVien::Xuat`.
+- Tương tự `CongNhan`, `CaSi`... Mỗi lớp 1 vtable; mỗi đối tượng chỉ giữ 1 `__vptr`.
 
-Khi thao tác được thực hiện qua con trỏ, lời gọi đi qua `__vptr` để tra vtable, rồi gọi hàm tại địa chỉ tìm được - không phải hàm theo kiểu khai báo của con trỏ. Trong ví dụ trên:
+→ `an[i]->Xuat()` lúc chạy: (1) tra vtable của đối tượng được trỏ tới, (2) gọi hàm tại địa chỉ tìm được.
 
-- Lớp `Nguoi` có một vtable; ô tương ứng với `Xuat` là địa chỉ của `Nguoi::Xuat`. Mọi đối tượng `Nguoi` đều dùng chung vtable này.
-- Lớp `SinhVien` có một vtable riêng; ô tương ứng với `Xuat` là địa chỉ của `SinhVien::Xuat`.
-- Tương tự cho `CongNhan`, `CaSi`,... Mỗi lớp một vtable; mỗi đối tượng chỉ giữ một `__vptr` (không phải toàn bộ bảng).
-
-Vì vậy `an[i]->Xuat()` thực hiện hai bước lúc chạy: (1) tra vtable của đối tượng được trỏ tới, (2) gọi hàm tại địa chỉ tìm được. Cơ chế này gọi là kết nối động (dynamic binding) - lời gọi được "nối" với hàm cụ thể lúc chạy thay vì lúc biên dịch.
+→ **Kết nối động** (dynamic binding): lời gọi được "nối" với hàm cụ thể lúc chạy thay vì lúc biên dịch.
 
 ## Destructor ảo
-
-Khi quản lý danh sách qua con trỏ lớp cơ sở, đến lúc dọn dẹp ta viết:
 
 ```cpp
 for (int i = 0; i < 4; i++)
     delete a[i];
 ```
 
-Nếu destructor của lớp cơ sở không phải là ảo, thì `delete a[i]` qua con trỏ `Nguoi*` chỉ gọi destructor `~Nguoi()`. Destructor của `SinhVien`, `CongNhan`,... không bao giờ chạy. Hậu quả là vùng nhớ riêng của lớp dẫn xuất (chẳng hạn `MaSo` của `SinhVien`) không được giải phóng, gây rò rỉ tài nguyên.
+Destructor lớp cơ sở KHÔNG `virtual` → `delete a[i]` qua `Nguoi*` chỉ gọi `~Nguoi()`. Destructor `~SinhVien()`, `~CongNhan()` KHÔNG bao giờ chạy → vùng nhớ riêng của lớp dẫn xuất (VD `MaSo` của `SinhVien`) KHÔNG được giải phóng → **rò rỉ tài nguyên**.
 
-Cách khắc phục: khai báo destructor của lớp cơ sở là `virtual`.
+→ Khắc phục: khai báo destructor lớp cơ sở là `virtual`.
 
 ```cpp
 class Nguoi {
@@ -333,43 +323,44 @@ public:
         delete[] HoTen;
     }
     virtual void Xuat() const {
-        cout << "Nguoi, ho ten: " << HoTen
-             << " sinh " << NamSinh;
+        cout << "Nguoi, ho ten: " << HoTen << " sinh " << NamSinh;
     }
 };
 ```
 
-Khi đó `delete a[i]` qua con trỏ `Nguoi*` sẽ tra vtable, gọi đúng destructor của lớp dẫn xuất trước, rồi mới gọi destructor của lớp cơ sở theo chuỗi kế thừa. Quy tắc thực dụng: bất kỳ lớp nào dự định được dùng làm lớp cơ sở đa hình thì destructor phải là `virtual`.
+→ `delete a[i]` qua `Nguoi*` tra vtable, gọi đúng destructor lớp dẫn xuất trước, rồi destructor lớp cơ sở theo chuỗi kế thừa.
+
+**Quy tắc**: bất kỳ lớp nào dự định làm lớp cơ sở đa hình → destructor PHẢI là `virtual`.
 
 ## Phương thức thuần ảo và lớp trừu tượng
 
-Slide gốc đặt vấn đề từ ví dụ hình học. Lớp cơ sở `Shape` có phương thức `draw()`. Các lớp con `Circle`, `Rectangle`, `Triangle` định nghĩa lại `draw()` theo cách riêng. Nhưng bản thân `draw()` ở `Shape` không có nội dung có ý nghĩa - một "hình chung chung" không biết phải vẽ thế nào. Đồng thời, về mặt tư tưởng hướng đối tượng, ta không nên cho phép tạo đối tượng "hình chung chung" thuộc lớp `Shape`.
+VD `Shape` có `draw()`. `Circle`, `Rectangle`, `Triangle` định nghĩa lại `draw()` riêng. NHƯNG `Shape::draw()` không có nội dung có ý nghĩa — "hình chung chung" không biết phải vẽ thế nào. Đồng thời, KHÔNG nên cho phép tạo đối tượng "hình chung chung" thuộc `Shape`.
 
-Phương thức thuần ảo (pure virtual function) giải quyết cả hai vấn đề. Đó là phương thức ảo không có nội dung, khai báo bằng cú pháp `= 0` ở cuối:
+::: {.callout-note title="Phương thức thuần ảo (pure virtual function)"}
+Phương thức ảo không có nội dung, khai báo bằng cú pháp `= 0` ở cuối. Lớp có ít nhất một phương thức thuần ảo trở thành **lớp trừu tượng** (abstract class).
+:::
 
 ```cpp
 class Shape {                       // Abstract
 public:
-    // Pure virtual function
-    virtual void draw() = 0;
+    virtual void draw() = 0;        // Pure virtual
 };
 ```
 
-Lớp có ít nhất một phương thức thuần ảo trở thành lớp trừu tượng (abstract class). Slide nêu rõ:
+Quy tắc:
 
-- Không thể tạo đối tượng thuộc lớp trừu tượng. Cố tạo bằng `Shape s;` sẽ bị lỗi biên dịch.
-- Vẫn có thể tạo con trỏ (hoặc tham chiếu) tới lớp trừu tượng: `Shape *s;` hợp lệ - dùng để trỏ tới đối tượng lớp con.
-- Lớp dẫn xuất phải cài đặt tất cả các hàm thuần ảo của lớp cha mới có thể tạo đối tượng. Nếu thiếu, lớp con vẫn là lớp trừu tượng.
-- Ta có thể định nghĩa nội dung cho phương thức thuần ảo, nhưng chỉ có đối tượng thuộc lớp con mới gọi được nó (qua cú pháp `Shape::draw()`).
-- Phương thức thuần ảo đóng vai trò "chừa sẵn chỗ" trong sơ đồ phân cấp, buộc các lớp con điền vào với phiên bản phù hợp.
-- Bản thân lớp con của lớp trừu tượng cũng có thể là lớp trừu tượng.
+- KHÔNG thể tạo đối tượng thuộc lớp trừu tượng. `Shape s;` → lỗi biên dịch.
+- VẪN có thể tạo con trỏ / tham chiếu: `Shape *s;` hợp lệ — dùng để trỏ tới đối tượng lớp con.
+- Lớp dẫn xuất PHẢI cài đặt tất cả hàm thuần ảo của lớp cha mới có thể tạo đối tượng. Nếu thiếu → vẫn là lớp trừu tượng.
+- CÓ THỂ định nghĩa nội dung cho phương thức thuần ảo, nhưng chỉ đối tượng lớp con gọi được (qua `Shape::draw()`).
+- Phương thức thuần ảo "chừa sẵn chỗ" trong sơ đồ phân cấp, buộc lớp con điền vào.
+- Lớp con của lớp trừu tượng cũng có thể là lớp trừu tượng.
 
-Slide đưa ra một minh hoạ tinh tế về việc cài đặt thiếu:
+VD cài đặt thiếu:
 
 ```cpp
 class Shape {                       // Abstract
 public:
-    // Pure virtual function
     virtual void draw() = 0;
 };
 
@@ -393,27 +384,19 @@ Circle c;          // LOI: Circle van la abstract vi
                    // dinh nghia print() chu khong phai draw()
 ```
 
-`Circle` quên (hoặc nhầm) - định nghĩa `print()` thay vì `draw()`. Vì `draw()` thuần ảo của `Shape` chưa được cài đặt ở `Circle`, lớp này vẫn là lớp trừu tượng, không thể tạo đối tượng.
+→ `Circle` quên/nhầm — định nghĩa `print()` thay vì `draw()` → `draw()` thuần ảo của `Shape` chưa được cài đặt → `Circle` vẫn là lớp trừu tượng → KHÔNG tạo đối tượng được.
 
 ## Bài toán Tính tiền lương
 
-Slide gốc kết thúc chương bằng một bài tập tổng hợp, thể hiện trọn vẹn cách dùng phương thức ảo trong tình huống thực tế.
+Công ty ABC sản xuất thú nhồi bông, 3 bộ phận: quản lý, sản xuất, văn phòng.
 
-Đề bài. Công ty ABC sản xuất kinh doanh thú nhồi bông, có ba bộ phận: quản lý, sản xuất, văn phòng. Cách tính lương:
+- **Văn phòng**: `Lương = Lương cơ bản + Số ngày làm việc × 200000 + Trợ cấp`.
+- **Sản xuất**: `Lương = Lương cơ bản + Số sản phẩm × 2000`.
+- **Quản lý**: `Lương = Lương cơ bản × Hệ số chức vụ + Thưởng`.
 
-- Nhân viên văn phòng: `Lương = Lương cơ bản + Số ngày làm việc * 200000 + Trợ cấp`.
-- Nhân viên sản xuất: `Lương = Lương cơ bản + Số sản phẩm * 2000`.
-- Nhân viên quản lý: `Lương = Lương cơ bản * Hệ số chức vụ + Thưởng`.
+Mỗi nhân viên: họ tên, ngày sinh, các thông số liên quan. Yêu cầu: nhập, tính lương, xuất, tính tổng lương, tìm theo họ tên.
 
-Mỗi nhân viên cần lưu họ tên, ngày sinh và các thông số liên quan. Yêu cầu:
-
-- Nhập thông tin nhân viên.
-- Tính lương cho từng nhân viên.
-- Xuất thông tin nhân viên.
-- Tính tổng lương của công ty.
-- Tìm kiếm nhân viên theo họ tên.
-
-Cách thiết kế tự nhiên là dùng lớp cơ sở `NhanVien` với phương thức ảo `tinhLuong()`, sau đó tạo ba lớp con cho ba bộ phận:
+→ Lớp cơ sở `NhanVien` với phương thức ảo `tinhLuong()`, 3 lớp con cho 3 bộ phận:
 
 ```cpp
 class NhanVien {
@@ -476,7 +459,7 @@ public:
 };
 ```
 
-Hàm tính tổng lương và tìm kiếm chỉ làm việc với con trỏ lớp cơ sở `NhanVien*`, nhờ phương thức ảo `tinhLuong()` mà mỗi đối tượng tự biết cách tính phần lương của riêng mình:
+Hàm tính tổng lương + tìm kiếm chỉ làm việc với `NhanVien*`:
 
 ```cpp
 double tongLuong(int n, NhanVien *ds[]) {
@@ -494,4 +477,4 @@ NhanVien* timTheoHoTen(int n, NhanVien *ds[], const char *ht) {
 }
 ```
 
-Khi công ty mở thêm bộ phận mới (ví dụ nhân viên kinh doanh hưởng hoa hồng), ta chỉ cần thêm một lớp con kế thừa `NhanVien`, override `tinhLuong()`. Mọi hàm tính tổng lương, tìm kiếm, xuất thông tin đều không cần sửa - chính là tinh thần "mở để mở rộng, đóng để sửa đổi" mà cơ chế phương thức ảo đem lại.
+Mở thêm bộ phận mới (VD nhân viên kinh doanh hưởng hoa hồng) → chỉ cần thêm lớp con kế thừa `NhanVien`, override `tinhLuong()`. Mọi hàm tính tổng lương / tìm kiếm / xuất thông tin KHÔNG cần sửa — đúng tinh thần "mở để mở rộng, đóng để sửa đổi".

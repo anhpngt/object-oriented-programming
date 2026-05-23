@@ -1,19 +1,112 @@
-- Đa năng hóa toán tử (operator overloading) cho phép dùng cú pháp toán học tự nhiên trên kiểu tự định nghĩa thay vì gọi hàm: viết `a = b + c;` thay cho `a.Set(b.Cong(c));`; bản chất vẫn là gọi hàm.
-- Cú pháp tổng quát: tên hàm là `operator@` cho toán tử `@`, ví dụ `PhanSo operator+(PhanSo b) const;`.
-- Hạn chế: không tạo toán tử mới, không đổi độ ưu tiên, không tạo cú pháp mới, không định nghĩa lại toán tử có sẵn của kiểu cơ bản.
-- Hàm thành phần: số tham số = số ngôi - 1, toán hạng trái ngầm định là `*this`; `a + b` -> `a.operator+(b)`, `-a` -> `a.operator-()`.
-- Hàm toàn cục/`friend`: số tham số = số ngôi; `a + b` -> `operator+(a, b)`; dùng khi toán hạng trái không thuộc lớp đang xét (ví dụ `3 + a` với `a` là `PhanSo`).
-- Một số toán tử BẮT BUỘC là hàm thành phần: `=`, `[]`, `()`, `->`, và phép toán chuyển kiểu (`operator T()`).
-- `<<` và `>>` PHẢI là hàm toàn cục/`friend` vì toán hạng trái là `ostream&`/`istream&` (không thuộc lớp tự định nghĩa); trả về tham chiếu để xâu chuỗi: `friend ostream& operator<<(ostream& os, PhanSo p);`.
-- Chuyển kiểu qua constructor một tham số: dùng khi cần chuyển từ kiểu đã có sang lớp đang định nghĩa (số nguyên -> phân số), có quan hệ "là một"; nhờ vậy `PhanSo d = 5;` tương đương `PhanSo d(5);`, và `a + 5` chuyển `5` thành `PhanSo(5)`.
-- Chuyển kiểu qua `operator T()`: là hàm thành phần dạng `X::operator T()` (không khai báo kiểu trả về), chuyển từ lớp đang định nghĩa sang kiểu đã có; ví dụ `operator double() const { return double(tu)/mau; }` cho phép `sqrt(a)`.
-- Sự nhập nhằng: khi có cả constructor một tham số `PhanSo(long)` và `operator double()`, biểu thức `a + 2` hoặc `2.5 + a` có nhiều cách chuyển kiểu, trình biên dịch không quyết định được; khắc phục bằng ép kiểu tường minh (`a + PhanSo(2)`, `double(a) + 2.5`) hoặc bỏ bớt một cơ chế chuyển kiểu.
-- Khởi tạo khác phép gán: `PhanSo b = a;` gọi copy constructor (khởi tạo), `b = a;` gọi `operator=` (gán trên đối tượng đã tồn tại).
-- Lớp quản lý tài nguyên (con trỏ, cấp phát động) phải tự cài `operator=` để tránh chia sẻ vùng nhớ rồi `delete` nhiều lần (rule of three: destructor + copy constructor + `operator=`).
-- `operator=` chuẩn: trả về tham chiếu `Lop&` để gán dây chuyền `a = b = c;`; kiểm tra tự gán `if (this != &other)`; giải phóng tài nguyên cũ rồi sao chép mới; kết thúc bằng `return *this;`.
-- `operator[]`: cài hai phiên bản để vừa đọc vừa ghi, phiên bản thường `char& operator[](int i);` trả tham chiếu (dùng làm lvalue: `a[7] = 'V';`), phiên bản `const` `char operator[](int i) const;` dành cho đối tượng hằng.
-- `operator()` (gọi hàm): có thể nhận nhiều tham số, khắc phục giới hạn một tham số của `[]`; ví dụ `float& MATRIX::operator()(int i, int j);` cho phép truy cập `a(i, j)` trên ma trận hai chiều.
-- `++` và `--` có hai cách dùng: prefix `++a` (tăng rồi trả tham chiếu đến chính nó) và postfix `a++` (tăng nhưng trả về giá trị cũ trước khi tăng).
-- Phân biệt prefix vs postfix bằng tham số `int` giả: prefix `Lop& operator++();` trả tham chiếu; postfix `Lop operator++(int);` trả về bản sao giá trị cũ.
-- Lưu ý khi nạp chồng: tôn trọng ý nghĩa gốc của toán tử (cộng phải ra cộng), tận dụng lại mã (`operator+=` cài từ `operator+`), không nạp chồng tùy tiện làm mất tính tự nhiên.
-- Từ khóa kích hoạt trong đề: "`operator+`", "hàm thành phần vs hàm toàn cục", "hàm bạn `<<`/`>>`", "chuyển kiểu", "ép kiểu", "`explicit`", "nhập nhằng", "`operator=`", "tự gán", "rule of three", "`operator[]`", "`operator()`", "prefix vs postfix", "tham số `int` giả".
+::: {.callout-note title="Đa năng hóa toán tử (Operator Overloading)"}
+Các toán tử cho phép ta sử dụng cú pháp toán học đối với các kiểu dữ liệu của C++ thay vì gọi hàm (bản chất vẫn là gọi hàm). Ví dụ: thay `a.set(b.cong(c));` bằng `a = b + c;`.
+:::
+
+- Mục đích: gần với kiểu trình bày con người quen dùng (tự nhiên), đơn giản hóa mã.
+- Cú pháp tổng quát: tên hàm là `operator@` cho toán tử `@`. VD: `operator+`, `operator==`.
+- Số tham số phụ thuộc 2 yếu tố: toán tử đơn / đôi; phương thức của lớp / hàm toàn cục.
+
+::: {.callout-note title="Hạn chế của overload toán tử"}
+- Không thể tạo toán tử mới hoặc kết hợp các toán tử có sẵn theo kiểu mà trước đó chưa được định nghĩa.
+- Không thể thay đổi thứ tự ưu tiên của các toán tử.
+- Không thể tạo cú pháp mới cho toán tử.
+- Không thể định nghĩa lại một định nghĩa có sẵn của một toán tử.
+:::
+
+- Lưu ý khi định nghĩa lại: tôn trọng ý nghĩa toán tử gốc; cố gắng tái sử dụng mã tối đa.
+- Hàm thành phần vs hàm toàn cục:
+
+  | Cách dùng | Hàm thành phần | Hàm toàn cục |
+  |---|---|---|
+  | `a@b` | `a.operator@(b)` | `operator@(a, b)` |
+  | `@a` | `a.operator@()` | `operator@(a)` |
+  | `a@` (postfix) | `a.operator@(int)` | `operator@(a, int)` |
+
+- Hàm thành phần: số tham số = **số ngôi − 1** (toán hạng trái ngầm định = `*this`).
+- Hàm toàn cục: số tham số = **số ngôi**.
+- Toán tử BẮT BUỘC là hàm thành phần: `=`, `[]`, `()`, `->`, phép toán chuyển kiểu (`operator T()`).
+- Dùng hàm toàn cục/`friend` khi toán hạng trái KHÔNG thuộc lớp đang xét. VD `3 + a` với `a` là `PhanSo` → cần `friend PhanSo operator+(int a, PhanSo b);`.
+
+::: {.callout-note title="Chuyển kiểu bằng constructor — khi nào?"}
+Ta dùng chuyển kiểu bằng phương thức thiết lập khi thỏa hai điều kiện:
+
+1. Chuyển từ kiểu đã có (số nguyên) sang kiểu đang định nghĩa (phân số).
+2. Có quan hệ "**là một**" từ kiểu đã có sang kiểu đang định nghĩa (một số nguyên là một phân số).
+:::
+
+- Constructor 1 tham số → chuyển kiểu ngầm định: `PhanSo d = 5;` ≡ `PhanSo d(5);`. Trong `a + 5` → `a.operator+(PhanSo(5))`.
+- Nhược điểm: muốn chuyển từ kiểu đang định nghĩa sang kiểu đã có thì phải sửa kiểu đã có; không chuyển sang kiểu cơ bản được.
+
+::: {.callout-note title="Phép toán chuyển kiểu (`operator T()`)"}
+Phép toán chuyển kiểu là hàm thành phần có dạng `X::operator T()`. Với phép toán trên, sẽ có cơ chế chuyển kiểu tự động từ kiểu đang được định nghĩa `X` sang kiểu đã có `T`.
+:::
+
+- Đặc điểm: hàm thành phần, KHÔNG khai báo kiểu trả về. VD `operator double() const { return double(tu)/mau; }` → `sqrt(a)` chạy được (`sqrt(a.operator double())`).
+- Dùng khi định nghĩa kiểu mới và muốn tận dụng phép toán của kiểu đã có.
+
+::: {.callout-note title="Sự nhập nhằng"}
+Nhập nhằng là hiện tượng xảy ra khi trình biên dịch tìm được ít nhất hai cách chuyển kiểu để thực hiện một việc tính toán nào đó.
+:::
+
+- Hiện tượng nhập nhằng thường xảy ra khi định nghĩa lớp có cả constructor 1 tham số và `operator T()`. VD `PhanSo` có cả `PhanSo(long)` và `operator double()` → `a + 2`, `2.5 + a` nhập nhằng.
+- Khắc phục: ép kiểu tường minh (`a + PhanSo(2)`, `double(a) + 2.5`) hoặc bỏ bớt một cơ chế chuyển kiểu (mất sự tiện lợi của tự động).
+- Nhập nhằng cũng xảy ra nếu chuyển kiểu phải qua **2 cấp**.
+
+::: {.callout-note title="Gán và khởi động — lớp có cấp phát tài nguyên"}
+Khi lớp đối tượng có nhu cầu cấp phát tài nguyên: việc khởi động đối tượng đòi hỏi phải có phương thức thiết lập sao chép để tránh hiện tượng các đối tượng chia sẻ tài nguyên dẫn đến một vùng tài nguyên bị giải phóng nhiều lần khi các đối tượng bị hủy bỏ.
+:::
+
+- Khởi động ≠ gán:
+  - `String b = a;` → **khởi động**, gọi copy constructor.
+  - `b = a;` → **gán**, gọi `operator=` (đối tượng `b` đã tồn tại).
+- Lớp quản lý tài nguyên cần đủ bộ: destructor + copy constructor + `operator=` (rule of three) — nếu không, `delete[]` cùng vùng nhớ 2 lần → "Null pointer assignment".
+- `operator=` chuẩn:
+  ```cpp
+  String& String::operator=(const String& s) {
+      if (this != &s) {       // chong tu gan
+          delete[] p;          // doc don tai nguyen cu
+          p = strdup(s.p);     // sao chep moi
+      }
+      return *this;            // gan day chuyen
+  }
+  ```
+- Phép toán `<<` / `>>`:
+  - `<<`/`>>` nguyên thủy: thao tác trên từng bit khi toán hạng là số nguyên. C++ định nghĩa lại để dùng với `ostream`/`istream`.
+  - `cout`, `cerr` thuộc `ostream`; `cin` thuộc `istream`.
+  - PHẢI là hàm toàn cục/`friend` (toán hạng trái là `ostream&`/`istream&`, KHÔNG thuộc lớp tự định nghĩa).
+  - Trả về tham chiếu để xâu chuỗi.
+  ```cpp
+  friend ostream& operator<<(ostream& os, PhanSo p);
+  friend istream& operator>>(istream& is, PhanSo& p);
+
+  ostream& operator<<(ostream& os, PhanSo p) {
+      os << p.tu;
+      if (p.tu != 0 && p.mau != 1) os << "/" << p.mau;
+      return os;
+  }
+  ```
+- `operator[]` — lấy phần tử mảng:
+  - Dùng cho đối tượng có ý nghĩa mảng.
+  - Phiên bản thường: `char& operator[](int i);` → trả tham chiếu, dùng làm lvalue (`a[7] = 'V';`).
+  - Phiên bản `const`: `char operator[](int i) const;` → cho đối tượng hằng. Cài cả 2 để vừa đọc vừa ghi.
+- `operator()` — gọi hàm: nhận **nhiều tham số** (khắc phục giới hạn 1 tham số của `[]`). VD `float& MATRIX::operator()(int i, int j);` → `a(i, j)` cho ma trận 2 chiều.
+
+::: {.callout-note title="`++` / `--` prefix vs postfix"}
+- Tiếp đầu ngữ `++a`: (1) tăng `a` lên giá trị kế tiếp; (2) trả về tham chiếu đến chính `a`.
+- Tiếp vị ngữ `a++`: (1) tăng `a` lên giá trị kế tiếp; (2) trả về giá trị bằng với `a` **trước** khi tăng.
+:::
+
+- Phân biệt 2 phiên bản bằng tham số `int` giả:
+  ```cpp
+  Lop& operator++();        // prefix: tra tham chieu
+  Lop  operator++(int);     // postfix: tra ban sao gia tri cu
+  ```
+- Cài postfix:
+  ```cpp
+  Lop Lop::operator++(int) {
+      Lop t = *this;        // luu gia tri cu
+      ++(*this);            // tang
+      return t;             // tra gia tri cu
+  }
+  ```
+- `++`/`--` chỉ áp dụng cho kiểu **đếm được** (mỗi giá trị có giá trị kế tiếp / trước đó).

@@ -2,32 +2,28 @@
 title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
 ---
 
-::: {.callout-important title="Cram sheet"}
+:::: {.callout-important title="Cram sheet"}
 {{< include _cram/04.qmd >}}
-:::
+::::
 
 ::: {.content-visible when-format="html"}
 [Tải bản PDF in](04-lop-doi-tuong-2.pdf)
 :::
 
-Chương này tiếp nối Chương 03 và đi vào các tình huống xuất hiện khi đối tượng được dùng trong những ngữ cảnh phức tạp hơn: làm thành phần của một lớp khác, làm phần tử của mảng, hoặc được cấp phát động. Sau đó là hai khái niệm cho phép phá vỡ tính đóng gói một cách có kiểm soát (hàm bạn và lớp bạn), và cuối cùng là tập nguyên tắc thiết kế lớp.
+## Đối tượng là thành phần của lớp
 
-## Đối tượng là thành phần của lớp (Objects as Class Members)
+Đối tượng có thể là thành phần của đối tượng khác. Khi đối tượng "lớn" (lớp kết hợp) được tạo, các thành phần của nó cũng được tạo theo.
 
-Một đối tượng có thể chứa các đối tượng khác làm thuộc tính. Khi một đối tượng thuộc lớp "lớn" (lớp kết hợp) được tạo ra, các thành phần của nó cũng được tạo theo.
+### Thứ tự constructor / destructor
 
-### Thứ tự gọi constructor và destructor
+- Constructor: **trong → ngoài** — constructor thành phần chạy trước, sau đó thân constructor lớp kết hợp.
+- Destructor: **ngoài → trong** — thân destructor lớp kết hợp chạy trước, sau đó destructor thành phần.
 
-Quy tắc dễ nhớ là constructor đi từ **trong ra ngoài**, destructor đi **ngược lại**:
+→ Thành phần luôn được khởi tạo trước khi lớp chứa "thấy" nó, và bị hủy sau khi lớp chứa "xong việc" với nó.
 
-- Khi tạo đối tượng kết hợp, constructor của từng đối tượng thành phần được tự động gọi trước, rồi mới đến phần thân constructor của lớp kết hợp.
-- Khi hủy đối tượng kết hợp, thân destructor của lớp kết hợp chạy trước, sau đó destructor của từng thành phần mới được gọi.
+### Danh sách khởi tạo thành phần (member-init list)
 
-Như vậy thành phần luôn được khởi tạo trước khi lớp chứa "thấy" nó, và bị hủy sau khi lớp chứa "xong việc" với nó.
-
-### Danh sách khởi tạo thành phần
-
-Nếu đối tượng thành phần cần tham số khi thiết lập, lớp kết hợp bắt buộc phải có constructor để truyền tham số xuống. Cú pháp dùng dấu hai chấm `:` ngay sau bộ tham số, liệt kê từng `tên_thành_phần(tham_số_khởi_động)`:
+Cú pháp dùng dấu `:` ngay sau bộ tham số, liệt kê `tên_thành_phần(tham_số_khởi_động)`. Cũng dùng được cho thành phần kiểu cơ sở.
 
 ```cpp
 class Diem {
@@ -51,35 +47,29 @@ public:
 TamGiac t(100, 100, 200, 400, 300, 300, 1);
 ```
 
-Trong ví dụ trên, mỗi `Diem` thành phần được khởi tạo trực tiếp bằng cặp `(xA, yA)`, `(xB, yB)`, `(xC, yC)`, thay vì tạo `Diem` mặc định rồi mới gán giá trị trong thân constructor. Như slide nhấn mạnh: cú pháp dấu hai chấm cũng dùng được cho thành phần kiểu cơ sở, vì vậy `loai(l)` được viết chung trong cùng danh sách.
+### Khi nào member-init list là BẮT BUỘC
 
-### Khi nào danh sách khởi tạo là bắt buộc
+Đây là **cách duy nhất** để khởi tạo:
 
-Member-init list không chỉ là một lựa chọn cho gọn. Đây là **cách duy nhất** để khởi tạo:
+- Thành phần `const`.
+- Thành phần tham chiếu (`&`).
+- Thành phần thuộc lớp khác KHÔNG có constructor mặc định.
 
-- Thành phần là hằng số (`const`).
-- Thành phần là tham chiếu (`&`).
-- Thành phần thuộc lớp khác mà không có constructor mặc định.
+Nếu thành phần thuộc lớp cần tham số → lớp chứa BẮT BUỘC viết constructor để truyền tham số xuống.
 
-Trong cả ba trường hợp, viết gán ở thân constructor `{ ... }` sẽ không biên dịch được, vì khi đó đối tượng thành phần đã phải được khởi tạo trước rồi.
+## Đối tượng là thành phần của mảng
 
-## Đối tượng là thành phần của mảng (Objects as Array Elements)
+::: {.callout-note title="Tự khởi động — yêu cầu của mảng đối tượng"}
+Khi mảng được tạo, các phần tử được tạo theo, phương thức thiết lập sẽ được gọi cho từng phần tử. Vì không thể cung cấp tham số khởi động cho tất cả các phần tử khi khai báo mảng, mỗi đối tượng phải có **khả năng tự khởi động**.
 
-Khi khai báo `Lop arr[n]`, mảng tạo ra `n` phần tử cùng lúc, và constructor được gọi cho từng phần tử. Vấn đề là cú pháp khai báo mảng không cho phép truyền tham số riêng cho mỗi phần tử.
+Đối tượng có khả năng tự khởi động trong các trường hợp:
 
-### Yêu cầu "tự khởi động"
+1. Lớp không có phương thức thiết lập.
+2. Lớp có phương thức thiết lập không tham số.
+3. Lớp có phương thức thiết lập mà mọi tham số đều có giá trị mặc nhiên.
+:::
 
-Vì không cung cấp tham số được, lớp phải có **khả năng tự khởi động**. Slide liệt kê đúng ba trường hợp lớp tự khởi động được:
-
-1. **Lớp không có constructor nào**: trình biên dịch dùng constructor mặc định ngầm định.
-2. **Lớp có constructor không tham số**: ví dụ `Diem() : x(0), y(0) {}`.
-3. **Lớp có constructor mà mọi tham số đều có giá trị mặc nhiên**: ví dụ `Diem(double xx = 0, double yy = 0) : x(xx), y(yy) {}`.
-
-Nếu lớp chỉ định nghĩa constructor có tham số bắt buộc (không có giá trị mặc nhiên), việc khai báo mảng các đối tượng của lớp đó sẽ bị lỗi.
-
-### Ví dụ: lớp không tự khởi động được
-
-Lớp `Diem` chỉ có constructor `(double, double)` không có giá trị mặc nhiên, hoặc lớp `String` chỉ có constructor `(char *)`, đều không khai báo mảng được:
+### Ví dụ: lớp KHÔNG tự khởi động được
 
 ```cpp
 class String {
@@ -105,14 +95,12 @@ public:
         : HoTen(ht), MaSo(ms), NamSinh(ns) {}
 };
 
-String  arrs[3];     // lỗi
-Diem    arrd[5];     // lỗi
-SinhVien arrsv[7];   // lỗi
+String   arrs[3];     // LỖI
+Diem     arrd[5];     // LỖI
+SinhVien arrsv[7];    // LỖI
 ```
 
 ### Cách 1: tham số có giá trị mặc nhiên
-
-Thêm giá trị mặc nhiên cho mọi tham số là cách phổ biến nhất:
 
 ```cpp
 class Diem {
@@ -152,8 +140,6 @@ SinhVien asv[7];
 
 ### Cách 2: viết thêm constructor không tham số
 
-Có thể giữ nguyên constructor có tham số và viết thêm overload không tham số:
-
 ```cpp
 class Diem {
     double x, y;
@@ -173,15 +159,13 @@ public:
 };
 ```
 
-Cả hai cách đều hợp lệ; "tham số mặc nhiên" gọn hơn, "overload" linh hoạt hơn khi giá trị mặc định cần logic riêng.
+## Đối tượng được cấp phát động
 
-## Đối tượng được cấp phát động (Dynamically Allocated Objects)
+::: {.callout-note title="Đối tượng được cấp phát động"}
+Đối tượng được cấp phát động là các đối tượng được tạo ra bằng phép toán `new` và bị hủy đi bằng phép toán `delete`. Phép toán `new` cấp đối tượng trong vùng heap và gọi phương thức thiết lập cho đối tượng được cấp.
+:::
 
-Đối tượng cấp phát động là đối tượng tạo ra bằng `new` và hủy bằng `delete`. Vùng nhớ được lấy từ heap.
-
-### Cấp phát và hủy một đối tượng
-
-`new Lop(...)` cấp vùng nhớ và gọi constructor; `delete p` gọi destructor rồi giải phóng vùng nhớ.
+### Cấp + hủy 1 đối tượng
 
 ```cpp
 int    *pi = new int;
@@ -191,30 +175,30 @@ String *pa = new String("Nguyen Van A");
 // ...
 delete pa;
 delete pd;
-delete pj;     // KHÔNG đúng: cần delete[] cho mảng động (xem dưới)
+delete[] pj;
 delete pi;
 ```
 
-Vì cấp phát một đối tượng vẫn cho phép truyền tham số, nên không có ràng buộc nào về "tự khởi động" ở đây - constructor nào cũng dùng được.
+Cấp 1 đối tượng vẫn truyền tham số được → KHÔNG ràng buộc về tự khởi động.
 
-### Cấp phát và hủy mảng động
+### Cấp + hủy mảng động
 
-`new Lop[n]` lại không cho phép truyền tham số cho từng phần tử, giống hệt khai báo mảng tĩnh. Vì vậy yêu cầu là lớp **phải có constructor không tham số** (hoặc constructor mà mọi tham số đều có mặc nhiên):
+`new Lop[n]` KHÔNG truyền tham số cho từng phần tử → YÊU CẦU lớp **tự khởi động**.
 
 ```cpp
 int    *pai = new int[10];
-Diem   *pad = new Diem[5];     // lỗi nếu Diem không có constructor không tham số
-String *pas = new String[5];   // lỗi nếu String không có constructor không tham số
+Diem   *pad = new Diem[5];     // LỖI nếu Diem không có constructor không tham số
+String *pas = new String[5];   // LỖI nếu String không có constructor không tham số
 ```
 
-Thông báo lỗi tiêu biểu của trình biên dịch:
+Lỗi tiêu biểu:
 
 ```
 Cannot find default constructor to initialize array element of type 'Diem'
 Cannot find default constructor to initialize array element of type 'String'
 ```
 
-Khắc phục bằng cách thêm constructor không tham số (hoặc giá trị mặc nhiên cho mọi tham số). Khi đó **mọi phần tử được cấp đều được khởi tạo với cùng giá trị**:
+Khắc phục: thêm constructor không tham số (hoặc giá trị mặc nhiên cho mọi tham số). Khi đó **mọi phần tử cấp đều được khởi tạo cùng giá trị**:
 
 ```cpp
 class String {
@@ -224,18 +208,7 @@ public:
         p = new char[strlen(s) + 1];
         strcpy(p, s);
     }
-    String(const String &s) {
-        p = new char[strlen(s.p) + 1];
-        strcpy(p, s.p);
-    }
-    ~String() { delete[] p; }
-};
-
-class Diem {
-    double x, y;
-public:
-    Diem(double xx, double yy) : x(xx), y(yy) {}
-    Diem() : x(0), y(0) {}
+    // ...
 };
 
 int    *pai = new int[10];
@@ -243,7 +216,7 @@ Diem   *pad = new Diem[5];        // cả 5 điểm cùng tọa độ (0,0)
 String *pas = new String[5];      // cả 5 chuỗi cùng giá trị "Alibaba"
 ```
 
-Hủy mảng động phải dùng `delete[]` (có cặp ngoặc vuông), không gộp được nhiều con trỏ vào một `delete`:
+Hủy mảng động PHẢI dùng `delete[]`. KHÔNG gộp được nhiều con trỏ:
 
 ```cpp
 delete[] pas;
@@ -253,25 +226,21 @@ delete[] pai;
 // SAI: delete pas, pad, pai;
 ```
 
-::: {.callout-note title="Liên hệ Chương 05"}
-Khi lớp tự quản lý tài nguyên (như con trỏ trỏ đến vùng nhớ động), không chỉ cần constructor và destructor mà còn cần copy constructor để sao chép đúng và toán tử gán (phép `=`) để tránh các lỗi sao chép. Toán tử gán và xử lý copy đầy đủ thuộc về Chương 05.
-:::
-
 ## Hàm bạn (Friend Function)
 
 ### Vì sao cần friend
 
-Giả sử có lớp `Vector` và lớp `Matrix`, cần viết hàm nhân một `Vector` với một `Matrix`. Hàm này:
+Giả sử có lớp `Vector` và lớp `Matrix`. Hàm nhân `Vector` × `Matrix`:
 
-- **Không thể thuộc lớp `Vector`**: nó phải đụng vào dữ liệu private của `Matrix`.
-- **Không thể thuộc lớp `Matrix`**: nó phải đụng vào dữ liệu private của `Vector`.
-- **Không thể là hàm tự do** thông thường: hàm tự do không truy cập được `private` của cả hai lớp.
+- KHÔNG thuộc `Vector`: phải đụng vào `private` của `Matrix`.
+- KHÔNG thuộc `Matrix`: phải đụng vào `private` của `Vector`.
+- KHÔNG là hàm tự do thông thường: không truy cập được `private` của cả hai.
 
-Một giải pháp là viết thêm các hàm truy cập public cho cả hai lớp - nhưng như vậy là làm "lộ" dữ liệu cho cả thế giới chỉ để phục vụ một hàm. Giải pháp gọn hơn là `friend`.
+→ Giải pháp: `friend`.
 
-### Khai báo và đặc điểm
-
-Hàm bạn được khai báo bên trong lớp bằng từ khóa `friend`, đặt trước nguyên mẫu hàm:
+::: {.callout-note title="Hàm bạn (Friend function)"}
+Hàm bạn không thuộc lớp. Tuy nhiên, có quyền truy cập các thành viên `private`. Khi định nghĩa một lớp, có thể khai báo một hay nhiều hàm "bạn" (bên ngoài lớp).
+:::
 
 ```cpp
 class COUNTERCLASS {
@@ -284,7 +253,7 @@ public:
 };
 ```
 
-Định nghĩa hàm bạn nằm bên ngoài lớp, không có tiền tố `LopChu::`:
+Định nghĩa hàm bạn nằm bên ngoài lớp, KHÔNG có tiền tố `LopChu::`:
 
 ```cpp
 COUNTERCLASS MyCounter[26];
@@ -297,17 +266,19 @@ int Total(int NumberObjects) {
 }
 ```
 
-Ba điểm cần nhớ về hàm bạn:
+Đặc điểm:
 
-- Hàm bạn **không thuộc lớp** dù được khai báo bên trong lớp. Vị trí trong vùng `public:` hay `private:` không ảnh hưởng gì.
-- Hàm bạn **không có con trỏ `this`** vì không gắn với một đối tượng cụ thể nào; muốn dùng đối tượng nào thì truyền vào qua tham số.
-- Hàm bạn **vẫn được phép truy cập thành viên `private` và `protected`** của lớp đã kết bạn với nó.
+- Hàm bạn **không thuộc lớp** dù được khai báo bên trong lớp. Vị trí trong vùng `public:` hay `private:` KHÔNG ảnh hưởng.
+- Hàm bạn **không có con trỏ `this`**.
+- Vẫn truy cập được thành viên `private` / `protected` của lớp đã kết bạn.
 
-Ưu điểm: quan hệ bạn được kiểm soát ở cấp độ lớp - không ai có thể tự áp đặt làm bạn của một lớp nếu chính lớp đó không khai báo trước.
+Ưu điểm: kiểm soát truy nhập ở cấp lớp — không thể tự áp đặt làm bạn nếu lớp không khai báo trước.
 
 ## Lớp bạn (Friend Class)
 
-Khi muốn cho **mọi phương thức** của một lớp khác truy cập vào phần private, dùng `friend class TenLop;` thay vì khai báo từng hàm bạn:
+::: {.callout-note title="Lớp bạn"}
+Một lớp có thể truy cập đến các thành phần có thuộc tính `private` của một lớp khác. Để thực hiện được điều này, chúng ta có thể lấy toàn bộ một lớp làm bạn (hàm friend) cho lớp khác.
+:::
 
 ```cpp
 class TOM {
@@ -325,28 +296,27 @@ public:
 };
 ```
 
-Khi đó mọi phương thức của `JERRY` (không chỉ `Change`) đều truy cập được phần `private` của `TOM`.
+→ Mọi phương thức của `JERRY` (không chỉ `Change`) truy cập được `private` của `TOM`.
 
 ## Ba tính chất của quan hệ friend
 
-Slide nhấn mạnh ba tính chất, và đây là dạng câu hỏi rất hay gặp trong bài kiểm tra:
+::: {.callout-note title="3 tính chất quan hệ friend"}
+- **Phải được cho, không được nhận**: lớp `B` là bạn của lớp `A`, lớp `A` phải khai báo rõ ràng `B` là bạn của nó.
+- **Không đối xứng**: `A` friend `B` không suy ra `B` friend `A`.
+- **Không bắc cầu**: `A` friend `B` và `B` friend `C` không suy ra `A` friend `C`.
+:::
 
-1. **Phải được cho, không được nhận.** Muốn `B` là bạn của `A` thì chính `A` phải khai báo `friend class B;` ở bên trong định nghĩa của mình. `B` không thể tự nhận hay tự tuyên bố quyền truy cập vào `A`. Điều này bảo vệ tính đóng gói: chỉ chủ của dữ liệu mới quyết định ai được nhìn thấy nó.
-2. **Không đối xứng.** `A` cho `B` làm bạn không có nghĩa `B` cho `A` làm bạn. Quan hệ bạn là một chiều, theo đúng khai báo trong lớp chủ.
-3. **Không bắc cầu.** `A` là bạn của `B`, `B` là bạn của `C`, không suy ra `A` là bạn của `C`. Mỗi quan hệ bạn phải khai báo tường minh.
+→ `friend` an toàn hơn nhiều so với đặt dữ liệu là `public`: lớp chủ vẫn giữ toàn quyền quyết định ai được truy cập.
 
-Ba tính chất này khiến `friend` an toàn hơn nhiều so với việc đơn giản đặt dữ liệu là `public`: lớp chủ vẫn giữ toàn quyền quyết định ai được truy cập.
+## Giao diện và chi tiết cài đặt
 
-## Giao diện và chi tiết cài đặt (Interface vs Implementation)
+::: {.callout-note title="Giao diện và chi tiết cài đặt"}
+Lớp có hai phần tách rời. Phần giao diện khai báo trong phần `public` để người sử dụng "thấy" và sử dụng. Chi tiết cài đặt bao gồm dữ liệu khai báo trong phần `private` của lớp và chi tiết mã hóa các hàm thành phần, vô hình đối với người dùng.
 
-Mỗi lớp được nhìn dưới hai phần tách rời:
+Có thể thay đổi uyển chuyển chi tiết cài đặt (đổi tổ chức dữ liệu, đổi giải thuật) — nếu giữ nguyên phần giao diện thì không ảnh hưởng đến người sử dụng, không làm đổ vỡ kiến trúc hệ thống.
+:::
 
-- **Giao diện**: các phương thức `public` mà người dùng "thấy" và gọi được. Đây là phần hợp đồng giữa lớp và bên ngoài.
-- **Chi tiết cài đặt**: dữ liệu `private` và mã của các hàm thành phần - vô hình đối với người dùng.
-
-Ý tưởng quan trọng: có thể thay đổi tổ chức dữ liệu hoặc giải thuật bên trong lớp một cách uyển chuyển, miễn là không thay đổi giao diện thì người dùng không bị ảnh hưởng, và kiến trúc của hệ thống không bị đổ vỡ.
-
-Ví dụ kinh điển là lớp `ThoiDiem`.
+VD `ThoiDiem` — 2 cài đặt cùng giao diện.
 
 ### Cách 1: lưu trực tiếp giờ, phút, giây
 
@@ -386,50 +356,39 @@ public:
 };
 ```
 
-Hai cách cài đặt có **cùng giao diện public** (`Set`, `LayGio`, `LayPhut`, `LayGiay`, `Nhap`, `Xuat`, `Tang`, `Giam`). Người dùng lớp `ThoiDiem` viết mã giống hệt nhau trong cả hai trường hợp. Việc chuyển từ Cách 1 sang Cách 2 (hoặc ngược lại) - dù để tiết kiệm bộ nhớ hay để các phép `Tang`, `Giam` đơn giản hơn - không hề làm hỏng mã của người dùng.
+→ Cùng giao diện `Set`/`LayGio`/`LayPhut`/`LayGiay`/`Nhap`/`Xuat`/`Tang`/`Giam`. Người dùng viết mã giống hệt nhau trong cả 2 trường hợp.
 
-## Nguyên tắc xây dựng lớp (Class Design Principles)
-
-Cuối chương là một tập nguyên tắc thực hành để biến mô tả bài toán thành lớp.
+## Nguyên tắc xây dựng lớp
 
 ### Khái niệm trong đề thành lớp
 
-"Khi ta nghĩ đến **nó** như một khái niệm riêng lẻ thì hãy xây dựng một lớp biểu diễn khái niệm đó." Quy tắc nhặt từ đề:
+"Khi ta nghĩ đến **nó** như một khái niệm riêng lẻ thì hãy xây dựng một lớp biểu diễn khái niệm đó."
 
-- **Danh từ** -> tên lớp và tên thuộc tính (dữ liệu).
-- **Động từ** -> tên phương thức (hành vi).
-
-Đây là phép "đọc đề mà bắt từ" cơ bản nhưng rất hiệu quả với bài tập thiết kế lớp.
+- **Danh từ** → tên lớp + tên thuộc tính (dữ liệu).
+- **Động từ** → tên phương thức (hành vi).
 
 ### Thuộc tính suy diễn được nên là phương thức
 
-Nếu một thuộc tính có thể tính ra từ các thuộc tính khác, thì không nên lưu trực tiếp mà nên viết một hàm thành phần để tính khi cần. Ví dụ với `TamGiac`:
-
 ```cpp
-// Không nên: lưu các giá trị suy diễn
+// KHÔNG nên: lưu các giá trị suy diễn
 class TamGiac {
     Diem A, B, C;
     double ChuVi;
     double DienTich;
-public:
-    // ...
 };
 
-// Nên: cung cấp hàm tính
+// NÊN: cung cấp hàm tính
 class TamGiac {
     Diem A, B, C;
 public:
-    double TinhChuVi()   const;
+    double TinhChuVi()    const;
     double TinhDienTich() const;
-    // ...
 };
 ```
 
-Lưu trực tiếp giá trị suy diễn dễ dẫn đến dữ liệu "không nhất quán" khi một thuộc tính nền tảng thay đổi mà thuộc tính phụ thuộc chưa được cập nhật.
-
 ### Khi nào lưu thẳng giá trị suy diễn
 
-Quy tắc trên có ngoại lệ: nếu việc tính toán nặng (chi phí cao về thời gian hoặc tài nguyên), nên lưu thẳng làm dữ liệu thành phần để tránh tính lại nhiều lần. Ví dụ tuổi trung bình của một quốc gia:
+Nếu việc tính toán nặng (chi phí cao về thời gian / tài nguyên) → nên lưu thẳng làm dữ liệu thành phần.
 
 ```cpp
 class QuocGia {
@@ -438,60 +397,47 @@ class QuocGia {
     double TuoiTrungBinh;   // lưu sẵn vì tính lại từ dân số quá tốn
 public:
     double TinhTuoiTB() const;
-    // ...
 };
 ```
 
 ### Gom dữ liệu có quan hệ thành lớp con
 
-Các trường có quan hệ nên được gói thành một lớp con thay vì để rời rạc. Ví dụ tam giác và hình tròn:
-
 ```cpp
-// Nên: dùng lớp Diem
+// NÊN: dùng lớp Diem
 class TamGiac {
     Diem A, B, C;
-public:
-    // ...
 };
 
 class HinhTron {
     Diem   Tam;
     double BanKinh;
-public:
-    // ...
 };
 
-// Không nên: trải phẳng tọa độ
+// KHÔNG nên: trải phẳng tọa độ
 class TamGiac {
     double xA, yA;
     double xB, yB, xC, yC;
-public:
-    // ...
 };
 
 class HinhTron {
     double tx, ty, BanKinh;
-public:
-    // ...
 };
 ```
 
-Tương tự, một ngày tháng năm nên đóng vào một lớp `NgayThang` thay vì để ba trường `int ngay, thang, nam` rải rác ở mọi nơi.
+Tương tự, ngày-tháng-năm gom vào `NgayThang` thay vì để 3 trường `int ngay, thang, nam` rải rác.
 
 ### Luôn nên có constructor
 
-Hai nguyên tắc đi cùng nhau:
-
-- Trong mọi trường hợp, **nên có constructor** để chủ động khởi động đối tượng - không phụ thuộc vào giá trị rác trên stack.
-- Nên có constructor **tự khởi động** (không tham số, hoặc mọi tham số đều có giá trị mặc nhiên) để dùng được với mảng và với `new Lop[n]`.
+- Trong mọi trường hợp **nên có constructor** để chủ động khởi động đối tượng.
+- Nên có constructor **tự khởi động** để dùng được với mảng và `new Lop[n]`.
 
 ### Lớp quản lý tài nguyên cần đủ bộ
 
-Nếu đối tượng có nhu cầu cấp phát tài nguyên (con trỏ trỏ đến vùng nhớ động, mở tập tin, kết nối ...) thì cần:
+Đối tượng có nhu cầu cấp phát tài nguyên → cần:
 
-- **Constructor** để cấp phát/khởi tạo.
-- **Copy constructor** để khởi tạo đối tượng mới từ đối tượng cùng kiểu, đảm bảo bản sao có tài nguyên riêng.
+- **Constructor** để cấp phát / khởi tạo.
+- **Copy constructor** để khởi tạo đối tượng mới từ đối tượng cùng kiểu (đảm bảo bản sao có tài nguyên riêng).
 - **Destructor** để dọn dẹp.
-- **Phép gán** (toán tử `=`) để xử lý đúng khi gán đối tượng đã tồn tại sang đối tượng đã tồn tại - phần này được trình bày trong [Chương 05](05-toan-tu.qmd).
+- **`operator=`** để xử lý đúng phép gán giữa hai đối tượng đã tồn tại.
 
-Còn nếu đối tượng đơn giản, không sở hữu tài nguyên riêng, thì không cần copy constructor và destructor tự viết - những phiên bản mặc định do trình biên dịch sinh ra đã đủ.
+Đối tượng đơn giản, không sở hữu tài nguyên riêng → KHÔNG cần copy constructor và destructor tự viết — bản mặc định đã đủ.

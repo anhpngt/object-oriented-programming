@@ -2,9 +2,9 @@
 title: "Chương 01 - Tổng quan về C++ (C++ Overview)"
 ---
 
-::: {.callout-important title="Cram sheet"}
+:::: {.callout-important title="Cram sheet"}
 {{< include _cram/01.qmd >}}
-:::
+::::
 
 ::: {.content-visible when-format="html"}
 [Tải bản PDF in](01-tong-quan-cpp.pdf)
@@ -12,9 +12,12 @@ title: "Chương 01 - Tổng quan về C++ (C++ Overview)"
 
 ## Phong cách lập trình (Coding Style)
 
-Trước khi bàn về cú pháp, slide nhấn mạnh một số quy ước viết mã mà người học cần duy trì xuyên suốt môn học. Tên biến và tên hàm nên gợi nghĩa, có quy tắc nhất quán (ví dụ `tongDiem`, `tinhLuong` thay vì `a`, `b`, `f1`). Cách xuống hàng, cách thụt đầu dòng bằng Tab và cách đặt cặp dấu ngoặc nhọn `{ }` cần thống nhất cho cả chương trình để dễ đọc và dễ tìm khối lệnh tương ứng.
+Quy ước viết mã cần duy trì xuyên suốt:
 
-Một điểm quan trọng khác là khai báo nguyên mẫu hàm (function prototype). Nếu định nghĩa hàm được viết sau lời gọi hàm, ta bắt buộc phải khai báo prototype trước lời gọi để trình biên dịch biết kiểu trả về và bộ đối:
+- Tên biến, tên hàm gợi nghĩa (`tongDiem`, `tinhLuong` thay vì `a`, `b`, `f1`).
+- Quy tắc xuống hàng, Tab, cặp `{}` thống nhất cả chương trình.
+
+Khai báo nguyên mẫu hàm (function prototype): nếu định nghĩa hàm viết **sau** lời gọi, BẮT BUỘC khai prototype trước lời gọi.
 
 ```cpp
 int tong(int a, int b);  // prototype
@@ -29,19 +32,23 @@ int tong(int a, int b) {
 }
 ```
 
-## Vị trí của C++ giữa các ngôn ngữ (C++ Among Programming Languages)
+## C và C++
 
-C++ ra đời như một bản mở rộng của C: mọi khả năng, mọi khái niệm trong C đều dùng được trong C++. Trong khi C là ngôn ngữ lập trình cấu trúc, C++ là ngôn ngữ lai (hybrid) cho phép tổ chức chương trình theo cả hàm/thủ tục lẫn lớp/đối tượng. Điều này khác với các ngôn ngữ thuần túy hướng đối tượng như Smalltalk, vốn chỉ hỗ trợ khái niệm lớp.
+C++ là **mở rộng của C**: mọi khả năng, mọi khái niệm trong C đều dùng được trong C++.
 
-Khi đối chiếu hai phong cách:
+- C: ngôn ngữ lập trình **cấu trúc**.
+- C++: ngôn ngữ lập trình **hướng đối tượng**, thực chất là **ngôn ngữ lai** — cho phép tổ chức chương trình theo các lớp và các hàm.
+- Các ngôn ngữ thuần túy hướng đối tượng (như Smalltalk) chỉ hỗ trợ khái niệm về lớp.
 
-- Lập trình cấu trúc tổ chức chương trình thành các hàm/thủ tục. Dữ liệu tách rời với hàm, trao đổi giữa các hàm thông qua đối số và biến toàn cục.
-- Lập trình hướng đối tượng tổ chức chương trình thành các lớp. Lớp gói cả dữ liệu lẫn phương thức xử lý dữ liệu; có thể xem lớp là sự mở rộng của `struct` trong C bằng cách thêm các phương thức. Một chương trình OOP là tập hợp các lớp có quan hệ với nhau.
+| Lập trình cấu trúc | Lập trình hướng đối tượng |
+|---|---|
+| Tổ chức thành các hàm/thủ tục. Chương trình dùng để xử lý dữ liệu nhưng tách rời dữ liệu. | Tổ chức thành các lớp. Lớp gồm cả dữ liệu lẫn phương thức xử lý dữ liệu. Có thể xem lớp là sự mở rộng của `struct` trong C bằng cách thêm phương thức. |
+| Trao đổi dữ liệu qua đối số của hàm và biến toàn cục. | Một chương trình OOP gồm tập các lớp có quan hệ với nhau. |
 
-C++ giữ lại cú pháp C nhưng bổ sung một số thay đổi đáng chú ý:
+C++ giữ cú pháp C, bổ sung:
 
 ```cpp
-/* C cho phep comment nhieu dong nhu the nay */
+/* C cho phep comment nhieu dong */
 // C++ them comment mot dong
 
 int i = 5;
@@ -49,11 +56,11 @@ float a = (float)i;          // ep kieu kieu C
 float b = float(i + 1);      // ep kieu kieu ham (C++)
 
 cout << "Nhap tuoi: ";
-int tuoi;                    // khai bao bien co the dat bat ky cho nao truoc khi dung
+int tuoi;                    // bien co the khai bao bat ky cho nao truoc khi dung
 cin >> tuoi;
 ```
 
-Hằng trong C++ vẫn dùng từ khóa `const` đặt trước một khai báo có khởi gán, và giá trị không được thay đổi sau đó. Hằng có thể được khởi gán bằng giá trị trả về của hàm:
+Hằng `const`: đặt trước khai báo có khởi gán, không đổi giá trị sau khi khai báo. Có thể khởi gán bằng giá trị trả về của hàm:
 
 ```cpp
 const int MAXSIZE = 1000;
@@ -62,24 +69,22 @@ int a[MAXSIZE];
 const DIEM gmh = {getmaxx() / 2, getmaxy() / 2, WHITE};
 ```
 
-Các khái niệm sâu hơn như đóng gói, constructor, kế thừa, đa hình sẽ xuất hiện ở các chương 02, 03 và 06; ở đây chỉ cần nắm rằng C++ cho phép cả hai phong cách cùng tồn tại.
+## Môi trường biên dịch C++
 
-## Môi trường biên dịch C++ (Build Pipeline)
+Một chương trình C++ qua các giai đoạn:
 
-Một chương trình C++ đi qua nhiều giai đoạn trước khi chạy được trên CPU:
+1. **Editor** — soạn mã nguồn, lưu ra đĩa.
+2. **Preprocessor** — xử lý chỉ thị tiền xử lý (`#include`, `#define`).
+3. **Compiler** — dịch mã nguồn thành mã đối tượng (`.obj`/`.o`), lưu ra đĩa.
+4. **Linker** — liên kết mã đối tượng với thư viện → tệp thực thi (`a.out`).
+5. **Loader** — nạp tệp thực thi vào bộ nhớ chính.
+6. **CPU** — thực thi từng lệnh.
 
-1. **Editor** - ta soạn mã nguồn và lưu xuống đĩa.
-2. **Preprocessor** - xử lý các chỉ thị tiền xử lý như `#include`, `#define`.
-3. **Compiler** - dịch mã nguồn đã được tiền xử lý thành mã đối tượng (object code) và lưu xuống đĩa.
-4. **Linker** - liên kết mã đối tượng với các thư viện cần thiết để tạo ra tệp thực thi (ví dụ `a.out`).
-5. **Loader** - nạp tệp thực thi vào bộ nhớ chính.
-6. **CPU** - lần lượt thực thi từng lệnh.
+Đọc lỗi: lỗi cú pháp ở compiler; "undefined reference" ở linker.
 
-Việc hiểu sơ đồ này giúp đọc thông báo lỗi: lỗi cú pháp xảy ra ở compiler, còn lỗi "undefined reference" thường ở linker.
+## Nhập xuất với C++
 
-## Nhập xuất với C++ (Basic I/O)
-
-C++ dùng `cout` để xuất ra màn hình và `cin` để nhập từ bàn phím. Toán tử `<<` đưa giá trị các biểu thức ra luồng xuất, còn `>>` đọc dữ liệu từ luồng nhập. Các tên này thuộc namespace `std`, nên thường đi kèm `using namespace std;` cùng `#include <iostream>`.
+`cin >> bien ... >> bien` nhập từ bàn phím; `cout << bt ... << bt` xuất ra màn hình. Cần `#include <iostream>` và `using namespace std;`.
 
 ```cpp
 #include <iostream>
@@ -99,7 +104,7 @@ int main() {
 }
 ```
 
-Khi cần nhập một chuỗi có khoảng trắng vào mảng `char`, dùng `cin.get` hoặc `cin.getline`. Nếu dùng `string` của C++, có thể dùng `getline(cin, s)` sau khi `#include <string>`:
+Nhập chuỗi có khoảng trắng:
 
 ```cpp
 char ht[50];
@@ -111,29 +116,29 @@ string s;
 getline(cin, s);
 ```
 
-`endl` đẩy ký tự xuống dòng đồng thời flush buffer. Để định dạng số, ta dùng các bộ điều khiển trong `<iomanip>`:
+`cout << endl;` xuống dòng + di chuyển con trỏ đến đầu dòng tiếp theo (đồng thời flush buffer).
+
+Định dạng số trong `<iomanip>`:
 
 ```cpp
 #include <iomanip>
 
 cout << setiosflags(ios::showpoint) << setprecision(p);
-// bat co showpoint, p la so chu so sau dau cham thap phan
+// p la so chu so sau dau cham thap phan
 // co hieu luc cho moi cau lenh cout sau do
 
 cout << setw(w);
-// do rong toi thieu la w vi tri,
+// do rong toi thieu w vi tri
 // chi co hieu luc cho 1 gia tri xuat gan nhat
 ```
 
-Cách nhập xuất này sẽ quay lại ở chương 05 khi ta định nghĩa `operator<<` và `operator>>` cho các lớp tự tạo.
+## Toán tử phạm vi `::`
 
-## Toán tử phạm vi `::` (Scope Resolution Operator)
+Ba vai trò:
 
-Toán tử phạm vi `::` có ba vai trò chính:
-
-1. Truy cập biến toàn cục khi có biến cục bộ trùng tên: `::x` trỏ về biến `x` toàn cục.
-2. Chỉ rõ phương thức thuộc lớp nào khi định nghĩa bên ngoài thân lớp theo dạng `Kiểu_trả_về Tên_lớp::Tên_hàm`.
-3. Dùng với khai báo `using std::cout;` để mang một tên từ namespace `std` vào phạm vi hiện hành.
+1. Truy cập biến toàn cục khi có biến cục bộ trùng tên: `y = ::x + 3`.
+2. Chỉ rõ phương thức thuộc lớp khi định nghĩa bên ngoài thân lớp: `Kiểu_dữ_liệu_của_hàm Tên_lớp::Tên_hàm`.
+3. `using std::cout;`.
 
 ```cpp
 const double PI = 3.14159265358979;
@@ -147,20 +152,17 @@ int main() {
 }
 ```
 
-Toán tử này sẽ xuất hiện lại ở chương 03 khi định nghĩa phương thức bên ngoài lớp (`TenLop::tenHam`) và ở chương 06 khi gọi phương thức của lớp cơ sở từ lớp dẫn xuất.
+## Các kiểu dữ liệu của C++
 
-## Các kiểu dữ liệu của C++ (C++ Data Types)
+Phân loại:
 
-Slide phân loại kiểu dữ liệu C++ thành hai nhóm:
+- **simple**:
+  - integral: `char`, `short`, `int`, `long`, `bool`, `enum`.
+  - floating: `float`, `double`, `long double`.
+- **structured**: `array`, `struct`, `union`, `class`.
+- **address**: `pointer`, `reference`.
 
-- Kiểu đơn giản (simple): `char`, `short`, `int`, `long`, `bool` (nhóm integral), `float`, `double`, `long double` (nhóm floating), và `enum`.
-- Kiểu có cấu trúc (structured): `array`, `struct`, `union`, `class`.
-
-Ngoài ra còn có hai dạng kiểu địa chỉ: `pointer` (con trỏ) và `reference` (tham chiếu).
-
-`sizeof` cho biết kích thước byte của một kiểu hoặc một biểu thức. Ví dụ `sizeof(int) = 2` và `sizeof('A') = 1` (hằng ký tự).
-
-Khai báo `struct`, `enum`, `union` giữ nguyên cú pháp như C:
+`sizeof(int) = 2`; `sizeof('A') = 1` (hằng ký tự).
 
 ```cpp
 struct TS {
@@ -172,13 +174,10 @@ TS ts[1000];     // mang cau truc
 
 enum MAU { xanh, do, tim, vang };
 
-union Du_lieu {  // co the co ten hoac khong ten
-    int i;
-    float f;
-};
+union Du_lieu { int i; float f; };  // co the co ten hoac khong ten
 ```
 
-Từ khóa `typedef` đặt tên mới cho một kiểu đã có, giúp khai báo gọn hơn:
+`typedef` đặt tên kiểu mới:
 
 ```cpp
 typedef struct {
@@ -190,50 +189,50 @@ typedef int MT[20][20];
 MT m;            // m la ma tran 20 dong 20 cot
 ```
 
-Truy xuất các trường của một biến cấu trúc thực hiện qua dấu `.`. Khi có con trỏ tới cấu trúc, dùng `->` (hoặc `(*p).truong`):
+Truy xuất trường:
 
 ```cpp
 PS p;
-cout << "Nhap tu va mau:";
 cin >> p.tu >> p.mau;
 
 PS *pp = &p;
-cin >> pp->tu >> pp->mau;
-// tuong duong: cin >> (*pp).tu >> (*pp).mau;
+cin >> pp->tu >> pp->mau;        // tuong duong (*pp).tu
 ```
 
-## Cấp phát bộ nhớ động (Dynamic Memory Allocation)
-
-C++ cấp phát bộ nhớ động bằng `new` và giải phóng bằng `delete`. Với mảng, dùng `new Kiểu[n]` đi kèm `delete[]`:
+## Cấp phát bộ nhớ động
 
 ```cpp
-float *p = new float;
-int   *pn = new int[100];
+float *p  = new float;       // 1 phan tu
+int   *pn = new int[100];    // n phan tu
 
 delete p;
 delete[] pn;
 ```
 
-Slide nhắc rõ kết quả cấp phát:
+Kiểm tra kết quả cấp phát:
 
-- Nếu thành công, `p` chứa địa chỉ đầu vùng nhớ được cấp phát.
-- Nếu thất bại, `p` mang giá trị `NULL`. Vì vậy nên kiểm tra `p` trước khi sử dụng.
+- Thành công → `p` chứa địa chỉ đầu vùng nhớ được cấp phát.
+- Thất bại → `p = NULL`.
 
-(Slide ghi `new` trả `NULL` khi thất bại; trong C++ chuẩn hiện đại, mặc định `new` ném ngoại lệ `std::bad_alloc` khi thất bại — phiên bản trả `NULL` là `new (std::nothrow)`. Trong bài thi nên trả lời theo slide.)
+::: {.callout-warning}
+Slide ghi `new` trả `NULL` khi thất bại. Trong C++ chuẩn hiện đại, `new` ném `std::bad_alloc` khi thất bại; phiên bản trả `NULL` là `new (std::nothrow)`. Trong bài thi trả lời theo slide.
+:::
 
-Quên `delete` gây rò rỉ bộ nhớ; dùng sai cặp `new[]` / `delete[]` cũng tạo ra lỗi khó phát hiện. Các vấn đề này sẽ đặc biệt quan trọng ở chương lớp có con trỏ và copy object (chương 04).
+Quên `delete` → rò rỉ bộ nhớ. Dùng sai cặp `new[]` / `delete[]` → lỗi khó phát hiện.
 
-## Hàm trong C++ (Functions in C++)
+## Hàm trong C++
 
-Mục này bao gồm các mở rộng của C++ liên quan đến hàm: đối có giá trị mặc định, tham chiếu, con trỏ hàm, hàm `inline`, nạp chồng hàm và sơ lược nạp chồng toán tử.
+### Đối có giá trị mặc định
 
-### Đối có giá trị mặc định (Default Arguments)
+::: {.callout-note title="Đối có giá trị mặc định"}
+Gán giá trị mặc định cho các đối số của hàm. Giá trị này sẽ được sử dụng khi không truyền giá trị cho các đối số của hàm trong lời gọi hàm.
+:::
 
-Đối có giá trị mặc định cho phép gọi hàm mà thiếu một số tham số; khi đó đối không có tham số tương ứng sẽ nhận giá trị mặc định. Quy tắc khai báo:
+Khai báo:
 
-- Nếu có prototype, giá trị mặc định được khởi gán trong prototype; trong định nghĩa không khởi gán lại.
-- Nếu không có prototype, khởi gán ngay ở dòng đầu của định nghĩa hàm.
-- Các đối có giá trị mặc định phải nằm ở cuối danh sách đối.
+- Có prototype → khởi gán mặc định **trong prototype**, KHÔNG lặp lại trong định nghĩa.
+- Không prototype → khởi gán trong dòng đầu định nghĩa.
+- Đối mặc định phải nằm cuối danh sách.
 
 ```cpp
 void delay(int n = 1000);          // prototype
@@ -243,30 +242,36 @@ void delay(int n) { /* ... */ }    // dinh nghia, khong khoi gan lai
 void delay(int n = 1000) { /* ... */ }
 ```
 
-Khi gọi hàm, các tham số thiếu phải tính từ phải sang trái (tức không thể bỏ một tham số ở giữa rồi cung cấp tham số phía sau). Ví dụ:
+Gọi hàm: tham số thiếu phải tương ứng với đối mặc định, **tính từ trái sang phải** (không bỏ tham số ở giữa rồi cung cấp tham số phía sau).
 
 ```cpp
 void f(int d1, float d2, char *d3 = "Ha Noi",
        int d4 = 100, double d5 = 3.14);
 
-f(3);                                  // SAI: thieu d2 (khong mac dinh)
-f(3, 3.4);                             // dung
-f(3, 3.4, "ABC");                      // dung
-f(3, 3.4, "ABC", 10);                  // dung
-f(3, 3.4, "ABC", 10, 1.0);             // dung
+f(3);                          // SAI: thieu d2 (khong mac dinh)
+f(3, 3.4);                     // dung
+f(3, 3.4, "ABC");              // dung
+f(3, 3.4, "ABC", 10);          // dung
+f(3, 3.4, "ABC", 10, 1.0);     // dung
 ```
 
-Giá trị mặc định có thể là hằng, biến toàn cục, hoặc giá trị trả về của hàm, ví dụ `void f(int n, int m = MAX, int xmax = getmaxx());`.
+Có thể khởi gán bằng hằng, biến toàn cục, hàm: `void f(int n, int m = MAX, int xmax = getmaxx());`.
 
-### Biến tham chiếu (Reference Variables)
+### Biến tham chiếu
 
-C++ có ba loại biến:
+Ba loại biến:
 
-- Biến giá trị: chứa dữ liệu.
-- Biến con trỏ: chứa địa chỉ.
-- Biến tham chiếu: làm bí danh (alias) cho một biến giá trị.
+- **Biến giá trị**: chứa dữ liệu.
+- **Biến con trỏ**: chứa địa chỉ.
+- **Biến tham chiếu**: làm bí danh (alias) cho một biến giá trị.
 
-Biến tham chiếu không có địa chỉ riêng và dùng chung vùng nhớ với biến mà nó tham chiếu. Vì không có địa chỉ riêng, khi khai báo phải chỉ rõ tham chiếu đến biến nào (bắt buộc khởi gán ngay):
+Đặc điểm biến tham chiếu:
+
+- Không cấp phát bộ nhớ → không có địa chỉ riêng.
+- Dùng chung vùng nhớ với biến mà nó tham chiếu.
+- BẮT BUỘC chỉ rõ tham chiếu đến biến nào khi khai báo (`int &y = x;`). Không khởi gán → lỗi biên dịch.
+- Có thể tham chiếu đến phần tử mảng: `int a[5], &r = a[0];`.
+- KHÔNG cho phép khai báo mảng tham chiếu.
 
 ```cpp
 int x = 10;
@@ -275,59 +280,53 @@ int &y = x;     // y la bi danh cua x
 y = 30;         // x cung tro thanh 30
 ```
 
-Tham chiếu có thể trỏ tới một phần tử mảng (`int a[5]; int &r = a[0];`), nhưng không cho phép khai báo mảng tham chiếu. Nếu khai báo `int &y;` mà thiếu khởi gán, trình biên dịch sẽ báo lỗi.
-
-### Truyền tham số: ba cách qua `swap` (Parameter Passing)
-
-Slide minh họa ba cách truyền tham số bằng ví dụ hoán đổi:
+### Truyền tham số: ba cách qua `swap`
 
 ```cpp
 void swap1(int x, int y)   { int t = x; x = y; y = t; }   // truyen gia tri
-void swap2(int *x, int *y) { int *t = x; x = y; y = t; }  // truyen con tro (sai cach)
+void swap2(int *x, int *y) { int *t = x; x = y; y = t; }  // truyen con tro (ket qua sai)
 void swap3(int &x, int &y) { int t = x; x = y; y = t; }   // truyen tham chieu
 ```
 
-- `swap1` truyền giá trị: hàm thao tác trên bản sao, không thay đổi tham số gốc.
-- `swap2` truyền con trỏ: ở đây ví dụ minh họa hoán đổi sai vì chỉ đổi con trỏ cục bộ. Để hoán đổi đúng cần dùng `*x` và `*y`.
-- `swap3` truyền tham chiếu: thao tác trực tiếp trên vùng nhớ tham số gốc, hoán đổi thành công.
+- **Tham trị**: hàm thao tác trên bản sao → KHÔNG đổi tham số gốc.
+- **Tham chiếu**: thao tác trực tiếp trên vùng nhớ tham số → ĐỔI tham số gốc. Tham số phải là biến/phần tử mảng cùng kiểu với đối.
+- `swap2` ở trên ĐỔI sai vì chỉ hoán đổi con trỏ cục bộ; phải dùng `*x`, `*y` để hoán đổi giá trị.
 
-Khi đối là tham chiếu kiểu `K`, tham số tương ứng trong lời gọi hàm phải là biến hoặc phần tử mảng kiểu `K`.
+### Con trỏ hàm
 
-### Con trỏ hàm (Function Pointers)
-
-Con trỏ hàm khai báo với cùng kiểu trả về và bộ đối như hàm cần trỏ tới. Gán tên hàm (không có dấu ngoặc gọi) cho con trỏ:
+Khai báo cùng Kiểu trả về và Bộ đối với hàm cần trỏ tới. Gán Tên hàm (không có dấu ngoặc gọi) cho con trỏ.
 
 ```cpp
 double nhandoi(double x) { return x * 2; }
 double nhanba(double x)  { return x * 3; }
 
-double (*f)(double);   // khai bao con tro ham
-f = nhandoi;           // tro toi hau nhandoi
-cout << f(5);          // 10
+double (*f)(double);     // khai bao con tro ham
+f = nhandoi;
+cout << f(5);            // 10
 ```
 
-Có thể truyền con trỏ hàm như một tham số:
+Truyền con trỏ hàm như một tham số:
 
 ```cpp
 void tinh(double (*f)(double), double x) { cout << f(x); }
 
 int main() {
     tinh(nhandoi, 2);
-    tinh(nhanba,  3);
+    tinh(nhanba, 3);
     return 0;
 }
 ```
 
-Một ví dụ khác: `double tinh_max(double *a, int n);` rồi `double (*f)(double *, int); f = tinh_max;`.
+### Hàm `inline`
 
-### Hàm `inline` (Inline Functions)
-
-Hàm `inline` báo trình biên dịch thay lời gọi hàm bằng mã của thân hàm, tránh chi phí gọi hàm (cấp phát vùng nhớ cho đối và biến cục bộ, truyền tham số, giải phóng vùng nhớ khi thoát hàm). Đổi lại, mã chương trình có thể phình ra.
+::: {.callout-note title="Inline function — ưu điểm"}
+Tốc độ chương trình tăng lên do không phải thực hiện các thao tác có tính thủ tục khi gọi hàm (cấp phát vùng nhớ cho các đối và biến cục bộ, truyền dữ liệu của các tham số cho các đối, giải phóng vùng nhớ trước khi thoát khỏi hàm, …).
+:::
 
 Lưu ý:
 
-- Chỉ nên dùng `inline` cho hàm có thân ngắn.
-- Trình biên dịch không inline được hàm có biến `static`, hàm đệ quy, hàm chứa vòng lặp, `goto`, hoặc `switch`.
+- Chỉ dùng cho hàm **nhỏ** — làm tăng kích thước chương trình.
+- KHÔNG inline được: hàm có biến `static`, đệ quy, có vòng lặp / `goto` / `switch`.
 
 ```cpp
 inline int max2(int a, int b) {
@@ -337,13 +336,17 @@ inline int max2(int a, int b) {
 
 ### Nạp chồng hàm (Function Overloading)
 
-Nạp chồng hàm là dùng cùng một tên để định nghĩa nhiều hàm khác nhau. Trình biên dịch dựa vào tập đối để chọn đúng hàm và đổi tên nội bộ cho từng phiên bản. Các hàm trùng tên phải khác nhau ở:
+::: {.callout-note title="Định nghĩa chồng các hàm"}
+Định nghĩa chồng các hàm là dùng cùng một tên để định nghĩa các hàm khác nhau. Trình biên dịch C++ sẽ dựa vào sự khác nhau về tập đối của các hàm này để đổi tên thành các hàm khác nhau.
+:::
 
-- Số lượng đối số.
-- Thứ tự đối số.
-- Kiểu dữ liệu của đối số.
+Tập đối phải khác về:
 
-Không chấp nhận các hàm trùng tên chỉ khác nhau ở kiểu trả về.
+- Số lượng đối.
+- Thứ tự đối.
+- Kiểu dữ liệu của đối.
+
+KHÔNG chấp nhận trùng tên chỉ khác Kiểu trả về. Trình biên dịch chọn hàm có **bộ đối gần kiểu nhất**; có thể ép kiểu để khớp.
 
 ```cpp
 int    abs(int i);
@@ -357,23 +360,18 @@ abs('A');      // -> abs(int), 'A' duoc nang len int
 abs(3.14F);    // -> abs(double), 3.14F duoc nang len double
 ```
 
-Trình biên dịch chọn hàm có bộ đối gần kiểu nhất. Nếu cần, có thể ép kiểu để tham số khớp hoàn toàn với một phiên bản nhất định. Chỉ nên nạp chồng khi các phiên bản cùng thực hiện một công việc nhưng trên các kiểu khác nhau.
+Chỉ overload khi cùng công việc, trên kiểu khác nhau.
 
-### Định nghĩa chồng toán tử (Operator Overloading - Sơ lược)
+### Định nghĩa chồng toán tử (sơ lược)
 
-C++ cung cấp sẵn các phép toán trên kiểu chuẩn (`int`, `float`, ...). Để thực hiện phép toán trên kiểu tự định nghĩa (`struct`, mảng, ...) một cách tự nhiên, ta dùng định nghĩa chồng toán tử. Khai báo có dạng:
+::: {.callout-note title="Định nghĩa chồng các toán tử"}
+Để thực hiện các phép toán trên các kiểu dữ liệu không chuẩn (kiểu dữ liệu tự định nghĩa như mảng, cấu trúc,…) một cách tự nhiên ta dùng cách định nghĩa chồng các toán tử.
+:::
 
-```text
-Kiểu_trả_về operator<Phép_toán>(danh sách đối số) { ... }
-```
-
-Ví dụ với kiểu phân số:
+Cú pháp: `Kiểu_trả_về operator<Phép_toán>(danh sách đối){...}`.
 
 ```cpp
-struct PS {
-    int tu;
-    int mau;
-};
+struct PS { int tu, mau; };
 
 PS operator+(PS p1, PS p2);
 PS operator-(PS p1, PS p2);
@@ -381,4 +379,5 @@ PS operator*(PS p1, PS p2);
 PS operator/(PS p1, PS p2);
 ```
 
-Số đối của hàm toán tử tùy số toán hạng tham gia phép toán (ví dụ phép toán hai ngôi cần ít nhất hai đối). Sau khi định nghĩa, hàm toán tử được dùng như phép toán có sẵn, dùng dấu `()` để quy định thứ tự thực hiện. Chương 05 sẽ đi sâu vào nạp chồng toán tử cho lớp, gồm cả `operator<<`, `operator>>`, gán, so sánh, và cách viết toán tử là phương thức thành viên hay hàm bạn.
+- Số đối tùy số toán hạng (toán tử 2 ngôi → ≥ 2 đối).
+- Dùng như phép toán có sẵn; `()` quy định thứ tự thực hiện.

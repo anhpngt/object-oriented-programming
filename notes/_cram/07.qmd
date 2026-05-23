@@ -1,16 +1,84 @@
-- Đa hình (polymorphism): các đối tượng thuộc lớp khác nhau hiểu cùng một thông điệp theo cách khác nhau; xuất hiện khi có kế thừa, phương thức tổng quát ở lớp cơ sở nhưng nội dung cụ thể ở lớp dẫn xuất (ví dụ `Xuat()`, `draw()`, `tinhLuong()`).
-- Bài toán điển hình: quản lý mảng `Nguoi *a[N]` chứa cả `SinhVien`, `CongNhan`, `NuSinh`; gọi `a[i]->Xuat()` qua con trỏ lớp cơ sở thì mặc định gọi `Nguoi::Xuat`, không phải phiên bản lớp con.
-- Hai cách giải quyết trong chương: (1) vùng chọn kiểu (type-selector) dùng `enum` + `switch-case`; (2) phương thức ảo (`virtual`) - hướng đối tượng.
-- Vùng chọn kiểu: thêm trường `enum LOAI {NGUOI, SV, CN}` và biến `pl` vào lớp cơ sở, mỗi constructor lớp con gán giá trị riêng (`pl = SV`); hàm xử lý dùng `switch(an[i]->pl)` rồi ép kiểu `((SinhVien*)an[i])->Xuat()`.
-- Nhược điểm vùng chọn kiểu: mã dài dòng nhiều `switch`, dễ sai sót, khó nâng cấp/bảo trì - mỗi khi thêm kiểu mới phải sửa `switch` ở mọi nơi (vi phạm nguyên tắc mở-đóng).
-- Phương thức ảo: thêm từ khóa `virtual` trước khai báo hàm ở lớp cơ sở; con trỏ lớp cơ sở trỏ đến đối tượng lớp con sẽ gọi đúng phiên bản lớp con. Thêm lớp con mới không cần sửa hàm xử lý (`XuatDs` giữ nguyên).
-- Phương thức ảo CHỈ hoạt động qua con trỏ lớp cơ sở (theo slide; thực tế C++ chuẩn còn cho tham chiếu lớp cơ sở); gọi trên đối tượng giá trị vẫn dùng cài đặt của kiểu khai báo (kiểu tĩnh).
-- Đặc trưng `virtual`: chữ ký (kiểu trả về + tham số) ở lớp con phải khớp y hệt lớp cha; không cần lặp lại `virtual` ở lớp con (ghi cũng không sao); không được là hàm thành viên `static`; có thể là `friend` của lớp khác, nhưng hàm `friend` của lớp thì không thể là phương thức ảo.
-- Nếu chữ ký KHÔNG khớp (sơ suất đổi tham số), trình biên dịch xem như hàm khác - không override, gọi qua con trỏ cơ sở sẽ vẫn chạy phiên bản lớp cơ sở.
-- Cơ chế (vtable): mỗi đối tượng có thêm con trỏ tới bảng phương thức ảo của lớp; bảng chứa địa chỉ các hàm ảo, do trình biên dịch khởi tạo ngầm định lúc tạo đối tượng; lời gọi `p->Xuat()` tra vtable lúc chạy để chọn đúng hàm (kết nối động/dynamic binding).
-- Destructor ảo: khi `delete` đối tượng dẫn xuất qua con trỏ lớp cơ sở, nếu destructor lớp cơ sở không `virtual` thì chỉ destructor lớp cơ sở chạy, gây rò rỉ tài nguyên của lớp con; phải khai báo `virtual ~Nguoi()`.
-- Hàm thuần ảo (pure virtual): `virtual void draw() = 0;` - phương thức ảo không có nội dung (có thể có định nghĩa nhưng chỉ lớp con gọi được); đóng vai trò "chừa chỗ" để lớp con cài đặt.
-- Lớp trừu tượng (abstract class): lớp có ít nhất một hàm thuần ảo; KHÔNG tạo được đối tượng thuộc lớp này, nhưng vẫn tạo được con trỏ tới nó (`Shape *s;`). Lớp con của lớp trừu tượng có thể vẫn là lớp trừu tượng.
-- Lớp dẫn xuất phải cài đặt TẤT CẢ hàm thuần ảo của lớp cha mới tạo được đối tượng; nếu thiếu (ví dụ `Circle` định nghĩa `print()` thay vì `draw()`), lớp con vẫn là lớp trừu tượng.
-- Ví dụ chương: Hình học `Shape` (trừu tượng, `virtual void draw() = 0`) -> `Circle`, `Rectangle`, `Triangle`; Tính tiền lương `NhanVien` -> `NhanVienVanPhong` (`LCB + ngày*200000 + TC`), `NhanVienSanXuat` (`LCB + SP*2000`), `NhanVienQuanLy` (`LCB*HSCV + Thuong`) với `tinhLuong()` ảo.
-- Từ khóa kích hoạt trong đề: "`virtual`", "vùng chọn kiểu/`enum`+`switch`", "vtable", "destructor ảo", "hàm thuần ảo `= 0`", "lớp trừu tượng", "con trỏ lớp cơ sở".
+::: {.callout-note title="Đa hình (Polymorphism)"}
+Đa hình là hiện tượng các đối tượng thuộc các lớp khác nhau có khả năng hiểu cùng một thông điệp theo các cách khác nhau.
+:::
+
+- Tính đa hình xuất hiện khi có **kế thừa** giữa các lớp.
+- Có những phương thức tổng quát cho mọi lớp dẫn xuất nên có mặt ở lớp cơ sở, nhưng nội dung chỉ được xác định ở các lớp dẫn xuất cụ thể (VD `tính diện tích` ở `Hình`/`Tam giác`/`Tứ giác`; `Xuat`, `tinhLuong`, `draw`).
+- VD: cùng nhận thông điệp "nhảy", một con kangaroo và một con cóc nhảy theo hai kiểu khác nhau — cùng có hành vi "nhảy" nhưng nội dung khác nhau.
+- Bài toán điển hình: quản lý mảng `Nguoi *a[N]` chứa cả `SinhVien`, `CongNhan`, `NuSinh` — gọi `a[i]->Xuat()` qua con trỏ lớp cơ sở mặc định gọi `Nguoi::Xuat`, không phải bản lớp con.
+- 2 cách giải: **vùng chọn kiểu** (`enum` + `switch`), **phương thức ảo** (`virtual`).
+
+## Vùng chọn kiểu
+
+- Thêm một vùng dữ liệu vào lớp cơ sở để nhận diện đối tượng. Vùng có giá trị phụ thuộc loại đối tượng.
+- Cài đặt:
+  - Thêm `enum LOAI {NGUOI, SV, CN};` + biến `LOAI pl;` vào lớp cơ sở.
+  - Mỗi constructor lớp con gán giá trị riêng (`pl = SV;`, `pl = CN;`).
+  - Hàm xử lý dùng `switch(an[i]->pl)` rồi ép kiểu `((SinhVien*)an[i])->Xuat()`.
+- Nhược điểm:
+  - Mã dài dòng (nhiều `switch case`).
+  - Dễ sai sót, khó sửa.
+  - Khó nâng cấp, bảo trì — thêm kiểu mới phải sửa `switch` ở mọi nơi.
+
+::: {.callout-note title="Phương thức ảo"}
+Phương thức ảo là cách thể hiện tính đa hình trong ngôn ngữ C++. Các phương thức ở lớp cơ sở có tính đa hình phải được định nghĩa là một phương thức ảo. Con trỏ thuộc lớp cơ sở có thể trỏ đến lớp con.
+:::
+
+- Cú pháp: thêm từ khóa `virtual` trước khai báo hàm ở lớp cơ sở.
+  ```cpp
+  class Nguoi {
+  public:
+      virtual void Xuat() const { ... }
+  };
+  ```
+- `Nguoi *pn = new SinhVien("Le Vien Sinh", "TH11001", 1982); pn->Xuat();` → gọi đúng `SinhVien::Xuat`.
+- Ưu điểm: thêm lớp con mới rất đơn giản — không cần sửa hàm xử lý (`XuatDs`). Quy trình: xây lớp con kế thừa, định nghĩa lại phương thức ảo nếu cần.
+
+::: {.callout-note title="Lưu ý khi sử dụng phương thức ảo"}
+- Phương thức ảo chỉ hoạt động thông qua **con trỏ**.
+- Muốn một hàm trở thành phương thức ảo có hai cách: khai báo với từ khoá `virtual`, hoặc phương thức tương ứng ở lớp cơ sở đã là phương thức ảo.
+- Phương thức ảo chỉ hoạt động nếu các phương thức ở lớp cơ sở và lớp con có nghi thức giao tiếp giống hệt nhau.
+:::
+
+- Nếu ở lớp con KHÔNG định nghĩa lại phương thức ảo → gọi phương thức ở lớp cơ sở (gần nhất có định nghĩa).
+
+::: {.callout-note title="Đặc trưng phương thức ảo"}
+- Phương thức ảo **không thể** là hàm thành viên tĩnh (`static`).
+- Phương thức ảo có thể được khai báo là `friend` trong lớp khác, nhưng các hàm `friend` của lớp thì **không thể** là phương thức ảo.
+- Không cần ghi rõ `virtual` khi định nghĩa phương thức ảo ở lớp dẫn xuất (ghi cũng không sao).
+- Một khi phương thức được xác định là ảo, từ lớp cơ sở đến các lớp dẫn xuất đều phải định nghĩa **thống nhất** (chữ ký giống nhau). Nếu lớp con sơ suất đổi tham số → trình biên dịch xem là phương thức **khác** (không override).
+:::
+
+::: {.callout-note title="Cơ chế phương thức ảo (vtable)"}
+Khi gọi một thao tác, khả năng chọn đúng phiên bản tùy theo đối tượng để thực hiện thông qua con trỏ đến lớp cơ sở được gọi là tính đa hình (polymorphism).
+
+Cơ chế đa hình được thực hiện nhờ ở mỗi đối tượng có thêm một **bảng phương thức ảo** (vtable). Bảng này chứa địa chỉ của các phương thức ảo và nó được trình biên dịch khởi tạo một cách ngầm định khi thiết lập đối tượng.
+:::
+
+- Khi gọi qua con trỏ, hàm có địa chỉ trong vtable sẽ được gọi (kết nối động / dynamic binding).
+- Đối tượng `Nguoi` có vtable trỏ tới `Nguoi::Xuat`. Đối tượng `SinhVien` có vtable trỏ tới `SinhVien::Xuat`.
+
+## Destructor ảo
+
+- Khi `delete` đối tượng dẫn xuất qua con trỏ lớp cơ sở: nếu destructor lớp cơ sở **không** `virtual` → chỉ destructor lớp cơ sở chạy → rò rỉ tài nguyên của lớp con.
+- Khắc phục: khai `virtual ~Nguoi() { delete[] HoTen; }`.
+
+::: {.callout-note title="Phương thức thuần ảo và lớp cơ sở trừu tượng"}
+Lớp cơ sở trừu tượng là lớp cơ sở không có đối tượng nào thuộc chính nó.
+
+Phương thức ảo thuần tuý là phương thức ảo không có nội dung. Khi lớp có phương thức ảo thuần tuý, lớp trở thành lớp cơ sở trừu tượng. Ta **không thể** tạo đối tượng thuộc lớp cơ sở trừu tượng. Ta có thể định nghĩa phương thức ảo thuần tuý, nhưng chỉ có các đối tượng thuộc lớp con có thể gọi nó.
+:::
+
+- Cú pháp: `virtual void draw() = 0;`.
+- Vai trò: chừa sẵn chỗ trống cho các lớp con điền vào với phiên bản phù hợp.
+- Có thể tạo **con trỏ** tới lớp trừu tượng (`Shape *s;`), KHÔNG tạo được đối tượng (`Shape s;` SAI).
+- Lớp con của lớp trừu tượng có thể vẫn là lớp trừu tượng (nếu chưa cài đặt hết phương thức thuần ảo).
+- VD: `Shape` (`virtual void draw() = 0;`) → `Circle` định nghĩa `print()` thay vì `draw()` → `Circle` vẫn là lớp trừu tượng → `Circle c;` SAI. `Rectangle` định nghĩa `draw()` → `Rectangle r;` OK.
+
+## Bài toán điển hình — Tính tiền lương
+
+- `NhanVien` (lớp cơ sở, `virtual double tinhLuong()`):
+  - `NhanVienVanPhong`: `LCB + ngày_làm * 200000 + TC`.
+  - `NhanVienSanXuat`: `LCB + SP * 2000`.
+  - `NhanVienQuanLy`: `LCB * HSCV + Thuong`.
+- Bài toán Hình: `Shape` trừu tượng → `Circle`, `Rectangle`, `Triangle` ghi đè `draw()`.

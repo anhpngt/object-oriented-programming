@@ -1,23 +1,95 @@
-- Bốn loại quan hệ giữa các lớp đối tượng: một-một (1-1, ví dụ `LOPHOC`-`GIAOVIEN`), một-nhiều (1-n, `LOPHOC`-`HOCSINH`), nhiều-nhiều (n-n, `BACSI`-`BENHNHAN`), và đặc biệt hóa/tổng quát hóa (specialization/generalization) → cài đặt bằng kế thừa.
-- Kế thừa là cơ chế biểu diễn quan hệ đặc biệt hóa-tổng quát hóa, tổ chức lớp thành sơ đồ phân cấp (cây kế thừa); kế thừa cài đặt quan hệ "là một" (is-a), ví dụ "một sinh viên là một người".
-- Lợi ích: tái sử dụng mã, dễ nâng cấp, định nghĩa sự tương thích kiểu (cho phép chuyển kiểu tự động trong C++).
-- Cú pháp: `class Derived : public/protected/private Base { ... };`; lớp cơ sở = lớp cha/superclass, lớp dẫn xuất = lớp con/subclass.
-- Một lớp cha có thể có nhiều lớp con; một lớp có thể là dẫn xuất của nhiều lớp cơ sở (đa kế thừa); kế thừa không giới hạn ở một mức.
-- Truy xuất theo chiều dọc (lớp con truy xuất thành phần lớp cha) do lớp cha quyết định qua specifier: `private` cấm cả lớp con, `protected` cho phép lớp con-cháu nhưng cấm bên ngoài, `public` mở cho mọi nơi.
-- Thường dùng `protected` cho dữ liệu và `public` cho phương thức để vừa đóng gói vừa cho lớp con dùng; thay thế cho cách khai báo `friend class` từng lớp con (vốn phải sửa lại lớp cha mỗi khi thêm lớp con mới).
-- Truy xuất theo chiều ngang (kiểu kế thừa) - bảng tác động lên thành viên kế thừa:
-  - `public` inheritance: public→public, protected→protected, private→ẩn (không truy cập trực tiếp).
-  - `protected` inheritance: public→protected, protected→protected, private→ẩn.
-  - `private` inheritance: public→private, protected→private, private→ẩn.
-- Thành viên `private` của lớp cha luôn ẩn trong lớp con (chỉ truy cập gián tiếp qua hàm public/protected của lớp cha) bất kể kiểu kế thừa.
-- Phương thức thiết lập (constructor) của lớp cơ sở KHÔNG được kế thừa; constructor lớp cha luôn được gọi trước khi tạo đối tượng lớp con.
-- Nếu lớp cha không có constructor mặc định (chỉ có constructor có tham số), lớp con BẮT BUỘC phải gọi tường minh trong member-init list: `Derived(args) : Base(args) { ... }`; ngược lại constructor mặc định của cha tự động được gọi.
+- 4 loại quan hệ giữa các lớp đối tượng:
+  - **1-1**: VD `LOPHOC`-`GIAOVIEN` (chủ nhiệm), `VO`-`CHONG` (hôn nhân), `COUNTRY`-`CAPITAL`.
+  - **1-n**: VD `LOPHOC`-`HOCSINH`, `CONGTY`-`NHANVIEN`, `HOASI`-`TACPHAM` (sáng tác).
+  - **n-n**: VD `BACSI`-`BENHNHAN` (khám bệnh), `NAM`-`NU` (yêu).
+  - **Đặc biệt hóa / tổng quát hóa**: VD `TAMGIAC`-`TAMGIACCAN`, `NGUOI`-`SINHVIEN`, `Polygon`-`Triangle`-`Rectangle`.
+
+::: {.callout-note title="Quan hệ đặc biệt hóa - tổng quát hóa"}
+Hai lớp đối tượng được gọi là có quan hệ đặc biệt hóa-tổng quát hóa với nhau khi lớp đối tượng này là trường hợp đặc biệt của lớp đối tượng kia và lớp đối tượng kia là trường hợp tổng quát của lớp đối tượng này.
+:::
+
+::: {.callout-note title="Kế thừa (Inheritance)"}
+Kế thừa là một đặc điểm của ngôn ngữ dùng để biểu diễn mối quan hệ đặc biệt hóa – tổng quát hóa giữa các lớp. Các lớp được trừu tượng hóa và được tổ chức thành một sơ đồ phân cấp lớp. Sự kế thừa là một mức cao hơn của trừu tượng hóa, cung cấp một cơ chế gom chung các lớp có liên quan với nhau thành một mức khái quát hóa đặc trưng cho toàn bộ các lớp nói trên.
+:::
+
+- Quan hệ "**là 1**" (is-a): kế thừa thông dụng nhất để biểu diễn — sinh viên là một người, hình tròn là một ellipse, tam giác là một đa giác.
+- Lợi ích: xây lớp mới từ lớp đã có; chia sẻ mã chung → dễ sửa, dễ nâng cấp; định nghĩa sự tương thích kiểu (chuyển kiểu tự động).
+- Cú pháp:
+  ```cpp
+  class Derived : public/protected/private Base {
+      // thanh phan bo sung cua lop dan xuat
+  };
+  ```
+- Lớp cha = superclass / lớp cơ sở / base class. Lớp con = subclass / lớp dẫn xuất / derived class.
+- Kế thừa cho phép:
+  - Nhiều lớp cùng dẫn xuất từ một lớp cơ sở.
+  - Một lớp có thể dẫn xuất từ nhiều lớp cơ sở (đa kế thừa).
+  - Không giới hạn ở một mức (lớp dẫn xuất có thể là cơ sở cho lớp khác).
+- Lớp con kế thừa:
+  - Dữ liệu: tự động có thành phần của lớp cha.
+  - Thao tác: tự động kế thừa, có thể truyền qua "vô hạn mức".
+  - **Phương thức thiết lập KHÔNG được kế thừa**.
+
+::: {.callout-note title="Phạm vi truy xuất `public`"}
+Thành phần nào có thuộc tính `public` thì có thể truy xuất từ bất cứ nơi nào.
+:::
+
+::: {.callout-note title="Phạm vi truy xuất `private`"}
+Thành phần có thuộc tính `private` là riêng tư của lớp đó. Chỉ có hàm thành phần của lớp và ngoại lệ các hàm bạn được phép truy xuất. Các lớp con cũng không có quyền truy xuất.
+:::
+
+::: {.callout-note title="Phạm vi truy xuất `protected`"}
+Cho phép qui định một vài thành phần nào đó của lớp là bảo mật, theo nghĩa thế giới bên ngoài không được phép truy xuất, nhưng tất cả các lớp con, cháu… đều được phép truy xuất.
+:::
+
+- Truy xuất theo chiều dọc (lớp con → lớp cha): do **lớp cha** quyết định qua specifier (`private`/`protected`/`public`).
+- Thường dùng `protected` cho **dữ liệu**, `public` cho **phương thức** — tránh phải sửa lớp cha mỗi khi thêm lớp con (so với khai `friend class` từng lớp con).
+- Truy xuất theo chiều ngang (kiểu kế thừa) — bảng tác động lên thành viên kế thừa:
+
+  | Thành viên lớp cơ sở | `public` inheritance | `protected` inheritance | `private` inheritance |
+  |---|---|---|---|
+  | `public` | `public` ở lớp con | `protected` ở lớp con | `private` ở lớp con |
+  | `protected` | `protected` ở lớp con | `protected` ở lớp con | `private` ở lớp con |
+  | `private` | Ẩn (truy cập gián tiếp qua hàm `public`/`protected` của lớp cha) | Ẩn | Ẩn |
+
+- Thành viên `private` của lớp cha **luôn ẩn** trong lớp con bất kể kiểu kế thừa.
+
+::: {.callout-note title="Phương thức thiết lập (constructor) trong kế thừa"}
+Phương thức thiết lập của lớp cơ sở luôn luôn được gọi mỗi khi có một đối tượng của lớp dẫn xuất được tạo ra. Nếu mọi phương thức thiết lập của lớp cơ sở đều đòi hỏi phải cung cấp tham số thì lớp con bắt buộc phải có phương thức thiết lập để cung cấp các tham số đó.
+:::
+
+- Cú pháp gọi tường minh constructor cha trong member-init list:
+  ```cpp
+  Derived(args) : Base(args_for_base) { ... }
+  ```
 - Hàm `friend` không được kế thừa.
-- Có thể override phương thức lớp cha ở lớp con (cùng signature); muốn gọi bản của cha từ lớp con dùng `Base::ham()`, từ đối tượng dùng `obj.Base::ham()`.
-- Phương thức hủy bỏ (destructor): destructor lớp con chạy trước, rồi tự động gọi destructor lớp cha; lớp con không được/không cần dọn dẹp dữ liệu của cha.
-- Con trỏ và kế thừa: con trỏ lớp cơ sở có thể trỏ tới đối tượng lớp dẫn xuất; chiều ngược lại không hợp lệ (phải ép kiểu tường minh, và có thể nguy hiểm).
-- Có thể ràng buộc ngữ nghĩa ở lớp con (ví dụ `Imag : public Complex` ép phần thực = 0) bằng cách định nghĩa lại các hàm có thể vi phạm (như `operator=`).
-- Đa kế thừa: `class C : public A, public B { ... };`; mọi đặc điểm kế thừa đơn vẫn áp dụng.
-- Nhập nhằng đa kế thừa (ambiguity): nếu A và B có thành viên cùng tên, `c.f()` hay `c.a` gây lỗi mơ hồ → giải bằng `::`: `c.A::f()`, `c.B::a`.
-- Bài toán kim cương (diamond): D kế thừa từ B và C, cả B và C cùng kế thừa từ A → D có 2 bản sao của A; khắc phục bằng kế thừa ảo `class B : virtual public A` và `class C : virtual public A` để chỉ còn 1 bản A trong D (ngoài slide, tham khảo).
-- Từ khóa kích hoạt trong đề: "is-a", "kế thừa public/protected/private", "đa kế thừa", "kim cương", "thứ tự constructor/destructor", "`Base(args)` trong member-init list", "`::`".
+- Override phương thức lớp cha ở lớp con (cùng signature). Gọi bản của cha:
+  - Từ trong lớp con: `Base::ham()`.
+  - Từ đối tượng: `obj.Base::ham()`.
+
+::: {.callout-note title="Phương thức hủy bỏ (destructor) trong kế thừa"}
+Khi một đối tượng bị hủy đi, phương thức hủy bỏ của nó sẽ được gọi. Sau đó, các phương thức hủy bỏ của lớp cơ sở sẽ được gọi một cách tự động. Vì vậy, lớp con không cần và cũng không được thực hiện các thao tác dọn dẹp cho các thành phần thuộc lớp cha.
+:::
+
+::: {.callout-note title="Con trỏ và kế thừa"}
+Con trỏ trỏ đến đối tượng thuộc lớp cơ sở thì có thể trỏ đến các đối tượng thuộc lớp con. Nhưng con trỏ trỏ đến đối tượng thuộc lớp con thì không thể trỏ đến các đối tượng thuộc lớp cơ sở. Có thể ép kiểu để con trỏ trỏ đến đối tượng thuộc lớp con có thể trỏ đến đối tượng thuộc lớp cơ sở. Tuy nhiên thao tác này có thể nguy hiểm.
+:::
+
+- Ràng buộc ngữ nghĩa ở lớp con: lớp con là lớp cha với ràng buộc trên dữ liệu — VD `Imag : public Complex` ép `re = 0`. Phải định nghĩa lại các hàm có thể vi phạm (như `operator=`).
+
+::: {.callout-note title="Đa kế thừa"}
+Đa kế thừa cho phép một lớp có thể là dẫn xuất của nhiều lớp cơ sở.
+
+```cpp
+class C : public A, private B { ... };
+```
+
+Các đặc điểm của kế thừa đơn vẫn đúng cho trường hợp đa kế thừa.
+:::
+
+- 3 vấn đề mở của đa kế thừa:
+  1. Cùng tên thành phần ở các lớp cơ sở → biểu thị độc lập thế nào?
+  2. Constructor / destructor được gọi thế nào (thứ tự, truyền thông tin)?
+  3. Kim cương: lớp `D` dẫn xuất từ `B` và `C`, cả `B` và `C` cùng dẫn xuất từ `A`.
+- Nhập nhằng đa kế thừa: nếu `A` và `B` có thành viên cùng tên, `c.f()` hay `c.a` lỗi mơ hồ → giải bằng `::`: `c.A::f()`, `c.B::a`.
+- Kim cương: `D` có **2 bản sao** của `A`. Khắc phục bằng kế thừa ảo `class B : virtual public A`, `class C : virtual public A` → `D` chỉ có 1 bản `A`.
