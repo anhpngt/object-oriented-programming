@@ -1,0 +1,130 @@
+---
+title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
+format: [html, pdf]
+---
+
+::: {.callout-important title="Cram sheet"}
+{{< include _cram/03.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+[Tải bản PDF in](03-lop-doi-tuong.pdf)
+:::
+
+## Khai báo lớp
+
+Một lớp trong C++ được khai báo bằng từ khóa `class`. Bên trong lớp có thể có thuộc tính và phương thức. Các mức truy cập phổ biến là `private`, `protected` và `public`.
+
+```cpp
+class Diem {
+private:
+    int x;
+    int y;
+public:
+    void nhap();
+    void xuat() const;
+};
+```
+
+Với `class`, các thành viên mặc định là `private`. Vì vậy nên ghi rõ mức truy cập để mã dễ đọc và tránh hiểu nhầm.
+
+## Tạo và dùng đối tượng
+
+Đối tượng được tạo như biến của kiểu lớp:
+
+```cpp
+Diem a;
+a.nhap();
+a.xuat();
+```
+
+Toán tử dấu chấm `.` dùng để truy cập thành viên thông qua một đối tượng. Nếu có con trỏ đến đối tượng, dùng toán tử `->`.
+
+```cpp
+Diem* p = new Diem;
+p->nhap();
+delete p;
+```
+
+## Dữ liệu private và hàm truy cập
+
+Nguyên tắc thường dùng là không cho bên ngoài sửa trực tiếp thuộc tính. Thay vào đó, lớp cung cấp hàm truy cập hoặc hàm nghiệp vụ có kiểm tra hợp lệ.
+
+```cpp
+class SinhVien {
+private:
+    double diem;
+public:
+    void setDiem(double value) {
+        if (value >= 0 && value <= 10) {
+            diem = value;
+        }
+    }
+
+    double getDiem() const {
+        return diem;
+    }
+};
+```
+
+Trong bài thi, đây là ví dụ điển hình để giải thích đóng gói.
+
+## Constructor
+
+Constructor là hàm đặc biệt được gọi khi đối tượng được tạo. Constructor có cùng tên với lớp và không có kiểu trả về.
+
+```cpp
+class Diem {
+private:
+    int x;
+    int y;
+public:
+    Diem() : x(0), y(0) {}
+    Diem(int xValue, int yValue) : x(xValue), y(yValue) {}
+};
+```
+
+Danh sách khởi tạo sau dấu `:` thường được ưu tiên vì khởi tạo trực tiếp thành viên, đặc biệt hữu ích với `const`, tham chiếu hoặc đối tượng thành viên.
+
+## Destructor
+
+Destructor được gọi khi đối tượng kết thúc vòng đời. Destructor có tên là `~TenLop()` và không có tham số, không có kiểu trả về.
+
+```cpp
+class Mang {
+private:
+    int* data;
+public:
+    Mang(int n) {
+        data = new int[n];
+    }
+
+    ~Mang() {
+        delete[] data;
+    }
+};
+```
+
+Nếu lớp không quản lý tài nguyên động, destructor mặc định thường đủ. Nếu lớp có con trỏ sở hữu vùng nhớ, destructor là bắt buộc để tránh rò rỉ bộ nhớ.
+
+## Con trỏ this
+
+`this` là con trỏ trỏ đến đối tượng hiện tại. Nó thường dùng khi tên tham số trùng tên thuộc tính hoặc khi cần trả về chính đối tượng hiện tại.
+
+```cpp
+void setX(int x) {
+    this->x = x;
+}
+```
+
+## Hàm thành viên const
+
+Hàm thành viên `const` cam kết không thay đổi trạng thái logic của đối tượng.
+
+```cpp
+int getX() const {
+    return x;
+}
+```
+
+Các hàm chỉ đọc dữ liệu nên khai báo `const`. Đây là dấu hiệu của thiết kế lớp tốt và thường được kiểm tra trong bài code C++.

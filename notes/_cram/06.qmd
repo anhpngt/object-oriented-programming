@@ -1,0 +1,9 @@
+> Bản nháp cần đối chiếu với slide gốc.
+
+- Kế thừa (Inheritance) tạo lớp dẫn xuất từ lớp cơ sở để tái sử dụng và mở rộng.
+- Cú pháp: `class Derived : public Base { ... };`.
+- `public` inheritance biểu diễn quan hệ "là một" (is-a). Ví dụ: `SinhVien` là một `Nguoi`.
+- Thành viên `private` của lớp cơ sở không truy cập trực tiếp từ lớp dẫn xuất; dùng `protected` khi muốn lớp con truy cập có kiểm soát.
+- Thứ tự gọi: constructor lớp cơ sở trước, constructor lớp dẫn xuất sau; destructor theo chiều ngược lại.
+- Có thể override hàm lớp cha ở lớp con; nếu cần đa hình động thì hàm lớp cha phải là `virtual`.
+- Từ khóa kích hoạt trong đề: "base/derived", "`public` inheritance", "`protected`", "constructor order", "is-a", "override".

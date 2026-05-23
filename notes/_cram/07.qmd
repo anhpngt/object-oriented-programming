@@ -1,0 +1,9 @@
+> Bản nháp cần đối chiếu với slide gốc.
+
+- Đa hình (Polymorphism) là khả năng một lời gọi có nhiều cách thực thi khác nhau.
+- Đa hình tĩnh: quyết định lúc biên dịch, ví dụ nạp chồng hàm/toán tử.
+- Đa hình động: quyết định lúc chạy, dùng con trỏ/tham chiếu lớp cơ sở và hàm `virtual`.
+- Hàm thuần ảo (Pure virtual function): `virtual void f() = 0;`; lớp có hàm thuần ảo là lớp trừu tượng (Abstract class).
+- Khi xóa đối tượng dẫn xuất qua con trỏ lớp cơ sở, destructor lớp cơ sở nên là `virtual`.
+- Tránh object slicing: gán đối tượng dẫn xuất vào biến lớp cơ sở làm mất phần riêng của lớp dẫn xuất.
+- Từ khóa kích hoạt trong đề: "`virtual`", "late binding", "pure virtual", "abstract class", "virtual destructor", "object slicing".

@@ -1,0 +1,88 @@
+---
+title: "Chương 06 - Tính kế thừa (Inheritance)"
+format: [html, pdf]
+---
+
+::: {.callout-important title="Cram sheet"}
+{{< include _cram/06.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+[Tải bản PDF in](06-ke-thua.pdf)
+:::
+
+## Khái niệm kế thừa
+
+Kế thừa (Inheritance) là cơ chế cho phép xây dựng lớp mới từ lớp đã có. Lớp đã có gọi là lớp cơ sở (Base class), lớp mới gọi là lớp dẫn xuất (Derived class).
+
+Mục tiêu chính của kế thừa là tái sử dụng phần chung và mở rộng phần riêng. Ví dụ `GiangVien` và `SinhVien` đều có họ tên, ngày sinh, địa chỉ, nên có thể kế thừa từ lớp `Nguoi`.
+
+## Cú pháp kế thừa
+
+```cpp
+class Nguoi {
+protected:
+    string hoTen;
+public:
+    void nhap();
+    void xuat() const;
+};
+
+class SinhVien : public Nguoi {
+private:
+    string maSV;
+public:
+    void nhapSinhVien();
+};
+```
+
+Với `public` inheritance, các thành viên `public` của lớp cơ sở vẫn là `public` ở lớp dẫn xuất, còn `protected` vẫn là `protected`.
+
+## Quan hệ is-a
+
+Kế thừa công khai nên biểu diễn quan hệ "là một" (is-a). Nếu có thể nói "`SinhVien` là một `Nguoi`" thì kế thừa có thể hợp lý. Nếu chỉ là "có một" (has-a), nên dùng thành phần đối tượng thay vì kế thừa.
+
+Ví dụ `Xe` có một `DongCo`, không nên nói `Xe` kế thừa từ `DongCo`.
+
+## private, protected và public
+
+Thành viên `private` của lớp cơ sở không được truy cập trực tiếp từ lớp dẫn xuất. Nếu muốn lớp con dùng trực tiếp một thành viên nhưng vẫn che giấu với bên ngoài, có thể dùng `protected`.
+
+Tuy vậy, không nên đưa mọi dữ liệu lên `protected`. Nếu có thể, lớp cơ sở nên cung cấp hàm `public` hoặc `protected` có kiểm soát để bảo vệ bất biến dữ liệu.
+
+## Constructor và destructor trong kế thừa
+
+Khi tạo đối tượng lớp dẫn xuất, constructor lớp cơ sở chạy trước, sau đó constructor lớp dẫn xuất chạy. Khi hủy đối tượng, thứ tự ngược lại: destructor lớp dẫn xuất chạy trước, rồi destructor lớp cơ sở.
+
+```cpp
+class SinhVien : public Nguoi {
+public:
+    SinhVien() : Nguoi() {
+        // khoi tao phan rieng cua SinhVien
+    }
+};
+```
+
+Nếu lớp cơ sở không có constructor mặc định, lớp dẫn xuất phải gọi constructor phù hợp của lớp cơ sở trong danh sách khởi tạo.
+
+## Ghi đè phương thức
+
+Lớp dẫn xuất có thể định nghĩa lại phương thức có cùng tên và danh sách tham số với lớp cơ sở. Đây là ghi đè (Override) khi phương thức lớp cơ sở là `virtual` và được gọi qua con trỏ hoặc tham chiếu lớp cơ sở.
+
+```cpp
+class NhanVien {
+public:
+    virtual double tinhLuong() const;
+};
+
+class NhanVienVanPhong : public NhanVien {
+public:
+    double tinhLuong() const override;
+};
+```
+
+Từ khóa `override` giúp trình biên dịch kiểm tra rằng hàm thật sự ghi đè một hàm ảo ở lớp cơ sở.
+
+## Khi nào dùng kế thừa
+
+Dùng kế thừa khi các lớp có phần chung rõ ràng và lớp con thật sự là một dạng chuyên biệt của lớp cha. Không dùng kế thừa chỉ để "tiết kiệm vài dòng mã", vì phân cấp sai sẽ làm chương trình khó mở rộng và khó hiểu.

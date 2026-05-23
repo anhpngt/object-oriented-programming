@@ -1,0 +1,9 @@
+> Bản nháp cần đối chiếu với slide gốc.
+
+- Đa năng hóa toán tử (Operator overloading) cho phép toán tử có ý nghĩa phù hợp với kiểu dữ liệu tự định nghĩa.
+- Cú pháp tổng quát: `KieuTraVe operator+(DanhSachThamSo);`.
+- Toán tử có thể cài bằng hàm thành viên hoặc hàm tự do/`friend`.
+- Với toán tử hai ngôi, hàm thành viên nhận toán hạng phải; toán hạng trái là đối tượng hiện tại.
+- `<<` và `>>` thường cài bằng hàm `friend` để toán hạng trái là `ostream`/`istream`.
+- Không thể tạo toán tử mới; không đổi được độ ưu tiên, số ngôi, tính kết hợp vốn có của toán tử.
+- Các toán tử không nên nạp chồng tùy tiện nếu làm mất ý nghĩa tự nhiên của phép toán.

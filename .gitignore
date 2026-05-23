@@ -1,3 +1,7 @@
+_site/
+.quarto/
+_freeze/
+
 # OS files
 .DS_Store
 Thumbs.db
@@ -44,6 +48,7 @@ venv/
 target/
 
 # Lecture notes and exported materials
+slides/
 *.pdf
 *.ppt
 *.pptx

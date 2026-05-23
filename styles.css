@@ -1,0 +1,50 @@
+:root {
+  --oop-cram-bg: #fff7e6;
+  --oop-cram-border: #f59f00;
+  --oop-code-bg: #f7f7f9;
+}
+
+[data-bs-theme="dark"] {
+  --oop-cram-bg: #3a2b11;
+  --oop-cram-border: #f59f00;
+  --oop-code-bg: #1f2933;
+}
+
+body {
+  line-height: 1.65;
+}
+
+.callout-important {
+  border-left-color: var(--oop-cram-border);
+}
+
+.callout-important .callout-header {
+  background-color: var(--oop-cram-bg);
+}
+
+pre.sourceCode,
+div.sourceCode {
+  border-radius: 0.5rem;
+  background-color: var(--oop-code-bg);
+}
+
+code {
+  white-space: pre-wrap;
+}
+
+.sidebar-title {
+  font-weight: 700;
+}
+
+@media print {
+  .sidebar,
+  .navbar,
+  .toc-actions,
+  .quarto-btn-toggle {
+    display: none !important;
+  }
+
+  body {
+    font-size: 11pt;
+  }
+}

@@ -4,14 +4,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - .gitignore
-      - README.md
-      - .vscode/**
-      - .idea/**
-      - '**/*.pdf'
-      - '**/*.ppt'
-      - '**/*.pptx'
   workflow_dispatch:
 
 permissions:
@@ -33,13 +25,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
 
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - name: Install fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core fonts-noto-mono
+
+      - name: Render site
+        run: quarto render
+
       - name: Setup Pages
         uses: actions/configure-pages@v6.0.0
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5.0.0
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment

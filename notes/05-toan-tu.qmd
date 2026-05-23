@@ -1,0 +1,98 @@
+---
+title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
+format: [html, pdf]
+---
+
+::: {.callout-important title="Cram sheet"}
+{{< include _cram/05.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+[Tải bản PDF in](05-toan-tu.pdf)
+:::
+
+## Khái niệm
+
+Đa năng hóa toán tử (Operator overloading) cho phép định nghĩa lại ý nghĩa của toán tử khi áp dụng cho kiểu dữ liệu tự định nghĩa. Mục tiêu là làm mã tự nhiên hơn, ví dụ cộng hai phân số bằng `a + b` thay vì gọi `a.cong(b)`.
+
+Toán tử được nạp chồng phải giữ ý nghĩa dễ hiểu. Nếu nạp chồng làm người đọc bất ngờ, thiết kế đó thường không tốt.
+
+## Cú pháp tổng quát
+
+Một toán tử được định nghĩa bằng hàm có tên `operator` đi kèm ký hiệu toán tử:
+
+```cpp
+KieuTraVe operator+(DanhSachThamSo);
+```
+
+Ví dụ với lớp `PhanSo`:
+
+```cpp
+class PhanSo {
+private:
+    int tu;
+    int mau;
+public:
+    PhanSo operator+(const PhanSo& other) const {
+        return PhanSo(tu * other.mau + other.tu * mau, mau * other.mau);
+    }
+};
+```
+
+Khi toán tử là hàm thành viên, toán hạng trái chính là đối tượng hiện tại, còn toán hạng phải được truyền qua tham số.
+
+## Hàm thành viên và hàm friend
+
+Một số toán tử có thể viết bằng hàm thành viên hoặc hàm tự do. Hàm `friend` thường dùng khi toán hạng trái không phải là đối tượng của lớp, hoặc khi cần truy cập trực tiếp dữ liệu private.
+
+Toán tử xuất `<<` thường được viết như sau:
+
+```cpp
+class PhanSo {
+private:
+    int tu;
+    int mau;
+public:
+    friend ostream& operator<<(ostream& os, const PhanSo& p) {
+        os << p.tu << "/" << p.mau;
+        return os;
+    }
+};
+```
+
+Hàm trả về `ostream&` để có thể nối chuỗi lệnh xuất như `cout << a << b;`.
+
+## Toán tử nhập xuất
+
+Toán tử nhập `>>` nhận `istream&` và đối tượng không hằng vì cần thay đổi dữ liệu của đối tượng.
+
+```cpp
+friend istream& operator>>(istream& is, PhanSo& p) {
+    is >> p.tu >> p.mau;
+    return is;
+}
+```
+
+Khi nhập dữ liệu, lớp có thể kiểm tra điều kiện hợp lệ, ví dụ mẫu số khác 0.
+
+## Toán tử gán
+
+Toán tử gán `operator=` thường trả về tham chiếu đến đối tượng hiện tại để hỗ trợ gán liên tiếp:
+
+```cpp
+PhanSo& operator=(const PhanSo& other) {
+    if (this != &other) {
+        tu = other.tu;
+        mau = other.mau;
+    }
+    return *this;
+}
+```
+
+Với lớp có cấp phát động, toán tử gán phải xử lý tự gán, giải phóng tài nguyên cũ và sao chép sâu dữ liệu mới.
+
+## Giới hạn của nạp chồng toán tử
+
+C++ không cho tạo toán tử hoàn toàn mới. Việc nạp chồng cũng không thay đổi được độ ưu tiên, số ngôi hoặc tính kết hợp của toán tử. Một số toán tử không thể nạp chồng tùy theo chuẩn C++, ví dụ `::`, `.`, `.*`, `?:` và `sizeof`.
+
+Khi trả lời lý thuyết, nên nêu cả lợi ích lẫn giới hạn để câu trả lời đầy đủ.

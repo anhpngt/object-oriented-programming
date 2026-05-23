@@ -1,0 +1,104 @@
+---
+title: "Chương 07 - Tính đa hình (Polymorphism)"
+format: [html, pdf]
+---
+
+::: {.callout-important title="Cram sheet"}
+{{< include _cram/07.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+[Tải bản PDF in](07-da-hinh.pdf)
+:::
+
+## Khái niệm đa hình
+
+Đa hình (Polymorphism) là khả năng cùng một giao diện hoặc lời gọi có thể dẫn đến nhiều hành vi khác nhau. Trong C++, đa hình thường được chia thành đa hình tĩnh và đa hình động.
+
+Đa hình giúp chương trình mở rộng dễ hơn: mã gọi chỉ cần biết giao diện chung, còn hành vi cụ thể do từng lớp con quyết định.
+
+## Đa hình tĩnh
+
+Đa hình tĩnh được quyết định tại thời điểm biên dịch. Ví dụ phổ biến là nạp chồng hàm và nạp chồng toán tử.
+
+```cpp
+int maxValue(int a, int b);
+double maxValue(double a, double b);
+```
+
+Trình biên dịch chọn phiên bản hàm dựa trên kiểu tham số. Vì quyết định xảy ra sớm, đa hình tĩnh thường nhanh nhưng kém linh hoạt hơn đa hình động.
+
+## Đa hình động
+
+Đa hình động được quyết định tại thời điểm chạy. Trong C++, nó cần ba điều kiện chính:
+
+- Gọi hàm thông qua con trỏ hoặc tham chiếu lớp cơ sở.
+- Hàm ở lớp cơ sở được khai báo `virtual`.
+- Lớp dẫn xuất ghi đè hàm đó.
+
+```cpp
+class Hinh {
+public:
+    virtual double dienTich() const {
+        return 0;
+    }
+};
+
+class HinhTron : public Hinh {
+private:
+    double r;
+public:
+    double dienTich() const override {
+        return 3.14 * r * r;
+    }
+};
+```
+
+Khi gọi `dienTich()` qua `Hinh*`, chương trình sẽ chọn hàm của lớp đối tượng thực tế nếu hàm là `virtual`.
+
+## Hàm thuần ảo và lớp trừu tượng
+
+Hàm thuần ảo (Pure virtual function) là hàm ảo chưa có cài đặt đầy đủ ở lớp cơ sở:
+
+```cpp
+class Hinh {
+public:
+    virtual double dienTich() const = 0;
+};
+```
+
+Lớp có ít nhất một hàm thuần ảo là lớp trừu tượng (Abstract class). Không thể tạo đối tượng trực tiếp từ lớp trừu tượng; lớp này dùng để định nghĩa giao diện chung cho các lớp con.
+
+## Destructor ảo
+
+Nếu một lớp được dùng làm lớp cơ sở đa hình, destructor của nó nên khai báo `virtual`. Điều này đảm bảo khi xóa đối tượng dẫn xuất qua con trỏ lớp cơ sở, destructor của lớp dẫn xuất cũng được gọi.
+
+```cpp
+class Base {
+public:
+    virtual ~Base() = default;
+};
+```
+
+Thiếu destructor ảo có thể làm rò rỉ tài nguyên nếu lớp dẫn xuất quản lý bộ nhớ hoặc tài nguyên riêng.
+
+## Object slicing
+
+Object slicing xảy ra khi gán đối tượng lớp dẫn xuất vào biến lớp cơ sở theo giá trị. Phần dữ liệu riêng của lớp dẫn xuất bị mất, nên hành vi đa hình cũng không còn như mong muốn.
+
+```cpp
+HinhTron tron;
+Hinh h = tron; // mat phan rieng cua HinhTron
+```
+
+Để tránh slicing, dùng con trỏ hoặc tham chiếu lớp cơ sở:
+
+```cpp
+void inDienTich(const Hinh& h) {
+    cout << h.dienTich();
+}
+```
+
+## So sánh nhanh
+
+Đa hình tĩnh được quyết định lúc biên dịch, thường thông qua nạp chồng. Đa hình động được quyết định lúc chạy, thông qua hàm ảo và kế thừa. Khi đề yêu cầu "một lời gọi, nhiều hành vi tùy đối tượng thực tế", câu trả lời thường hướng đến đa hình động.

@@ -1,0 +1,31 @@
+---
+title: "Ôn tập cuối kỳ Lập trình hướng đối tượng"
+format: html
+---
+
+Trang này gom lại phần lý thuyết trọng tâm của môn Lập trình hướng đối tượng với C++ để ôn thi cuối kỳ. Mỗi chương có một khối **Cram sheet** ở đầu trang để học nhanh, sau đó là phần lý thuyết đầy đủ hơn để trả lời câu hỏi tự luận.
+
+::: {.callout-note title="Tình trạng nội dung"}
+Bộ khung Quarto đã sẵn sàng. Các ghi chú hiện là bản nháp theo đề cương chương; nếu cần đối chiếu slide gốc, giữ các PDF cục bộ trong `slides/` vì thư mục này không được commit hoặc deploy.
+:::
+
+## Học nhanh
+
+- [Cheat sheet tổng hợp](cheat-sheet.qmd): gom tất cả khối cần nhớ của 8 chương.
+- Mỗi chương có liên kết tải bản PDF in được render từ chính ghi chú Quarto.
+- Khi cần in offline, dùng lệnh render PDF cho từng chương.
+
+## Bài giảng lý thuyết
+
+- [Chương 00 - Giới thiệu môn học](notes/00-gioi-thieu.qmd)
+- [Chương 01 - Tổng quan về C++](notes/01-tong-quan-cpp.qmd)
+- [Chương 02 - Tổng quan về OOP](notes/02-tong-quan-oop.qmd)
+- [Chương 03 - Lớp và đối tượng](notes/03-lop-doi-tuong.qmd)
+- [Chương 04 - Lớp và đối tượng 2](notes/04-lop-doi-tuong-2.qmd)
+- [Chương 05 - Đa năng hóa toán tử](notes/05-toan-tu.qmd)
+- [Chương 06 - Tính kế thừa](notes/06-ke-thua.qmd)
+- [Chương 07 - Tính đa hình](notes/07-da-hinh.qmd)
+
+## Tài liệu thực hành
+
+Các file `BTTH_*` và `HDTH_*` được giữ làm tài liệu tham khảo cục bộ khi biên tập, nhưng không được đưa lên site trong bản hiện tại. Phạm vi ghi chú công khai chỉ gồm 8 chương bài giảng lý thuyết.

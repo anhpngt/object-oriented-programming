@@ -1,0 +1,9 @@
+> Bản nháp cần đối chiếu với slide gốc.
+
+- Khi lớp quản lý tài nguyên động, cần nhớ bộ ba: destructor, copy constructor, toán tử gán (`operator=`).
+- Copy constructor tạo đối tượng mới từ đối tượng đã có: `A(const A& other);`.
+- Toán tử gán cập nhật một đối tượng đã tồn tại: `A& operator=(const A& other);`.
+- Sao chép nông (Shallow copy) chỉ copy địa chỉ; sao chép sâu (Deep copy) cấp phát vùng nhớ mới và copy nội dung.
+- Thành viên `static` thuộc về lớp, dùng chung cho mọi đối tượng.
+- Hàm bạn (Friend function) có quyền truy cập thành viên `private`, nhưng dùng vừa đủ để không phá đóng gói.
+- Từ khóa kích hoạt trong đề: "copy constructor", "deep copy", "shallow copy", "`static`", "`friend`", "`operator=`".

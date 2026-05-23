@@ -1,0 +1,101 @@
+---
+title: "Chương 01 - Tổng quan về C++ (C++ Overview)"
+format: [html, pdf]
+---
+
+::: {.callout-important title="Cram sheet"}
+{{< include _cram/01.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+[Tải bản PDF in](01-tong-quan-cpp.pdf)
+:::
+
+## C++ trong lập trình hướng đối tượng
+
+C++ kế thừa nhiều đặc điểm của C như biến, con trỏ, hàm và cấu trúc điều khiển, đồng thời bổ sung các cơ chế hướng đối tượng như lớp, đóng gói, constructor, kế thừa và đa hình. Vì vậy khi học OOP bằng C++, cần nắm cả nền tảng lập trình thủ tục lẫn cú pháp lớp.
+
+Một chương trình C++ thường có các chỉ thị tiền xử lý, khai báo không gian tên và hàm `main()`:
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello C++";
+    return 0;
+}
+```
+
+## Nhập xuất cơ bản
+
+C++ dùng `cout` để xuất và `cin` để nhập. Toán tử `<<` đưa dữ liệu ra luồng xuất, còn `>>` đọc dữ liệu từ luồng nhập.
+
+```cpp
+int n;
+cout << "Nhap n: ";
+cin >> n;
+cout << "n = " << n;
+```
+
+Cách nhập xuất này sẽ quay lại trong chương đa năng hóa toán tử, khi ta định nghĩa `operator<<` và `operator>>` cho các lớp tự tạo.
+
+## Tham chiếu và truyền tham số
+
+Tham chiếu (Reference) là bí danh của một biến đã tồn tại. Khi truyền tham số bằng tham chiếu, hàm có thể làm việc trực tiếp trên biến gốc mà không tạo bản sao.
+
+```cpp
+void tang(int& x) {
+    x++;
+}
+```
+
+Nếu chỉ muốn tránh copy mà không cho phép sửa dữ liệu, dùng tham chiếu hằng:
+
+```cpp
+void inTen(const string& ten) {
+    cout << ten;
+}
+```
+
+## Hằng và const-correctness
+
+`const` giúp diễn đạt ý định "không thay đổi". Trong OOP, `const` thường xuất hiện ở tham số, giá trị trả về và hàm thành viên:
+
+```cpp
+class Diem {
+private:
+    int x;
+public:
+    int getX() const {
+        return x;
+    }
+};
+```
+
+Hàm `getX() const` cam kết không thay đổi trạng thái của đối tượng. Đây là thói quen quan trọng để thiết kế lớp rõ ràng và an toàn hơn.
+
+## Cấp phát động
+
+C++ cho phép cấp phát bộ nhớ động bằng `new` và giải phóng bằng `delete`. Với mảng động, phải dùng `new[]` và `delete[]`.
+
+```cpp
+int* p = new int(10);
+delete p;
+
+int* a = new int[100];
+delete[] a;
+```
+
+Quên `delete` gây rò rỉ bộ nhớ. Dùng sai cặp `new[]`/`delete[]` có thể tạo lỗi khó phát hiện. Các lỗi này đặc biệt quan trọng ở chương lớp có con trỏ và copy object.
+
+## Nạp chồng hàm
+
+Nạp chồng hàm (Function overloading) cho phép nhiều hàm cùng tên nhưng khác danh sách tham số. Trình biên dịch chọn hàm phù hợp dựa trên số lượng và kiểu tham số.
+
+```cpp
+int tong(int a, int b);
+double tong(double a, double b);
+```
+
+Nạp chồng hàm là ví dụ của đa hình tĩnh, vì quyết định gọi hàm nào được thực hiện lúc biên dịch.

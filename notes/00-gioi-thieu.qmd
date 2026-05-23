@@ -1,0 +1,42 @@
+---
+title: "Chương 00 - Giới thiệu môn học"
+format: [html, pdf]
+---
+
+::: {.callout-important title="Cram sheet"}
+{{< include _cram/00.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+[Tải bản PDF in](00-gioi-thieu.pdf)
+:::
+
+## Vai trò của môn học
+
+Lập trình hướng đối tượng với C++ giúp chuyển từ cách viết chương trình xoay quanh hàm và dữ liệu rời rạc sang cách mô hình hóa bằng các đối tượng có trạng thái và hành vi. Cách tiếp cận này phù hợp với các bài toán có nhiều thực thể, quan hệ và quy tắc thay đổi theo thời gian.
+
+Trong bài thi lý thuyết, điểm quan trọng không chỉ là nhớ cú pháp mà còn giải thích được vì sao hướng đối tượng làm chương trình dễ bảo trì hơn: dữ liệu được đóng gói, mã được tái sử dụng qua kế thừa, và hành vi có thể mở rộng qua đa hình.
+
+## Những năng lực cần đạt
+
+Sau khi học môn này, người học cần:
+
+- Đọc và viết được lớp C++ cơ bản.
+- Phân biệt lớp, đối tượng, thuộc tính và phương thức.
+- Thiết kế constructor, destructor, getter/setter và các hàm nghiệp vụ.
+- Biết dùng kế thừa để tái sử dụng mã.
+- Biết dùng hàm ảo để đạt đa hình động.
+- Nhận ra lỗi thường gặp về cấp phát động, copy object và hủy tài nguyên.
+
+## Cách học để thi cuối kỳ
+
+Với câu hỏi định nghĩa, hãy trả lời theo mẫu: khái niệm, mục đích, cú pháp hoặc ví dụ ngắn. Với câu hỏi so sánh, hãy nêu tiêu chí rõ ràng như thời điểm quyết định, phạm vi truy cập, hoặc cách cấp phát bộ nhớ. Với câu hỏi thiết kế lớp, hãy bắt đầu bằng danh từ chính của đề bài để tìm lớp, sau đó tìm động từ để tìm phương thức.
+
+## Bản đồ chương
+
+- Chương 01 ôn lại các phần C++ cần dùng cho OOP.
+- Chương 02 giới thiệu tư duy và thuật ngữ OOP.
+- Chương 03 và 04 đi sâu vào lớp, đối tượng, copy và quản lý tài nguyên.
+- Chương 05 trình bày đa năng hóa toán tử.
+- Chương 06 trình bày kế thừa.
+- Chương 07 trình bày đa hình.

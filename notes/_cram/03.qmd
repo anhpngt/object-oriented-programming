@@ -1,0 +1,19 @@
+> Bản nháp cần đối chiếu với slide gốc.
+
+- Cú pháp lớp:
+
+```cpp
+class TenLop {
+private:
+    // thuoc tinh
+public:
+    // phuong thuc
+};
+```
+
+- Mặc định trong `class` là `private`, trong `struct` là `public`.
+- Nên để dữ liệu là `private` và truy cập qua getter/setter hoặc hàm nghiệp vụ.
+- Constructor khởi tạo đối tượng; destructor dọn tài nguyên khi đối tượng kết thúc vòng đời.
+- `this` là con trỏ trỏ đến đối tượng hiện tại.
+- Hàm thành viên `const` cam kết không làm đổi trạng thái logic của đối tượng: `int getX() const;`.
+- Từ khóa kích hoạt trong đề: "`private`/`public`", "constructor", "destructor", "`this`", "getter/setter", "hàm thành viên".

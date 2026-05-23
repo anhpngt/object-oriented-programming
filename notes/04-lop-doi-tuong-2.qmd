@@ -1,0 +1,105 @@
+---
+title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
+format: [html, pdf]
+---
+
+::: {.callout-important title="Cram sheet"}
+{{< include _cram/04.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+[Tải bản PDF in](04-lop-doi-tuong-2.pdf)
+:::
+
+## Vấn đề sao chép đối tượng
+
+Khi một đối tượng được gán hoặc truyền theo giá trị, C++ có thể tạo bản sao của đối tượng đó. Nếu lớp chỉ chứa dữ liệu đơn giản như `int`, `double`, `string`, bản sao mặc định thường đủ. Nhưng nếu lớp quản lý vùng nhớ động bằng con trỏ, bản sao mặc định có thể gây lỗi.
+
+Ví dụ, hai đối tượng cùng trỏ đến một vùng nhớ sẽ dẫn đến nguy cơ giải phóng hai lần hoặc sửa dữ liệu của nhau ngoài ý muốn.
+
+## Copy constructor
+
+Copy constructor được gọi khi tạo đối tượng mới từ một đối tượng cùng kiểu đã tồn tại.
+
+```cpp
+class Mang {
+private:
+    int* data;
+    int n;
+public:
+    Mang(const Mang& other) {
+        n = other.n;
+        data = new int[n];
+        for (int i = 0; i < n; i++) {
+            data[i] = other.data[i];
+        }
+    }
+};
+```
+
+Tham số của copy constructor thường là `const TenLop&` để tránh copy vô hạn và không sửa đối tượng nguồn.
+
+## Toán tử gán
+
+Toán tử gán được gọi khi gán vào một đối tượng đã tồn tại. Khác với copy constructor, đối tượng đích đã có tài nguyên cũ nên cần giải phóng đúng cách trước khi nhận dữ liệu mới.
+
+```cpp
+Mang& operator=(const Mang& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    delete[] data;
+    n = other.n;
+    data = new int[n];
+    for (int i = 0; i < n; i++) {
+        data[i] = other.data[i];
+    }
+    return *this;
+}
+```
+
+Kiểm tra tự gán `this == &other` giúp tránh xóa dữ liệu của chính mình trước khi copy.
+
+## Shallow copy và deep copy
+
+Sao chép nông (Shallow copy) chỉ copy giá trị con trỏ, nghĩa là hai đối tượng cùng trỏ đến một vùng nhớ. Sao chép sâu (Deep copy) cấp phát vùng nhớ riêng rồi copy nội dung, giúp mỗi đối tượng sở hữu dữ liệu độc lập.
+
+Trong bài thi, nếu đề hỏi lớp có thuộc tính con trỏ, cần nghĩ ngay đến deep copy, destructor và toán tử gán.
+
+## Thành viên static
+
+Thành viên `static` thuộc về lớp chứ không thuộc riêng từng đối tượng. Nó được dùng khi cần dữ liệu dùng chung cho mọi đối tượng, ví dụ đếm số đối tượng đã tạo.
+
+```cpp
+class SinhVien {
+private:
+    static int soLuong;
+public:
+    SinhVien() {
+        soLuong++;
+    }
+};
+```
+
+Biến `static` trong lớp cần được định nghĩa bên ngoài lớp ở một file nguồn:
+
+```cpp
+int SinhVien::soLuong = 0;
+```
+
+## Hàm friend
+
+Hàm bạn (Friend function) không phải là hàm thành viên nhưng được phép truy cập thành viên `private` và `protected` của lớp.
+
+```cpp
+class PhanSo {
+private:
+    int tu;
+    int mau;
+public:
+    friend void in(const PhanSo& p);
+};
+```
+
+`friend` hữu ích trong một số toán tử hoặc hàm hỗ trợ, nhưng không nên lạm dụng vì làm giảm mức độ che giấu dữ liệu.

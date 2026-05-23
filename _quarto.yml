@@ -1,0 +1,55 @@
+project:
+  type: website
+  output-dir: _site
+
+lang: vi
+
+website:
+  title: "Ôn tập OOP C++"
+  search: true
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - text: "Trang chủ"
+        href: index.qmd
+      - text: "Cheat sheet"
+        href: cheat-sheet.qmd
+      - section: "Bài giảng lý thuyết"
+        contents:
+          - notes/00-gioi-thieu.qmd
+          - notes/01-tong-quan-cpp.qmd
+          - notes/02-tong-quan-oop.qmd
+          - notes/03-lop-doi-tuong.qmd
+          - notes/04-lop-doi-tuong-2.qmd
+          - notes/05-toan-tu.qmd
+          - notes/06-ke-thua.qmd
+          - notes/07-da-hinh.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    css: styles.css
+    toc: true
+    number-sections: true
+    code-copy: true
+    code-link: true
+    code-overflow: wrap
+    html-math-method: katex
+  pdf:
+    pdf-engine: xelatex
+    documentclass: article
+    papersize: a4
+    geometry:
+      - margin=2cm
+    mainfont: "Noto Serif"
+    sansfont: "Noto Sans"
+    monofont: "Noto Sans Mono"
+    babel-lang: vietnamese
+    colorlinks: true
+    listings: true
+
+execute:
+  freeze: auto

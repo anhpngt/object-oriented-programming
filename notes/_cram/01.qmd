@@ -1,0 +1,9 @@
+> Bản nháp cần đối chiếu với slide gốc.
+
+- C++ là ngôn ngữ biên dịch, mở rộng từ C, hỗ trợ lập trình thủ tục, hướng đối tượng và tổng quát.
+- Nhớ cấu trúc chương trình: `#include`, `using namespace std;`, hàm `main()`, lệnh nhập xuất `cin`/`cout`.
+- Tham chiếu (Reference) là bí danh của biến, thường dùng để truyền tham số hiệu quả: `void f(int& x)`.
+- `const` dùng để bảo vệ dữ liệu không bị thay đổi; rất hay xuất hiện trong tham số, biến hằng, hàm thành viên hằng.
+- C++ cho phép nạp chồng hàm (Function overloading): cùng tên hàm nhưng khác danh sách tham số.
+- Cấp phát động: `new` đi với `delete`, `new[]` đi với `delete[]`; sai cặp dễ gây rò rỉ bộ nhớ.
+- Từ khóa kích hoạt trong đề: "tham chiếu", "`const`", "nạp chồng", "cấp phát động", "`namespace`", "biên dịch".
