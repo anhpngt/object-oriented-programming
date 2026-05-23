@@ -1,6 +1,5 @@
 ---
 title: "Chương 07 - Tính đa hình (Polymorphism)"
-format: [html, pdf]
 ---
 
 ::: {.callout-important title="Cram sheet"}

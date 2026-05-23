@@ -1,6 +1,5 @@
 ---
 title: "Chương 00 - Giới thiệu môn học"
-format: [html, pdf]
 ---
 
 ::: {.callout-important title="Cram sheet"}

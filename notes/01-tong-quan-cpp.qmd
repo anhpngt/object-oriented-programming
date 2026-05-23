@@ -1,6 +1,5 @@
 ---
 title: "Chương 01 - Tổng quan về C++ (C++ Overview)"
-format: [html, pdf]
 ---
 
 ::: {.callout-important title="Cram sheet"}

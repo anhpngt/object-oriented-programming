@@ -1,6 +1,5 @@
 ---
 title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
-format: [html, pdf]
 ---
 
 ::: {.callout-important title="Cram sheet"}

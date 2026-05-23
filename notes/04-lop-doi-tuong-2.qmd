@@ -1,6 +1,5 @@
 ---
 title: "Chương 04 - Lớp và đối tượng 2 (Classes and Objects 2)"
-format: [html, pdf]
 ---
 
 ::: {.callout-important title="Cram sheet"}

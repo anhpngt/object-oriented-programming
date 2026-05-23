@@ -1,6 +1,5 @@
 ---
 title: "Chương 06 - Tính kế thừa (Inheritance)"
-format: [html, pdf]
 ---
 
 ::: {.callout-important title="Cram sheet"}

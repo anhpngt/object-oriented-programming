@@ -1,6 +1,5 @@
 ---
 title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
-format: [html, pdf]
 ---
 
 ::: {.callout-important title="Cram sheet"}
