@@ -10,13 +10,13 @@ title: "Chương 07 - Tính đa hình (Polymorphism)"
 [Tải bản PDF in](07-da-hinh.pdf)
 :::
 
-## Khái niệm đa hình
+## Khái niệm đa hình (Polymorphism Concept)
 
 Đa hình (Polymorphism) là khả năng cùng một giao diện hoặc lời gọi có thể dẫn đến nhiều hành vi khác nhau. Trong C++, đa hình thường được chia thành đa hình tĩnh và đa hình động.
 
 Đa hình giúp chương trình mở rộng dễ hơn: mã gọi chỉ cần biết giao diện chung, còn hành vi cụ thể do từng lớp con quyết định.
 
-## Đa hình tĩnh
+## Đa hình tĩnh (Static Polymorphism)
 
 Đa hình tĩnh được quyết định tại thời điểm biên dịch. Ví dụ phổ biến là nạp chồng hàm và nạp chồng toán tử.
 
@@ -27,7 +27,7 @@ double maxValue(double a, double b);
 
 Trình biên dịch chọn phiên bản hàm dựa trên kiểu tham số. Vì quyết định xảy ra sớm, đa hình tĩnh thường nhanh nhưng kém linh hoạt hơn đa hình động.
 
-## Đa hình động
+## Đa hình động (Dynamic Polymorphism)
 
 Đa hình động được quyết định tại thời điểm chạy. Trong C++, nó cần ba điều kiện chính:
 
@@ -55,7 +55,19 @@ public:
 
 Khi gọi `dienTich()` qua `Hinh*`, chương trình sẽ chọn hàm của lớp đối tượng thực tế nếu hàm là `virtual`.
 
-## Hàm thuần ảo và lớp trừu tượng
+### Cơ chế bảng phương thức ảo (vtable)
+
+Slide gốc giải thích cơ chế đa hình động như sau: mỗi đối tượng có lớp chứa hàm `virtual` được trình biên dịch gắn thêm một con trỏ đến **bảng phương thức ảo** (virtual method table, vtable). Bảng này chứa địa chỉ các phiên bản `virtual` ứng với lớp thực tế của đối tượng.
+
+Khi gọi `p->dienTich()` qua con trỏ `Hinh*`:
+
+- Trình biên dịch sinh mã tra bảng vtable của đối tượng `*p`.
+- Lấy địa chỉ hàm `dienTich` từ bảng và gọi.
+- Vì bảng được khởi tạo theo lớp thực tế lúc tạo đối tượng, ta luôn gọi đúng phiên bản (`HinhTron::dienTich`, `HinhChuNhat::dienTich`...).
+
+Đây là lý do `virtual` có chi phí nhỏ hơn lời gọi hàm thông thường (một tầng tra bảng gián tiếp), nhưng đổi lại cho phép hành vi đa hình lúc chạy. Đối tượng của lớp không có hàm `virtual` nào thì không cần vtable.
+
+## Hàm thuần ảo và lớp trừu tượng (Pure Virtual Functions and Abstract Classes)
 
 Hàm thuần ảo (Pure virtual function) là hàm ảo chưa có cài đặt đầy đủ ở lớp cơ sở:
 
@@ -68,7 +80,7 @@ public:
 
 Lớp có ít nhất một hàm thuần ảo là lớp trừu tượng (Abstract class). Không thể tạo đối tượng trực tiếp từ lớp trừu tượng; lớp này dùng để định nghĩa giao diện chung cho các lớp con.
 
-## Destructor ảo
+## Destructor ảo (Virtual Destructor)
 
 Nếu một lớp được dùng làm lớp cơ sở đa hình, destructor của nó nên khai báo `virtual`. Điều này đảm bảo khi xóa đối tượng dẫn xuất qua con trỏ lớp cơ sở, destructor của lớp dẫn xuất cũng được gọi.
 
@@ -98,6 +110,6 @@ void inDienTich(const Hinh& h) {
 }
 ```
 
-## So sánh nhanh
+## So sánh nhanh (Quick Comparison)
 
 Đa hình tĩnh được quyết định lúc biên dịch, thường thông qua nạp chồng. Đa hình động được quyết định lúc chạy, thông qua hàm ảo và kế thừa. Khi đề yêu cầu "một lời gọi, nhiều hành vi tùy đối tượng thực tế", câu trả lời thường hướng đến đa hình động.

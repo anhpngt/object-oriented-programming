@@ -10,7 +10,7 @@ title: "Chương 01 - Tổng quan về C++ (C++ Overview)"
 [Tải bản PDF in](01-tong-quan-cpp.pdf)
 :::
 
-## C++ trong lập trình hướng đối tượng
+## C++ trong lập trình hướng đối tượng (C++ in Object-Oriented Programming)
 
 C++ kế thừa nhiều đặc điểm của C như biến, con trỏ, hàm và cấu trúc điều khiển, đồng thời bổ sung các cơ chế hướng đối tượng như lớp, đóng gói, constructor, kế thừa và đa hình. Vì vậy khi học OOP bằng C++, cần nắm cả nền tảng lập trình thủ tục lẫn cú pháp lớp.
 
@@ -26,7 +26,7 @@ int main() {
 }
 ```
 
-## Nhập xuất cơ bản
+## Nhập xuất cơ bản (Basic I/O)
 
 C++ dùng `cout` để xuất và `cin` để nhập. Toán tử `<<` đưa dữ liệu ra luồng xuất, còn `>>` đọc dữ liệu từ luồng nhập.
 
@@ -39,7 +39,7 @@ cout << "n = " << n;
 
 Cách nhập xuất này sẽ quay lại trong chương đa năng hóa toán tử, khi ta định nghĩa `operator<<` và `operator>>` cho các lớp tự tạo.
 
-## Tham chiếu và truyền tham số
+## Tham chiếu và truyền tham số (Reference and Parameter Passing)
 
 Tham chiếu (Reference) là bí danh của một biến đã tồn tại. Khi truyền tham số bằng tham chiếu, hàm có thể làm việc trực tiếp trên biến gốc mà không tạo bản sao.
 
@@ -57,7 +57,7 @@ void inTen(const string& ten) {
 }
 ```
 
-## Hằng và const-correctness
+## Hằng và const-correctness (Constants and const-correctness)
 
 `const` giúp diễn đạt ý định "không thay đổi". Trong OOP, `const` thường xuất hiện ở tham số, giá trị trả về và hàm thành viên:
 
@@ -74,7 +74,7 @@ public:
 
 Hàm `getX() const` cam kết không thay đổi trạng thái của đối tượng. Đây là thói quen quan trọng để thiết kế lớp rõ ràng và an toàn hơn.
 
-## Cấp phát động
+## Cấp phát động (Dynamic Memory Allocation)
 
 C++ cho phép cấp phát bộ nhớ động bằng `new` và giải phóng bằng `delete`. Với mảng động, phải dùng `new[]` và `delete[]`.
 
@@ -88,7 +88,27 @@ delete[] a;
 
 Quên `delete` gây rò rỉ bộ nhớ. Dùng sai cặp `new[]`/`delete[]` có thể tạo lỗi khó phát hiện. Các lỗi này đặc biệt quan trọng ở chương lớp có con trỏ và copy object.
 
-## Nạp chồng hàm
+## Toán tử phạm vi `::` (Scope Resolution Operator)
+
+Toán tử phạm vi `::` có ba vai trò chính:
+
+1. Truy cập biến toàn cục khi có biến cục bộ trùng tên: `::x` trỏ về biến `x` toàn cục.
+2. Chỉ rõ phương thức thuộc lớp nào khi định nghĩa bên ngoài thân lớp: `Diem::nhap()`.
+3. Truy cập thành viên của namespace: `std::cout`.
+
+```cpp
+const double PI = 3.14159265358979;
+
+int main() {
+    const float PI = static_cast<float>(::PI);  // dung PI toan cuc
+    cout << "Local PI = " << PI << "\n";
+    cout << "Global PI = " << ::PI << endl;
+}
+```
+
+Toán tử này sẽ xuất hiện lại ở Chương 03 khi định nghĩa phương thức bên ngoài lớp (`TenLop::tenHam`) và ở Chương 06 khi gọi phương thức của lớp cơ sở từ lớp dẫn xuất.
+
+## Nạp chồng hàm (Function Overloading)
 
 Nạp chồng hàm (Function overloading) cho phép nhiều hàm cùng tên nhưng khác danh sách tham số. Trình biên dịch chọn hàm phù hợp dựa trên số lượng và kiểu tham số.
 

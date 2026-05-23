@@ -10,13 +10,13 @@ title: "Chương 05 - Đa năng hóa toán tử (Operator Overloading)"
 [Tải bản PDF in](05-toan-tu.pdf)
 :::
 
-## Khái niệm
+## Khái niệm (Concept)
 
 Đa năng hóa toán tử (Operator overloading) cho phép định nghĩa lại ý nghĩa của toán tử khi áp dụng cho kiểu dữ liệu tự định nghĩa. Mục tiêu là làm mã tự nhiên hơn, ví dụ cộng hai phân số bằng `a + b` thay vì gọi `a.cong(b)`.
 
 Toán tử được nạp chồng phải giữ ý nghĩa dễ hiểu. Nếu nạp chồng làm người đọc bất ngờ, thiết kế đó thường không tốt.
 
-## Cú pháp tổng quát
+## Cú pháp tổng quát (General Syntax)
 
 Một toán tử được định nghĩa bằng hàm có tên `operator` đi kèm ký hiệu toán tử:
 
@@ -40,7 +40,7 @@ public:
 
 Khi toán tử là hàm thành viên, toán hạng trái chính là đối tượng hiện tại, còn toán hạng phải được truyền qua tham số.
 
-## Hàm thành viên và hàm friend
+## Hàm thành viên và hàm friend (Member Functions and Friend Functions)
 
 Một số toán tử có thể viết bằng hàm thành viên hoặc hàm tự do. Hàm `friend` thường dùng khi toán hạng trái không phải là đối tượng của lớp, hoặc khi cần truy cập trực tiếp dữ liệu private.
 
@@ -61,7 +61,7 @@ public:
 
 Hàm trả về `ostream&` để có thể nối chuỗi lệnh xuất như `cout << a << b;`.
 
-## Toán tử nhập xuất
+## Toán tử nhập xuất (I/O Operators)
 
 Toán tử nhập `>>` nhận `istream&` và đối tượng không hằng vì cần thay đổi dữ liệu của đối tượng.
 
@@ -74,7 +74,7 @@ friend istream& operator>>(istream& is, PhanSo& p) {
 
 Khi nhập dữ liệu, lớp có thể kiểm tra điều kiện hợp lệ, ví dụ mẫu số khác 0.
 
-## Toán tử gán
+## Toán tử gán (Assignment Operator)
 
 Toán tử gán `operator=` thường trả về tham chiếu đến đối tượng hiện tại để hỗ trợ gán liên tiếp:
 
@@ -90,7 +90,81 @@ PhanSo& operator=(const PhanSo& other) {
 
 Với lớp có cấp phát động, toán tử gán phải xử lý tự gán, giải phóng tài nguyên cũ và sao chép sâu dữ liệu mới.
 
-## Giới hạn của nạp chồng toán tử
+## Toán tử `++` và `--` (Prefix and Postfix)
+
+Với toán tử đếm `++` và `--`, C++ phân biệt hai dạng dùng:
+
+- Tiếp đầu ngữ (prefix) `++a`: tăng `a`, rồi trả về tham chiếu đến chính `a`.
+- Tiếp vị ngữ (postfix) `a++`: tăng `a`, nhưng trả về **giá trị cũ** trước khi tăng.
+
+Khi nạp chồng, hai phiên bản dùng cùng tên `operator++` nhưng khác chữ ký - phiên bản postfix có thêm một **tham số giả** kiểu `int` để phân biệt:
+
+```cpp
+class ThoiDiem {
+    long tsgiay;
+public:
+    ThoiDiem& operator++();        // ++t : prefix
+    ThoiDiem  operator++(int);     // t++ : postfix
+};
+
+ThoiDiem& ThoiDiem::operator++() {
+    tsgiay = (tsgiay + 1) % SOGIAY_NGAY;
+    return *this;
+}
+
+ThoiDiem ThoiDiem::operator++(int) {
+    ThoiDiem cu = *this;           // luu gia tri cu
+    ++(*this);                     // tang
+    return cu;                     // tra ve gia tri cu
+}
+```
+
+Postfix trả về **theo giá trị** (không phải tham chiếu) vì giá trị cũ là biến cục bộ `cu`. Đây là lý do postfix thường tốn hơn prefix một chút, nên trong vòng lặp ưu tiên `++i` thay vì `i++` khi không cần giá trị cũ.
+
+## Chuyển kiểu (Type Conversion)
+
+Khi tính một biểu thức trộn nhiều kiểu, trình biên dịch tự chuyển kiểu theo quy tắc nâng cấp. Với kiểu tự định nghĩa, có hai cách để cung cấp chuyển kiểu:
+
+### Chuyển kiểu bằng constructor
+
+Định nghĩa constructor một tham số kiểu nguồn. Trình biên dịch dùng nó để chuyển kiểu nguồn -> kiểu đang định nghĩa.
+
+```cpp
+class PhanSo {
+    long tu, mau;
+public:
+    PhanSo(long t, long m) { Set(t, m); }
+    PhanSo(long t)         { Set(t, 1); }  // int -> PhanSo
+    friend PhanSo operator+(PhanSo a, PhanSo b);
+};
+
+PhanSo a(2, 3), c;
+c = a + 5;     // 5 duoc chuyen thanh PhanSo(5)
+c = 3 + a;     // 3 duoc chuyen thanh PhanSo(3)
+```
+
+Dùng cách này khi có quan hệ "là một" từ kiểu nguồn đến kiểu đang định nghĩa (một số nguyên *là một* phân số).
+
+### Chuyển kiểu bằng phép toán chuyển kiểu `operator T()`
+
+Định nghĩa hàm thành viên `operator T()` để chuyển kiểu đang định nghĩa -> kiểu `T` đã có.
+
+```cpp
+class PhanSo {
+    long tu, mau;
+public:
+    operator double() const { return double(tu) / mau; }
+};
+
+PhanSo a(9, 4);
+cout << sqrt(a);  // dung operator double() roi goi sqrt(double)
+```
+
+Dùng cách này khi cần biểu diễn quan hệ "là một" từ kiểu đang định nghĩa sang một kiểu đã có, hoặc muốn tận dụng các phép toán có sẵn của kiểu `T`.
+
+Hai cơ chế chuyển kiểu này nếu định nghĩa đồng thời có thể gây **nhập nhằng** (ambiguity) - trình biên dịch không biết chọn cách nào, phải báo lỗi.
+
+## Giới hạn của nạp chồng toán tử (Limitations of Operator Overloading)
 
 C++ không cho tạo toán tử hoàn toàn mới. Việc nạp chồng cũng không thay đổi được độ ưu tiên, số ngôi hoặc tính kết hợp của toán tử. Một số toán tử không thể nạp chồng tùy theo chuẩn C++, ví dụ `::`, `.`, `.*`, `?:` và `sizeof`.
 

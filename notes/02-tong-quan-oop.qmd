@@ -10,13 +10,13 @@ title: "Chương 02 - Tổng quan về lập trình hướng đối tượng (OO
 [Tải bản PDF in](02-tong-quan-oop.pdf)
 :::
 
-## Tư duy hướng đối tượng
+## Tư duy hướng đối tượng (Object-Oriented Thinking)
 
 Lập trình hướng đối tượng (Object-Oriented Programming) nhìn chương trình như một tập hợp các đối tượng phối hợp với nhau. Mỗi đối tượng có dữ liệu riêng và các hành vi thao tác trên dữ liệu đó.
 
 Ví dụ, trong bài toán quản lý sinh viên, `SinhVien` có thể là một lớp. Mỗi sinh viên cụ thể là một đối tượng, có mã số, họ tên, điểm trung bình và các hành vi như nhập thông tin, xuất thông tin, tính xếp loại.
 
-## Lớp và đối tượng
+## Lớp và đối tượng (Classes and Objects)
 
 Lớp (Class) là bản thiết kế mô tả thuộc tính và phương thức chung. Đối tượng (Object) là một thể hiện cụ thể được tạo ra từ lớp.
 
@@ -32,13 +32,13 @@ public:
 
 Trong ví dụ này, `SinhVien` là lớp. Một biến `SinhVien sv;` là đối tượng của lớp đó.
 
-## Thuộc tính và phương thức
+## Thuộc tính và phương thức (Attributes and Methods)
 
 Thuộc tính biểu diễn trạng thái của đối tượng. Phương thức biểu diễn hành vi hoặc thao tác mà đối tượng có thể thực hiện.
 
 Khi phân tích đề bài, danh từ thường gợi ý lớp hoặc thuộc tính, còn động từ thường gợi ý phương thức. Ví dụ "tính lương nhân viên" gợi ý lớp `NhanVien` và phương thức `tinhLuong()`.
 
-## Đóng gói
+## Đóng gói (Encapsulation)
 
 Đóng gói (Encapsulation) là việc đặt dữ liệu và các hàm xử lý dữ liệu vào cùng một lớp, đồng thời che giấu chi tiết bên trong. Thông thường thuộc tính nên để `private`; bên ngoài lớp chỉ tương tác qua các phương thức `public`.
 
@@ -48,13 +48,13 @@ Lợi ích của đóng gói:
 - Giảm phụ thuộc giữa các phần của chương trình.
 - Cho phép thay đổi cài đặt bên trong mà ít ảnh hưởng đến mã sử dụng lớp.
 
-## Trừu tượng hóa
+## Trừu tượng hóa (Abstraction)
 
 Trừu tượng hóa (Abstraction) là chọn ra các đặc điểm cần thiết của đối tượng trong phạm vi bài toán. Một đối tượng ngoài đời có rất nhiều thông tin, nhưng chương trình chỉ cần giữ các thông tin phục vụ yêu cầu.
 
 Ví dụ, bài toán tính điểm chỉ cần mã sinh viên, họ tên và điểm; không nhất thiết cần chiều cao hoặc địa chỉ nếu đề bài không dùng.
 
-## Kế thừa và đa hình
+## Kế thừa và đa hình (Inheritance and Polymorphism)
 
 Kế thừa (Inheritance) cho phép lớp mới dựa trên lớp đã có, dùng lại thuộc tính và phương thức chung. Đa hình (Polymorphism) cho phép cùng một lời gọi phương thức tạo ra hành vi khác nhau tùy loại đối tượng thực tế.
 

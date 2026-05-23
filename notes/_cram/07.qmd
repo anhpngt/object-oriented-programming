@@ -6,4 +6,5 @@
 - Hàm thuần ảo (Pure virtual function): `virtual void f() = 0;`; lớp có hàm thuần ảo là lớp trừu tượng (Abstract class).
 - Khi xóa đối tượng dẫn xuất qua con trỏ lớp cơ sở, destructor lớp cơ sở nên là `virtual`.
 - Tránh object slicing: gán đối tượng dẫn xuất vào biến lớp cơ sở làm mất phần riêng của lớp dẫn xuất.
-- Từ khóa kích hoạt trong đề: "`virtual`", "late binding", "pure virtual", "abstract class", "virtual destructor", "object slicing".
+- Cơ chế đa hình động: mỗi đối tượng có bảng phương thức ảo (vtable) chứa địa chỉ các hàm `virtual`. Lời gọi qua con trỏ lớp cơ sở sẽ tra bảng để chọn đúng phiên bản.
+- Từ khóa kích hoạt trong đề: "`virtual`", "bảng phương thức ảo", "pure virtual", "abstract class", "virtual destructor", "object slicing".

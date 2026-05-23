@@ -10,13 +10,24 @@ title: "Chương 06 - Tính kế thừa (Inheritance)"
 [Tải bản PDF in](06-ke-thua.pdf)
 :::
 
-## Khái niệm kế thừa
+## Quan hệ giữa các lớp (Relationships Between Classes)
+
+Trước khi học kế thừa, slide gốc liệt kê bốn loại quan hệ giữa các lớp đối tượng:
+
+- **Một - một (1-1)**: mỗi đối tượng lớp này gắn với đúng một đối tượng lớp kia. Ví dụ `LopHoc - GiaoVien` (chủ nhiệm), `Vo - Chong` (hôn nhân).
+- **Một - nhiều (1-n)**: một đối tượng lớp này gắn với nhiều đối tượng lớp kia, nhưng mỗi đối tượng lớp kia chỉ thuộc về một đối tượng lớp này. Ví dụ `LopHoc - HocSinh`, `CongTy - NhanVien`.
+- **Nhiều - nhiều (n-n)**: hai phía đều có nhiều. Ví dụ `BacSi - BenhNhan` (khám bệnh), sinh viên - môn học.
+- **Đặc biệt hóa - tổng quát hóa**: lớp này là trường hợp đặc biệt của lớp kia. Ví dụ `TamGiacCan` là trường hợp đặc biệt của `TamGiac`; `SinhVien` là trường hợp đặc biệt của `Nguoi`. Chính quan hệ này là cơ sở của **kế thừa**.
+
+Ba quan hệ đầu thường được cài bằng thành phần (composition) hoặc tham chiếu giữa các đối tượng. Chỉ quan hệ thứ tư mới hợp lý để dùng kế thừa.
+
+## Khái niệm kế thừa (Inheritance Concept)
 
 Kế thừa (Inheritance) là cơ chế cho phép xây dựng lớp mới từ lớp đã có. Lớp đã có gọi là lớp cơ sở (Base class), lớp mới gọi là lớp dẫn xuất (Derived class).
 
 Mục tiêu chính của kế thừa là tái sử dụng phần chung và mở rộng phần riêng. Ví dụ `GiangVien` và `SinhVien` đều có họ tên, ngày sinh, địa chỉ, nên có thể kế thừa từ lớp `Nguoi`.
 
-## Cú pháp kế thừa
+## Cú pháp kế thừa (Inheritance Syntax)
 
 ```cpp
 class Nguoi {
@@ -35,21 +46,33 @@ public:
 };
 ```
 
-Với `public` inheritance, các thành viên `public` của lớp cơ sở vẫn là `public` ở lớp dẫn xuất, còn `protected` vẫn là `protected`.
+Với `public` inheritance, các thành viên `public` của lớp cơ sở vẫn là `public` ở lớp dẫn xuất, còn `protected` vẫn là `protected`. Hai dạng kế thừa khác (`protected`, `private`) làm thay đổi mức truy cập - xem bảng trong mục [Phạm vi truy xuất](#phạm-vi-truy-xuất-trong-kế-thừa-access-specifiers-in-inheritance) bên dưới.
 
-## Quan hệ is-a
+## Quan hệ is-a (Is-A Relationship)
 
 Kế thừa công khai nên biểu diễn quan hệ "là một" (is-a). Nếu có thể nói "`SinhVien` là một `Nguoi`" thì kế thừa có thể hợp lý. Nếu chỉ là "có một" (has-a), nên dùng thành phần đối tượng thay vì kế thừa.
 
 Ví dụ `Xe` có một `DongCo`, không nên nói `Xe` kế thừa từ `DongCo`.
 
-## private, protected và public
+## Phạm vi truy xuất trong kế thừa (Access Specifiers in Inheritance)
 
-Thành viên `private` của lớp cơ sở không được truy cập trực tiếp từ lớp dẫn xuất. Nếu muốn lớp con dùng trực tiếp một thành viên nhưng vẫn che giấu với bên ngoài, có thể dùng `protected`.
+Thành viên `private` của lớp cơ sở không bao giờ truy cập trực tiếp được từ lớp dẫn xuất (dù dùng dạng kế thừa nào). Nếu muốn lớp con dùng trực tiếp một thành viên nhưng vẫn che giấu với bên ngoài, lớp cơ sở phải đặt thành viên đó ở `protected`.
 
-Tuy vậy, không nên đưa mọi dữ liệu lên `protected`. Nếu có thể, lớp cơ sở nên cung cấp hàm `public` hoặc `protected` có kiểm soát để bảo vệ bất biến dữ liệu.
+C++ có ba dạng kế thừa, tổ hợp với ba mức truy cập của thành viên cho bảng sau:
 
-## Constructor và destructor trong kế thừa
+| Thành viên lớp cơ sở | `public` inheritance | `protected` inheritance | `private` inheritance |
+|---|---|---|---|
+| `public` | `public` ở lớp con | `protected` ở lớp con | `private` ở lớp con |
+| `protected` | `protected` ở lớp con | `protected` ở lớp con | `private` ở lớp con |
+| `private` | Không truy cập trực tiếp | Không truy cập trực tiếp | Không truy cập trực tiếp |
+
+Cách đọc: kế thừa `public` giữ nguyên mức truy cập (trừ `private` luôn ẩn). Kế thừa `protected` và `private` làm "hạ cấp" các thành viên `public` và `protected` của lớp cơ sở.
+
+Trong giáo trình OOP cơ bản, gần như luôn dùng `public` inheritance vì nó tương ứng với quan hệ "là một". `protected` và `private` inheritance dùng cho các kỹ thuật cài đặt nâng cao hơn.
+
+Không nên đưa mọi dữ liệu lên `protected` chỉ vì tiện. Nếu có thể, lớp cơ sở nên cung cấp hàm `public` hoặc `protected` có kiểm soát để bảo vệ bất biến dữ liệu.
+
+## Constructor và destructor trong kế thừa (Constructors and Destructors in Inheritance)
 
 Khi tạo đối tượng lớp dẫn xuất, constructor lớp cơ sở chạy trước, sau đó constructor lớp dẫn xuất chạy. Khi hủy đối tượng, thứ tự ngược lại: destructor lớp dẫn xuất chạy trước, rồi destructor lớp cơ sở.
 
@@ -64,24 +87,65 @@ public:
 
 Nếu lớp cơ sở không có constructor mặc định, lớp dẫn xuất phải gọi constructor phù hợp của lớp cơ sở trong danh sách khởi tạo.
 
-## Ghi đè phương thức
+## Ghi đè phương thức (Method Overriding)
 
-Lớp dẫn xuất có thể định nghĩa lại phương thức có cùng tên và danh sách tham số với lớp cơ sở. Đây là ghi đè (Override) khi phương thức lớp cơ sở là `virtual` và được gọi qua con trỏ hoặc tham chiếu lớp cơ sở.
+Lớp dẫn xuất có thể định nghĩa lại phương thức có cùng tên và chữ ký với lớp cơ sở. Cần phân biệt hai trường hợp:
+
+- **Che giấu (redefinition / hiding)**: nếu phương thức lớp cơ sở **không** `virtual`, lớp con chỉ "che" phiên bản kia. Lời gọi qua con trỏ lớp cơ sở vẫn chạy bản của lớp cơ sở (đa hình tĩnh, dispatch theo kiểu khai báo).
+- **Ghi đè (override)**: nếu phương thức lớp cơ sở **là** `virtual`, lời gọi qua con trỏ hoặc tham chiếu lớp cơ sở sẽ chạy bản của lớp đối tượng thực tế. Đây là đa hình động (xem [Chương 07](07-da-hinh.qmd)).
 
 ```cpp
 class NhanVien {
 public:
-    virtual double tinhLuong() const;
+    virtual double tinhLuong() const;     // virtual -> co the override
 };
 
 class NhanVienVanPhong : public NhanVien {
 public:
-    double tinhLuong() const override;
+    double tinhLuong() const override;    // override la tu khoa C++11
 };
 ```
 
-Từ khóa `override` giúp trình biên dịch kiểm tra rằng hàm thật sự ghi đè một hàm ảo ở lớp cơ sở.
+Từ khóa `override` (C++11) là tùy chọn - nó báo trình biên dịch kiểm tra rằng hàm thật sự ghi đè một hàm `virtual` ở lớp cơ sở. Nếu không có `virtual` ở lớp cha, `override` sẽ báo lỗi biên dịch. Slide gốc không dùng `override`; bài thi viết tay có thể bỏ qua từ khóa này.
 
-## Khi nào dùng kế thừa
+## Con trỏ và kế thừa (Pointers in Inheritance)
 
-Dùng kế thừa khi các lớp có phần chung rõ ràng và lớp con thật sự là một dạng chuyên biệt của lớp cha. Không dùng kế thừa chỉ để "tiết kiệm vài dòng mã", vì phân cấp sai sẽ làm chương trình khó mở rộng và khó hiểu.
+Con trỏ lớp cơ sở có thể trỏ đến đối tượng lớp dẫn xuất, nhưng chiều ngược lại không hợp lệ nếu không ép kiểu rõ ràng.
+
+```cpp
+Nguoi* p = new SinhVien;     // OK: SinhVien la mot Nguoi
+SinhVien* q = new Nguoi;     // Loi: Nguoi khong phai SinhVien
+```
+
+Đây là nền tảng cho đa hình động: code thao tác qua con trỏ lớp cơ sở, đối tượng thực tế có thể thuộc bất kỳ lớp con nào.
+
+## Đa kế thừa (Multiple Inheritance)
+
+C++ cho phép một lớp dẫn xuất từ nhiều lớp cơ sở cùng lúc:
+
+```cpp
+class A : public B, private C {
+    // ...
+};
+```
+
+Mọi đặc điểm của kế thừa đơn vẫn áp dụng. Nhưng đa kế thừa kéo theo ba vấn đề thường được hỏi:
+
+1. **Thành phần cùng tên ở nhiều lớp cha**: nếu cả `B` và `C` có hàm `f()`, lời gọi `obj.f()` từ `A` gây lỗi nhập nhằng (ambiguous). Phải viết `obj.B::f()` hoặc `obj.C::f()` để chỉ rõ.
+2. **Thứ tự gọi constructor/destructor**: constructor các lớp cơ sở chạy theo thứ tự khai báo trong dòng `class A : public B, private C`, sau đó constructor `A`. Destructor theo chiều ngược lại.
+3. **Bài toán kim cương (diamond problem)**: nếu `D` kế thừa từ `B` và `C`, mà cả `B` và `C` cùng kế thừa từ `A`, thì đối tượng `D` chứa **hai bản** của phần `A` - gây trùng lặp và nhập nhằng. Giải pháp là dùng **kế thừa ảo** (`virtual` inheritance) ở `B` và `C` để chỉ giữ một bản `A` duy nhất.
+
+```cpp
+class ClassC : public BASE_A, public BASE_B {};
+
+ClassC c;
+c.a = 1;     // Loi mo ho: BASE_A::a hay BASE_B::a?
+c.g();       // Loi mo ho
+c.BASE_A::a = 1;  // OK: chi ro
+```
+
+Đa kế thừa mạnh nhưng dễ gây phức tạp; nhiều ngôn ngữ OOP khác (Java, C#) chỉ cho kế thừa đơn và bù bằng interface.
+
+## Khi nào dùng kế thừa (When to Use Inheritance)
+
+Dùng kế thừa khi các lớp có phần chung rõ ràng và lớp con thật sự là một dạng chuyên biệt của lớp cha (quan hệ "là một"). Không dùng kế thừa chỉ để "tiết kiệm vài dòng mã", vì phân cấp sai sẽ làm chương trình khó mở rộng và khó hiểu. Khi nghi ngờ, ưu tiên thành phần (composition) trước.

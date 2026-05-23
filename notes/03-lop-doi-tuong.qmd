@@ -10,7 +10,7 @@ title: "Chương 03 - Lớp và đối tượng (Classes and Objects)"
 [Tải bản PDF in](03-lop-doi-tuong.pdf)
 :::
 
-## Khai báo lớp
+## Khai báo lớp (Class Declaration)
 
 Một lớp trong C++ được khai báo bằng từ khóa `class`. Bên trong lớp có thể có thuộc tính và phương thức. Các mức truy cập phổ biến là `private`, `protected` và `public`.
 
@@ -27,7 +27,13 @@ public:
 
 Với `class`, các thành viên mặc định là `private`. Vì vậy nên ghi rõ mức truy cập để mã dễ đọc và tránh hiểu nhầm.
 
-## Tạo và dùng đối tượng
+Ba mức truy cập:
+
+- `private`: chỉ truy cập được bên trong lớp và các hàm `friend`.
+- `protected`: như `private`, nhưng cho phép lớp dẫn xuất truy cập trực tiếp. Hay dùng khi thiết kế lớp cơ sở (xem [Chương 06](06-ke-thua.qmd)).
+- `public`: ai cũng truy cập được; đây là giao diện sử dụng của lớp.
+
+## Tạo và dùng đối tượng (Creating and Using Objects)
 
 Đối tượng được tạo như biến của kiểu lớp:
 
@@ -45,7 +51,7 @@ p->nhap();
 delete p;
 ```
 
-## Dữ liệu private và hàm truy cập
+## Dữ liệu private và hàm truy cập (Private Data and Accessor Functions)
 
 Nguyên tắc thường dùng là không cho bên ngoài sửa trực tiếp thuộc tính. Thay vào đó, lớp cung cấp hàm truy cập hoặc hàm nghiệp vụ có kiểm tra hợp lệ.
 
@@ -67,6 +73,16 @@ public:
 ```
 
 Trong bài thi, đây là ví dụ điển hình để giải thích đóng gói.
+
+### Quy ước đặt tên get/set/is
+
+Slide gốc quy ước tên phương thức truy vấn/cập nhật như sau:
+
+- Phương thức truy vấn (query) đơn giản: tiền tố `get` + tên thuộc tính, ví dụ `getX()`, `getSize()`.
+- Phương thức truy vấn điều kiện (trả về `bool`): tiền tố `is`, ví dụ `isEmpty()`, `isValid()`.
+- Phương thức cập nhật (update): tiền tố `set` + tên thuộc tính, ví dụ `setX(int)`, `setGPA(double)`.
+
+Phương thức cập nhật thường trả về mã lỗi (hoặc `bool`) để báo việc gán có hợp lệ hay không, ví dụ slide minh họa `setGPA` trả về `0` khi thành công, `-1` khi giá trị ngoài khoảng `[0.0, 4.0]`.
 
 ## Constructor
 
@@ -106,7 +122,7 @@ public:
 
 Nếu lớp không quản lý tài nguyên động, destructor mặc định thường đủ. Nếu lớp có con trỏ sở hữu vùng nhớ, destructor là bắt buộc để tránh rò rỉ bộ nhớ.
 
-## Con trỏ this
+## Con trỏ this (The this Pointer)
 
 `this` là con trỏ trỏ đến đối tượng hiện tại. Nó thường dùng khi tên tham số trùng tên thuộc tính hoặc khi cần trả về chính đối tượng hiện tại.
 
@@ -116,7 +132,7 @@ void setX(int x) {
 }
 ```
 
-## Hàm thành viên const
+## Hàm thành viên const (const Member Functions)
 
 Hàm thành viên `const` cam kết không thay đổi trạng thái logic của đối tượng.
 

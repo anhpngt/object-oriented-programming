@@ -11,13 +11,12 @@ Bộ khung Quarto đã sẵn sàng. Các ghi chú hiện là bản nháp theo đ
 
 ## Học nhanh
 
-- [Cheat sheet tổng hợp](cheat-sheet.qmd): gom tất cả khối cần nhớ của 8 chương.
+- Mỗi chương mở đầu bằng một khối **Cram sheet** để ôn nhanh trước khi đọc phần lý thuyết đầy đủ.
 - Mỗi chương có liên kết tải bản PDF in được render từ chính ghi chú Quarto.
 - Khi cần in offline, dùng lệnh render PDF cho từng chương.
 
 ## Bài giảng lý thuyết
 
-- [Chương 00 - Giới thiệu môn học](notes/00-gioi-thieu.qmd)
 - [Chương 01 - Tổng quan về C++](notes/01-tong-quan-cpp.qmd)
 - [Chương 02 - Tổng quan về OOP](notes/02-tong-quan-oop.qmd)
 - [Chương 03 - Lớp và đối tượng](notes/03-lop-doi-tuong.qmd)

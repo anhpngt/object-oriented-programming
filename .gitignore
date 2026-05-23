@@ -52,3 +52,6 @@ slides/
 *.pdf
 *.ppt
 *.pptx
+
+/.quarto/
+**/*.quarto_ipynb

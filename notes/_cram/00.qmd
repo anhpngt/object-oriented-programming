@@ -1,7 +1,0 @@
-> Bản nháp cần đối chiếu với slide gốc.
-
-- Mục tiêu môn học: nắm tư duy lập trình hướng đối tượng (Object-Oriented Programming), biết thiết kế lớp, tạo đối tượng, dùng kế thừa và đa hình trong C++.
-- Khi làm bài tự luận, luôn gắn khái niệm với lợi ích: dễ mô hình hóa bài toán, tái sử dụng mã, che giấu chi tiết cài đặt, mở rộng chương trình.
-- Bốn trụ cột hay gặp: trừu tượng hóa (Abstraction), đóng gói (Encapsulation), kế thừa (Inheritance), đa hình (Polymorphism).
-- C++ hỗ trợ cả lập trình thủ tục và hướng đối tượng, nên cần phân biệt hàm tự do với hàm thành viên, dữ liệu thường với thuộc tính của đối tượng.
-- Từ khóa kích hoạt trong đề: "mô hình hóa", "đối tượng", "lớp", "tái sử dụng", "mở rộng", "bảo trì".

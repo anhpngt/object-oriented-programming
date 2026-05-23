@@ -13,11 +13,8 @@ website:
     contents:
       - text: "Trang chủ"
         href: index.qmd
-      - text: "Cheat sheet"
-        href: cheat-sheet.qmd
       - section: "Bài giảng lý thuyết"
         contents:
-          - notes/00-gioi-thieu.qmd
           - notes/01-tong-quan-cpp.qmd
           - notes/02-tong-quan-oop.qmd
           - notes/03-lop-doi-tuong.qmd
@@ -43,16 +40,24 @@ format:
     documentclass: article
     papersize: a4
     geometry:
-      - margin=2cm
-    mainfont: "Noto Serif"
-    sansfont: "Noto Sans"
-    monofont: "Noto Sans Mono"
+      - margin=2.2cm
+    mainfont: "TeX Gyre Pagella"
+    sansfont: "TeX Gyre Heros"
+    monofont: "Latin Modern Mono"
+    fontsize: 11pt
+    linestretch: 1.15
     colorlinks: true
     listings: true
     include-in-header:
       text: |
         \providecommand{\lstlistingname}{Mã nguồn}
         \providecommand{\lstlistlistingname}{Danh sách mã nguồn}
+        \usepackage{titlesec}
+        \titlespacing*{\section}{0pt}{1.6ex plus 0.4ex minus 0.2ex}{0.8ex plus 0.2ex}
+        \titlespacing*{\subsection}{0pt}{1.3ex plus 0.3ex minus 0.2ex}{0.6ex plus 0.2ex}
+        \titlespacing*{\subsubsection}{0pt}{1.0ex plus 0.3ex minus 0.2ex}{0.4ex plus 0.2ex}
+        \setlength{\parskip}{0.4em}
+        \setlength{\parindent}{0pt}
 
 execute:
   freeze: auto
